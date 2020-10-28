@@ -1,5 +1,4 @@
 import React from 'react'
-import NoSSR from 'react-no-ssr'
 import { PRIMARY, PRIMARY_DARK } from '../../utils/Colors'
 import { FaChevronDown } from 'react-icons/fa'
 import { RiMenu3Line } from 'react-icons/ri'
@@ -92,7 +91,6 @@ export default function Header(props){
         }
     }
     return (
-        <NoSSR>
         <div className="outer-container item-shadow">
             <>
             <motion.div variants={variants} initial="visible" animate={"visible"} className={`position-relative d-flex align-items-center ${props.full ? "full" : "container justify-content-between"}`}>
@@ -243,10 +241,6 @@ export default function Header(props){
                 .menu-item:hover {
                     color: black;
                 }
-                .menu-item:hover > svg {
-                    display: none;
-                    transform: rotate(180deg) !important;
-                }
                 .menu-item:hover > .menu-item-underline {
                     width: 36px;
                 }
@@ -304,9 +298,6 @@ export default function Header(props){
                     opacity: 1;
                     top: 88px;
                 }
-                svg {
-                    transition: 0.5s;
-                }
                 .mobile-nav-container {
                     position: fixed;
                     background: black;
@@ -327,6 +318,5 @@ export default function Header(props){
                 }
             `}</style>
         </div>
-        </NoSSR>
     )
 }

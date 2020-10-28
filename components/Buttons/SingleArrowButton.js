@@ -1,7 +1,7 @@
 import { BsArrowRightShort } from 'react-icons/bs'
 import { MdSend } from 'react-icons/md'
 
-export default function(props) {
+export default function SingleArrowButton(props) {
     return (
         <>
             <button className="btn btn-round" disabled={props.disabled}>

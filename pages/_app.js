@@ -1,5 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
 import '../styles/font.css'
+import '../styles/misc.css'
 import '../styles/globals.css'
 
 function MyApp({ Component, pageProps }) {
