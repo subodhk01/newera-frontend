@@ -1,47 +1,14 @@
 import Link from 'next/link'
-import Header from '../components/Header/Header'
-
-const DASHBOARD_DATA = [
-    {
-        image: "",
-        title: "Tests",
-        path: "/dashboard"
-    },
-    {
-        image: "",
-        title: "Free Tests",
-        path: "/dashboard"
-    },
-    {
-        image: "",
-        title: "Assignments",
-        path: "/dashboard"
-    },
-    {
-        image: "",
-        title: "Online Classes",
-        path: "/dashboard"
-    },
-    {
-        image: "",
-        title: "Report",
-        path: "/dashboard"
-    },
-    {
-        image: "",
-        title: "Profile",
-        path: "/dashboard"
-    },
-]
+import Layout from '../components/UI/Layout'
+import { SIDEBAR_ITEMS } from '../utils/constants'
 
 export default function Dashboard(props){
     return(
-        <>
-            <Header />
+        <Layout title="Dashboard">
             <div className="pt-10">
                 <div className="container">
                     <div className="d-flex flex-wrap justify-content-center pt-5">
-                        {DASHBOARD_DATA.map((item, index) =>
+                        {SIDEBAR_ITEMS.map((item, index) =>
                             <div className="px-4 py-3 text-center" key={index}>
                                 <Link href={item.path} key={index}>
                                     <a className="item-container">
@@ -70,6 +37,6 @@ export default function Dashboard(props){
                     transition: 0.7s;
                 }
             `}</style>
-        </>
+        </Layout>
     )
 }
