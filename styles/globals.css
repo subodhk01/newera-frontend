@@ -112,3 +112,10 @@ body {
 	color: white;
 	overflow-x: auto;
 }
+
+.border-green {
+	border: 3px solid rgba(0, 128, 0, 0.479);
+}
+.border-red {
+	border: 3px solid rgba(255, 0, 0, 0.486);
+}

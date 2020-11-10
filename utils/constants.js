@@ -1,3 +1,10 @@
+QUESTION_TYPE = {
+    0: "Single Correct",
+    1: "Multiple Correct",
+    2: "Numerical",
+    3: "Matrix Match",
+}
+
 export const SIDEBAR_ITEMS = [
     {
         image: "",
