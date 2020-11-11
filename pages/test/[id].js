@@ -46,7 +46,21 @@ export default function Test(props){
             newResponse[currentQuestion].answered = true
         }
         setResponse(newResponse)
-        setRender(render + 1)
+        setRender((render + 1) % 100) // a pseudo update
+    }
+
+    const handleMultipleCorrect = (answer) => {
+        let newResponse = response
+        if(newResponse[currentQuestion].answer.includes(answer)){
+            newResponse[currentQuestion].answer = newResponse[currentQuestion].answer.replace(answer, "")
+        }else{
+            newResponse[currentQuestion].answer += answer
+        }
+        newResponse[currentQuestion].answer = newResponse[currentQuestion].answer.split("").sort().join("")
+        console.log("new answer: ", typeof(newResponse[currentQuestion].answer), newResponse[currentQuestion].answer)
+        newResponse[currentQuestion].answered = true
+        setResponse(newResponse)
+        setRender((render + 1) % 100) // a pseudo update
     }
     
     const handleClear = () => {
@@ -56,6 +70,16 @@ export default function Test(props){
             newResponse[currentQuestion].answered = false
         }
         setResponse(newResponse)
+        setRender((render + 1) % 100) // a pseudo update
+    }
+
+    const handleMark = () => {
+        let newResponse = response
+        if(newResponse[currentQuestion]){
+            newResponse[currentQuestion].marked = true
+        }
+        setResponse(newResponse)
+        setRender((render + 1) % 100) // a pseudo update
     }
 
     React.useEffect(() => {
@@ -155,13 +179,14 @@ export default function Test(props){
                                                 response={response}
                                                 setResponse={setResponse}
                                                 handleSingleCorrect={handleSingleCorrect}
+                                                handleMultipleCorrect={handleMultipleCorrect}
                                             />
                                         </div>
                                         <div className="d-flex align-items-center">
                                             <div className="btn btn-secondary" onClick={handleClear}>
                                                 Clear response
                                             </div>
-                                            <div className="btn btn-info">
+                                            <div className="btn btn-info" onClick={handleMark}>
                                                 Review Later
                                             </div>
                                         </div>
