@@ -11,7 +11,7 @@ export default function Home() {
     const [ email, setEmail ]  = React.useState("")
     const [ password, setPassword ] = React.useState("")
     const [ error, setError ] = React.useState("")
-    const { setAccessToken, setRefreshToken } = useAuth()
+    const { setAccessToken, setRefreshToken, setProfile } = useAuth()
 
     const handleSubmit = async (event) => {
         setError("")
@@ -20,7 +20,7 @@ export default function Home() {
             delete axiosInstance.defaults.headers["Authorization"]
             setAccessToken("")
             setRefreshToken("")
-            const response = await axiosInstance
+            axiosInstance
                 .post("token/", {
                     email: email,
                     password: password,
@@ -30,11 +30,20 @@ export default function Home() {
                     axiosInstance.defaults.headers["Authorization"] = "Bearer " + response.data.access;
                     setAccessToken(response.data.access)
                     setRefreshToken(response.data.refresh)
-                    setLoggedIn(true)
-                    router.push('/dashboard')
+                    axiosInstance
+                        .get("profile/", {
+                            
+                        })
+                        .then((response) => {
+                            console.log("Profile Response :", response)
+                            setProfile(response.data)
+                            setLoggedIn(true)
+                            router.push("/dashboard")
+                        }).then((error) => {
+                            console.log(error)
+                        })
                     //props.history.push("/");
                 })
-            console.log('response: ', response)
         } catch (error){
             if ( error.response && error.response.status === 403){
                 console.log(error.response.data.detail)
@@ -52,9 +61,9 @@ export default function Home() {
     // }
     return (
         <Layout>
-            <div>
-                <div>
-                    <h2>Login</h2>
+            <div className="d-flex align-items-center justify-content-center">
+                <div className="form-box item-shadow">
+                    <h2 className="mt-bold mb-4">Login</h2>
                     <div>
                         <form onSubmit={handleSubmit}>
                             <div className="form-group">
@@ -72,6 +81,13 @@ export default function Home() {
                     </div>
                 </div>
             </div>
+            <style jsx>{`
+                .form-box {
+                    margin-top: 10vh;
+                    min-width: 600px;
+                    padding: 2rem;
+                }
+            `}</style>
         </Layout>
     )
 }

@@ -1,4 +1,4 @@
-QUESTION_TYPE = {
+export const QUESTION_TYPE = {
     0: "Single Correct",
     1: "Multiple Correct",
     2: "Numerical",
@@ -9,7 +9,7 @@ export const SIDEBAR_ITEMS = [
     {
         image: "",
         title: "Tests",
-        path: "/dashboard"
+        path: "/tests"
     },
     {
         image: "",

@@ -124,7 +124,10 @@ export default function Test(props){
                                 {test.questions[currentQuestion].incorrectMarks}
                             </div>
                             <div className="btn btn-secondary m-2">
-                                Single Correct
+                                {test.questions[currentQuestion].type == 0 && "Single Correct"}
+                                {test.questions[currentQuestion].type == 1 && "Multiple Correct"}
+                                {test.questions[currentQuestion].type == 2 && "Integer Type"}
+                                {test.questions[currentQuestion].type == 3 && "Matrix"}
                             </div>
                             <div className="m-2 d-flex align-items-center">
                                 <BiTimeFive className="m-1" size="30" color="grey" />

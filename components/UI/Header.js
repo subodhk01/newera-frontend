@@ -62,7 +62,7 @@ const HEADER_ITEMS = [
     },
     {
         title: "Login/Signup",
-        to: "/",
+        to: "/login",
         button: true
     }
 ]
