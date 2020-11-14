@@ -5,55 +5,68 @@ import TestHeader from '../../components/UI/TestHeader'
 import { BiTimeFive } from 'react-icons/bi'
 import Options from '../../components/Test/Options'
 import { PRIMARY_DARK } from '../../utils/Colors'
+import { Select } from 'antd';
+const { Option } = Select;
+import { FilePond, File, registerPlugin } from 'react-filepond'
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
 
-// import dynamic from 'next/dynamic'
+registerPlugin(FilePondPluginImagePreview)
 
-// const axiosInstance = dynamic(() =>
-//   import('../../utils/axios').then((mod) => mod.axiosInstance),
-//   {ssr: false}
-// )
 
 function createMarkup(data) {
     return {__html: data};
 }
 
-const BLANK_QUESTION = {
-    image: "",
-    type: "",
-    section: 0,
-    correctMarks: 4,
-    incorrectMarks: 0,
-    partialMarks: 0,
-}
-
-const BLANK_ANSWER = {
-    answer: "",
-    topic: "",
-    solution: ""
-}
-
 export default function Test(props){  
     const [ loading, setLoading ] = React.useState(true)
     const [ questionLoading, setQuestionLoading ] = React.useState(false)
-    const [ questions, setQuestions ] = React.useState([BLANK_QUESTION])
+    const [ testName, setTestName ] = React.useState("")
+    const [ aits, setAits ] = React.useState("")
+    const [ free, setFree ] = React.useState("")
+    const [ questions, setQuestions ] = React.useState([{
+        image: "https://media.etests.co.in/media/public/2020-08-14_171553.045694.jpg",
+        type: 0,
+        section: 0,
+        correctMarks: 4,
+        incorrectMarks: 0,
+        partialMarks: 0,
+    }])
     const [ currentQuestion, setCurrentQuestion ] = React.useState(0)
-    const [ answers, setAnswers ] = React.useState([BLANK_ANSWER])
+    const [ answers, setAnswers ] = React.useState([{
+        answer: "",
+        topic: "",
+        solution: ""
+    }])
+    const [ files, setFiles ] = React.useState([])
     const [ render, setRender ] = React.useState(0)
 
     React.useEffect(() => {
         setLoading(false)
     }, [])
+    React.useEffect(() => {
+        console.log(files)
+        if(files.length){
+            console.log("strat")
+            console.log(files[0].id)
+            console.log(files[0].origin)
+            console.log(files[0].relativePath)
+            console.log(files[0].serverId)
+            console.log(files[0].source)
+            console.log(files[0].status)
+            console.log(files[0].transferId)
+            console.log("end")
+        }
+    }, [files])
 
     const handleCurrentQuestion = (index) => {
         setCurrentQuestion(index)
+        setRender((render + 1) % 100) // a pseudo update
     }
 
     const handleSingleCorrect = (answer) => {
         let newAnswers = answers
-        if(newAnswers[currentQuestion]){
-            newAnswers[currentQuestion].answer = answer 
-            newAnswers[currentQuestion].answered = true
-        }
+        newAnswers[currentQuestion].answer = answer 
+        newAnswers[currentQuestion].answered = true
         setAnswers(newAnswers)
         setRender((render + 1) % 100) // a pseudo update
     }
@@ -66,7 +79,6 @@ export default function Test(props){
             newAnswers[currentQuestion].answer += answer
         }
         newAnswers[currentQuestion].answer = newAnswers[currentQuestion].answer.split("").sort().join("")
-        console.log("new answer: ", typeof(newAnswers[currentQuestion].answer), newAnswers[currentQuestion].answer)
         newAnswers[currentQuestion].answered = true
         setAnswers(newAnswers)
         setRender((render + 1) % 100) // a pseudo update
@@ -76,7 +88,6 @@ export default function Test(props){
         let newAnswers = answers
         if(newAnswers[currentQuestion]){
             newAnswers[currentQuestion].answer = ""
-            newAnswers[currentQuestion].answered = false
         }
         setAnswers(newAnswers)
         setRender((render + 1) % 100) // a pseudo update
@@ -92,8 +103,52 @@ export default function Test(props){
     }
 
     const handleNewQuestion = () => {
-        setAnswers([...answers, BLANK_ANSWER])
-        setQuestions([...questions, BLANK_QUESTION])
+        setAnswers([...answers, {
+            answer: "",
+            topic: "",
+            solution: ""
+        }])
+        setQuestions([...questions, {
+            image: "",
+            type: 0,
+            section: 0,
+            correctMarks: 4,
+            incorrectMarks: 0,
+            partialMarks: 0,
+        }])
+    }
+
+    const handleQuestionTypeChange = (value) => {
+        let newQuestions = questions
+        let newAnswers = answers
+        newQuestions[currentQuestion].type = value
+        newAnswers[currentQuestion].answer = ""
+        newAnswers[currentQuestion].answered = false
+        setQuestions(newQuestions)
+        setAnswers(answers)
+        setRender((render + 1) % 100) // a pseudo update
+    }
+
+    const handleFileChange = (file) => {
+        console.log("file: ", file)
+        let newQuestions = questions
+        newQuestions[currentQuestion].image = file
+        console.log("new questions: ", newQuestions)
+        setQuestions(newQuestions)
+        setRender((render + 1) % 100) // a pseudo update
+    }
+
+    const handleTestSave = () => {
+        axiosInstance.post("/tests/", {
+            name: testName,
+            questions: questions,
+            answers: answers
+        })
+        .then((response) => {
+            console.log("test save response: ", response.data)
+        }).catch((error) => {
+            console.log(error)
+        })
     }
 
     return(
@@ -113,18 +168,20 @@ export default function Test(props){
                             <div className="circle border-red m-2">
                                 {questions[currentQuestion].incorrectMarks}
                             </div>
-                            <div className="btn btn-secondary m-2">
-                                {questions[currentQuestion].type == 0 && "Single Correct"}
-                                {questions[currentQuestion].type == 1 && "Multiple Correct"}
-                                {questions[currentQuestion].type == 2 && "Integer Type"}
-                                {questions[currentQuestion].type == 3 && "Matrix"}
+                            <Select defaultValue={0} style={{ width: 220 }} onChange={handleQuestionTypeChange} value={questions[currentQuestion].type}>
+                                <Option value={0}>Single Correct</Option>
+                                <Option value={1}>Multiple Correct</Option>
+                                <Option value={2}>Integer Type</Option>
+                                <Option value={3}>Matrix</Option>
+                            </Select>
+                            <div>
+                                Test Name: <input type="text" name="testname" value={testName} onChange={(event) => setTestName(event.target.value)} />
                             </div>
-                            <div className="m-2 d-flex align-items-center">
-                                <BiTimeFive className="m-1" size="30" color="grey" />
-                                <span className="font-12">Time</span>
+                            <div>
+                                AITS: <input type="checkbox" value={aits} onChange={() => setAits(event.target.value)} />
                             </div>
-                            <div className="btn btn-danger m-2">
-                                End Test
+                            <div>
+                                Free: <input type="checkbox" value={free} onChange={() => setFree(event.target.value)} />
                             </div>
                         </div>
                     </div>
@@ -160,9 +217,36 @@ export default function Test(props){
                                         <div className="mt-bold font-13 m-2">
                                             Q. {currentQuestion + 1}
                                         </div>
-                                        <div>
-
-                                        </div>
+                                        
+                                    </div>
+                                    <div className="p-3">
+                                        <FilePond
+                                            files={files}
+                                            onupdatefiles={setFiles}
+                                            allowMultiple={false}
+                                            name="filepond"
+                                            server={{
+                                                url: 'http://127.0.0.1:8000/fp',
+                                                process: {
+                                                    url: '/process/',
+                                                    method: 'POST',
+                                                    withCredentials: false,
+                                                    headers: {},
+                                                    timeout: 7000,
+                                                    onload: (response) => response.key,
+                                                    onerror: (response) => response.data,
+                                                    ondata: (data) => {
+                                                        console.log(data)
+                                                        return data
+                                                    }
+                                                },
+                                                patch: '/patch/',
+                                                revert: '/revert/',
+                                                fetch: '/fetch/?target='
+                                            }}
+                                            
+                                            labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+                                        />
                                     </div>
                                     <div>
                                         <div>
@@ -181,13 +265,13 @@ export default function Test(props){
                                             <div className="btn btn-secondary" onClick={handleClear}>
                                                 Clear response
                                             </div>
-                                            <div className="btn btn-info" onClick={handleMark}>
-                                                Review Later
-                                            </div>
                                         </div>
                                     </div>
                                 </>
                             }
+                        </div>
+                        <div className="btn btn-info" onClick={handleTestSave}>
+                            Create Test
                         </div>
                     </div>
                     <style jsx>{`
