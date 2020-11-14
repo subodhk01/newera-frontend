@@ -2,7 +2,7 @@ import axios from 'axios'
 import cookie from 'react-cookies'
 
 const debug = false
-const baseURL = debug ? "http://localhost:8000/" : 'https://newera-backend.herokuapp.com/'
+export const baseURL = debug ? "http://localhost:8000/" : 'https://newera-backend.herokuapp.com/'
 //const baseURL = debug ? "http://localhost:8000/" : 'http://materate-math-a-hack-results.ap-south-1.elasticbeanstalk.com/'
 
 const axiosInstance = axios.create({
