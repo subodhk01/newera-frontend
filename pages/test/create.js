@@ -179,7 +179,7 @@ export default function Test(props){
                 :
                 <>
                     <div>
-                        <TestHeader testName="Custom Test 1" />
+                        <TestHeader testName={testName} />
                         <div className="d-flex align-items-center p-2 border-bottom">
                             <div>
                                 Correct Marks: <input type="text" name="testname" value={questions[currentQuestion].correctMarks} onChange={handleCorrectMarks} />
@@ -227,7 +227,7 @@ export default function Test(props){
                                         {index + 1}
                                     </div>
                                 )}
-                                <div className={`m-2 item-shadow circle-big `} onClick={() => handleNewQuestion()}>
+                                <div className={`m-2 item-shadow circle-big`} style={{fontSize: "3rem"}} onClick={() => handleNewQuestion()}>
                                     +
                                 </div>
                             </div>

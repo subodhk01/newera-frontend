@@ -174,7 +174,8 @@ export default function Test(props){
                                     </div>
                                     <div>
                                         <div>
-                                            <div dangerouslySetInnerHTML={createMarkup(test.questions[currentQuestion].text)}></div>
+                                            {/* <div dangerouslySetInnerHTML={createMarkup(test.questions[currentQuestion].text)}></div> */}
+                                            <img src={test.questions[currentQuestion].image} />
                                         </div>
                                         <div>
                                             <Options 
