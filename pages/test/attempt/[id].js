@@ -1,10 +1,10 @@
 import React from 'react'
-import { axiosInstance } from '../../utils/axios'
+import { axiosInstance } from '../../../utils/axios'
 import { useRouter } from 'next/router'
-import TestHeader from '../../components/UI/TestHeader'
+import TestHeader from '../../../components/UI/TestHeader'
 import { BiTimeFive } from 'react-icons/bi'
-import Options from '../../components/Test/Options'
-import { PRIMARY_DARK } from '../../utils/Colors'
+import Options from '../../../components/Test/Options'
+import { PRIMARY_DARK } from '../../../utils/Colors'
 
 // import dynamic from 'next/dynamic'
 
@@ -87,6 +87,7 @@ export default function Test(props){
         if(id){
             console.log(id)
             axiosInstance.get(`tests/${id}/`).then((response) => {
+                console.log("response test: ", response.data)
                 let rawTest = response.data
                 rawTest.questions = JSON.parse(rawTest.questions)
                 rawTest.sections = JSON.parse(rawTest.sections)
