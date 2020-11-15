@@ -27,6 +27,7 @@ export default function Test(props){
     const [ questions, setQuestions ] = React.useState([{
         image: "",
         type: 0,
+        topic: "none",
         section: 0,
         correctMarks: 4,
         incorrectMarks: 0,
@@ -125,6 +126,7 @@ export default function Test(props){
         setQuestions([...questions, {
             image: "",
             type: 0,
+            topic: "none",
             section: 0,
             correctMarks: 4,
             incorrectMarks: 0,
@@ -161,7 +163,11 @@ export default function Test(props){
         axiosInstance.post("/tests/", {
             name: testName,
             questions: questions,
-            answers: answers
+            answers: answers,
+            sections: [{
+                start: 0,
+                end: questions.length
+            }]
         })
         .then((response) => {
             console.log("test save response: ", response.data)

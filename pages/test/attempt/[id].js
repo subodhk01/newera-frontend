@@ -89,9 +89,9 @@ export default function Test(props){
             axiosInstance.get(`tests/${id}/`).then((response) => {
                 console.log("response test: ", response.data)
                 let rawTest = response.data
-                rawTest.questions = JSON.parse(rawTest.questions)
-                rawTest.sections = JSON.parse(rawTest.sections)
-                rawTest.answers = JSON.parse(rawTest.answers)
+                // rawTest.questions = JSON.parse(rawTest.questions)
+                // rawTest.sections = JSON.parse(rawTest.sections)
+                // rawTest.answers = JSON.parse(rawTest.answers)
                 console.log("test: ", rawTest)
                 setTest(rawTest)
                 let newResponse = []
