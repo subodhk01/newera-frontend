@@ -15,7 +15,7 @@ export default function Options(props) {
         <>
             <div>
                 {props.question && props.response && props.question.type === 0 && 
-                    <div className="d-flex align-items-center">
+                    <div className="d-flex flex-wrap align-items-center">
                         <div onClick={() => middleSingleCorrect(0)} className={`single-correct ${props.response[props.currentQuestion].answer === 0 && `selected`}`}>
                             A
                         </div>
@@ -31,7 +31,7 @@ export default function Options(props) {
                     </div>
                 }
                 {props.question && props.response && props.question.type === 1 && 
-                    <div className="d-flex align-items-center">
+                    <div className="d-flex flex-wrap align-items-center">
                         <div onClick={() => middleMultipleCorrect(0)} className={`single-correct ${props.response[props.currentQuestion].answer.includes(0) && `selected`}`}>
                             A
                         </div>

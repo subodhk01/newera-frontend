@@ -186,7 +186,7 @@ export default function Test(props){
                 <>
                     <div>
                         <TestHeader testName={testName} />
-                        <div className="d-flex align-items-center p-2 border-bottom">
+                        <div className="d-flex flex-wrap align-items-center p-2 border-bottom">
                             <div>
                                 Correct Marks: <input type="text" name="testname" value={questions[currentQuestion].correctMarks} onChange={handleCorrectMarks} />
                             </div>
