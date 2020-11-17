@@ -7,7 +7,7 @@ export const baseURL = debug ? "http://localhost:8000/" : 'https://newera-backen
 
 const axiosInstance = axios.create({
     baseURL: baseURL,
-    timeout: 5000,
+    timeout: 25000,
     headers: {
         'Authorization': cookie.load('access_token') ? "Bearer " +  cookie.load('access_token') : "",
         'Content-Type': 'application/json',

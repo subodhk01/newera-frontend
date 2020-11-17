@@ -1,6 +1,8 @@
 import React from 'react'
+import Link from 'next/link'
 import { Table, Badge, Menu, Dropdown, Space } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
+import { axiosInstance } from '../../../utils/axios';
 
 const menu = (
 	<Menu>
@@ -11,25 +13,37 @@ const menu = (
 
 export default function StudentTestTable(props) {
 	const [ loading, setLoading ] = React.useState(false)
+	// const [ insideLoading, setInsideLoading ] = React.useState(true)
+	// const [ insideError, setInsideError ] = React.useState(false)
 	// const [ data, setData ] = React.useState([])
 	// const [ columns, setColumns ] = React.useState([])
 	React.useEffect(() => {
 		
 	}, [props.tests])
 
-	const expandedRowRender = () => {
+	const expandedRowRender = (row) => {
+		let data = [];
 		const columns = [
 			{
 				title: 'Attempt',
 				key: 'attempt',
-				render: () => (
-					<span>
-						<Badge status="success" />
-						Practise
-					</span>
-				),
+				render: (attempt) => {
+					return (
+						<span>
+							{attempt.practice ? <Badge status="warning" /> : <Badge status="success" />}
+							{attempt.practice ? "Practise" : "Real"}
+						</span>
+					)
+				},
 			},
-			{ title: 'Time', dataIndex: 'time', key: 'time' },
+			{ 
+				title: 'Time', 
+				dataIndex: 'time', 
+				key: 'time',
+				render: (time) => (
+					<span>{(new Date(time)).toLocaleString()}</span>
+				)
+			},
 			{
 				title: 'Action',
 				dataIndex: 'operation',
@@ -38,36 +52,30 @@ export default function StudentTestTable(props) {
 					<Space size="middle">
 						<a>Pause</a>
 						<a>Stop</a>
-						<Dropdown overlay={menu}>
-							<a>
-								More <DownOutlined />
-							</a>
-						</Dropdown>
 					</Space>
 				),
 			},
 		];
-
-		const data = [];
-		for (let i = 0; i < 3; ++i) {
-			data.push({
-				key: i,
-				date: '2014-12-24 23:12:00',
-				name: 'This is production name',
-				upgradeNum: 'Upgraded: 56',
-			});
-		}
+		props.sessions.map((session, index) => {
+			if(session.test === row.id){
+				data.push({
+					key: index,
+					practice: session.practice,
+					time: session.checkin_time,
+				})
+			}
+		})
 		return(
 			<>
-				<div className="text-right">
+				{/* <div className="text-right">
 					<div className="btn btn-primary">
 						Start Test
 					</div>
-				</div>
+				</div> */}
 				<div className="w-75 mx-auto">
 					<Table columns={columns} dataSource={data} pagination={false} />
 				</div>
-			</>
+			</>	
 		)
 	};
 
@@ -75,7 +83,15 @@ export default function StudentTestTable(props) {
 		{ title: 'TestId', dataIndex: 'id', key: 'id' },
 		{ title: 'Name', dataIndex: 'name', key: 'name' },
 		{ title: 'Status', dataIndex: 'status', key: 'status' },
-		{ title: 'Action', key: 'operation', render: () => <a>Start Test</a> },
+		{ title: 'Action', key: 'operation', render: (test) => 
+			<Link href={`/test/attempt/${test.id}`}>
+				<a>
+					<div className="btn btn-primary">
+						Start Test
+					</div>
+				</a>
+			</Link>
+		},
 	];
 
 	const data = [];

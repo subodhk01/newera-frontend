@@ -3,43 +3,56 @@ import SideBarLayout from '../components/UI/WithSideBar'
 import StudentTestTable from '../components/Tables/Test/StudentTestTable'
 import { useAuth } from '../utils/auth'
 import { axiosInstance } from '../utils/axios'
+import AuthHOC from '../components/AuthHOC'
+import { FaHockeyPuck } from 'react-icons/fa'
 
 export default function Tests(props){
     const { profile, accessToken } = useAuth()
     const [ tests, setTests ] = React.useState()
+    const [ sessions, setSessions ] = React.useState()
     React.useEffect(() => {
         axiosInstance
-        .get("/tests")
-        .then((response) => {
-            console.log("tests: ", response.data)
-            setTests(response.data)
-        }).catch((error) => {
-            console.log(error)
-        })
+            .get("/tests")
+            .then((response) => {
+                console.log("tests: ", response.data)
+                setTests(response.data)
+            }).catch((error) => {
+                console.log(error)
+            })
+        axiosInstance
+            .get("/sessions")
+            .then((response) => {
+                console.log("sessions: ", response.data)
+                setSessions(response.data)
+            }).catch((error) => {
+                console.log(error)
+            })
     }, [])
     return(
-        <SideBarLayout title="Tests">
-            <div className="p-2 p-md-5">
-                <div>
-                    <h1>Tests</h1>
-                </div>
-                <div>
+        <AuthHOC>
+            <SideBarLayout title="Tests">
+                <div className="p-2 p-md-5">
                     <div>
-                        {profile.is_student &&
-                            <>
-                                <StudentTestTable tests={tests} />
-                            </>
-                        }
+                        <h1>Tests</h1>
                     </div>
                     <div>
-                        {profile.is_teacher &&
-                            <>
-                                Teacher Table
-                            </>
-                        }
+                        <div>
+                            {profile.is_student &&
+                                <>
+                                    <StudentTestTable tests={tests} sessions={sessions} />
+                                </>
+                            }
+                        </div>
+                        <div>
+                            {profile.is_teacher &&
+                                <>
+                                    Teacher Table
+                                </>
+                            }
+                        </div>
                     </div>
                 </div>
-            </div>
-        </SideBarLayout>
+            </SideBarLayout>
+        </AuthHOC>
     )
 }

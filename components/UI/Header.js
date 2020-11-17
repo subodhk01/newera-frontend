@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 import { PRIMARY, PRIMARY_DARK } from '../../utils/Colors'
 import { FaChevronDown } from 'react-icons/fa'
 import { RiMenu3Line } from 'react-icons/ri'
@@ -7,6 +8,7 @@ import { Collapse } from 'react-bootstrap'
 import SingleArrowButton from '../Buttons/SingleArrowButton'
 
 import { motion } from 'framer-motion'
+import { useAuth } from '../../utils/auth'
 
 const logoWhite = '/static/logoWhite.png'
 const logoBlack = '/static/logoBlack.png'
@@ -83,6 +85,7 @@ const variants = {
 export default function Header(props){
     const [ mobileNav, setMobileNav ] = React.useState(false)
     const [ mobileDropdown, setMobileDropdown ] = React.useState("")
+    const { accessToken, handleLogout } = useAuth()
     const handleDropdown = (item) => {
         if(mobileDropdown == item.title){
             setMobileDropdown("")
@@ -95,10 +98,11 @@ export default function Header(props){
             <>
             <motion.div variants={variants} initial="visible" animate={"visible"} className={`position-relative d-flex align-items-center ${props.full ? "full" : "container justify-content-between"}`}>
                 <div>
-                    <a href="/">
-                        {/* <img src={`${props.white ? logoWhite : logoBlack}`} alt="Cubefarms" /> */}
-                        New Era
-                    </a>
+                    <Link href="/">
+                        <a>
+                            New Era
+                        </a>
+                    </Link>
                 </div>
                 <div className="d-block d-lg-none">
                     <div className="p-3 cursor-pointer" onClick={() => setMobileNav(true)}>
@@ -113,12 +117,14 @@ export default function Header(props){
                                 <React.Fragment key={index1}>
                                     {item.path && 
                                         <div className="py-2">
-                                            <a href={item.path}>
-                                                <div className={`position-relative`}>
-                                                    {item.title}
-                                                    <div className="menu-item-underline"></div>
-                                                </div>
-                                            </a>
+                                            <Link href={item.path}>
+                                                <a>
+                                                    <div className={`position-relative`}>
+                                                        {item.title}
+                                                        <div className="menu-item-underline"></div>
+                                                    </div>
+                                                </a>
+                                            </Link>
                                         </div>
                                     }
                                     {item.dropdown && 
@@ -140,13 +146,34 @@ export default function Header(props){
                                         </div>
                                     }
                                     {item.button &&
-                                        <div className="text-center py-4 position-relative" style={{left: "-20px"}}>
-                                            <a href={item.to}>
-                                                <SingleArrowButton>
-                                                    {item.title}
-                                                </SingleArrowButton>
-                                            </a>
-                                        </div>
+                                        <>
+                                            {accessToken ?
+                                                <>
+                                                    <div>
+                                                        <Link href="/dashboard">
+                                                            <a className={`menu-item position-relative`}>
+                                                                Dashboard
+                                                                <div className="menu-item-underline"></div>
+                                                            </a>
+                                                        </Link>
+                                                    </div>
+                                                    <div onClick={() => handleLogout()}>
+                                                        <a className={`menu-item position-relative`}>
+                                                            Logout
+                                                            <div className="menu-item-underline"></div>
+                                                        </a>
+                                                    </div>
+                                                </>
+                                                :
+                                                <div className="text-center py-4 position-relative" style={{left: "-20px"}}>
+                                                    <a href={item.to}>
+                                                        <SingleArrowButton>
+                                                            {item.title}
+                                                        </SingleArrowButton>
+                                                    </a>
+                                                </div>
+                                            }
+                                        </>
                                     }
                                 </React.Fragment>
                             )}
@@ -158,13 +185,12 @@ export default function Header(props){
                         <React.Fragment key={index1}>
                             {item.path && 
                                 <div>
-                                    <a 
-                                        href={item.path} 
-                                        className={`menu-item position-relative`}
-                                    >
-                                        {item.title}
-                                        <div className="menu-item-underline"></div>
-                                    </a>
+                                    <Link href={item.path}>
+                                        <a className={`menu-item position-relative`}>
+                                            {item.title}
+                                            <div className="menu-item-underline"></div>
+                                        </a>
+                                    </Link>
                                 </div>
                             }
                             {item.dropdown && 
@@ -190,15 +216,34 @@ export default function Header(props){
                                 </div>
                             }
                             {item.button &&
-                                <div>
-                                    <div className="btn btn-arrow ml-3">
-                                        <a href={item.to}>
-                                            <SingleArrowButton>
-                                                {item.title}
-                                            </SingleArrowButton>
-                                        </a>
-                                    </div>
-                                </div>
+                                <>
+                                    {accessToken ?
+                                        <>
+                                            <div>
+                                                <Link href="/dashboard">
+                                                    <a className={`menu-item position-relative`}>
+                                                        Dashboard
+                                                        <div className="menu-item-underline"></div>
+                                                    </a>
+                                                </Link>
+                                            </div>
+                                            <div onClick={() => handleLogout()}>
+                                                <a className={`menu-item position-relative`}>
+                                                    Logout
+                                                    <div className="menu-item-underline"></div>
+                                                </a>
+                                            </div>
+                                        </>
+                                        :
+                                        <div className="btn btn-arrow ml-3">
+                                            <a href={item.to}>
+                                                <SingleArrowButton>
+                                                    {item.title}
+                                                </SingleArrowButton>
+                                            </a>
+                                        </div>
+                                    }
+                                </>
                             }
                         </React.Fragment>
                     )}

@@ -16,44 +16,43 @@ export default function Home() {
     const handleSubmit = async (event) => {
         setError("")
         event.preventDefault();
-        try{
-            delete axiosInstance.defaults.headers["Authorization"]
-            setAccessToken("")
-            setRefreshToken("")
-            axiosInstance
-                .post("token/", {
-                    email: email,
-                    password: password,
-                })
-                .then((response) => {
-                    console.log("Login Response :", response)
-                    axiosInstance.defaults.headers["Authorization"] = "Bearer " + response.data.access;
-                    setAccessToken(response.data.access)
-                    setRefreshToken(response.data.refresh)
-                    axiosInstance
-                        .get("profile/", {
-                            
-                        })
-                        .then((response) => {
-                            console.log("Profile Response :", response)
-                            setProfile(response.data)
-                            setLoggedIn(true)
-                            router.push("/dashboard")
-                        }).then((error) => {
-                            console.log(error)
-                        })
-                    //props.history.push("/");
-                })
-        } catch (error){
-            if ( error.response && error.response.status === 403){
-                console.log(error.response.data.detail)
-                setError(error.response.data.detail)
-                return
-            }
-            console.log(error)
-            if( error.message ) setError(error.message)
-            else setError(error.toString())
-        }
+        delete axiosInstance.defaults.headers["Authorization"]
+        setAccessToken("")
+        setRefreshToken("")
+        axiosInstance
+            .post("token/", {
+                email: email,
+                password: password,
+            })
+            .then((response) => {
+                console.log("Login Response :", response)
+                axiosInstance.defaults.headers["Authorization"] = "Bearer " + response.data.access;
+                setAccessToken(response.data.access)
+                setRefreshToken(response.data.refresh)
+                axiosInstance
+                    .get("profile/", {
+                        
+                    })
+                    .then((response) => {
+                        console.log("Profile Response :", response)
+                        setProfile(response.data)
+                        setLoggedIn(true)
+                        router.push("/dashboard")
+                    }).then((error) => {
+                        console.log(error)
+                    })
+                //props.history.push("/");
+            })
+            .catch((error) => {
+                if ( error.response && error.response.status === 401){
+                    console.log(error.response.data.detail)
+                    setError("Invalid Credentials")
+                    return
+                }
+                console.log(error)
+                if( error.message ) setError(error.message)
+                else setError(error.toString()) 
+            })
     }
 
     // if( isLoggedIn ){
@@ -67,10 +66,17 @@ export default function Home() {
                     <div>
                         <form onSubmit={handleSubmit}>
                             <div className="form-group">
-                                <input className="form-control" type="email" value={email} onChange={(event) => setEmail(event.target.value)} />
+                                <input className="form-control" type="email" value={email} onChange={(event) => setEmail(event.target.value)} name="email" placeholder="Email" />
                             </div>
                             <div className="form-group">
-                                <input className="form-control" type="password" value={password} onChange={(event) => setPassword(event.target.value)} />
+                                <input className="form-control" type="password" value={password} onChange={(event) => setPassword(event.target.value)} name="password" placeholder="password" />
+                            </div>
+                            <div>
+                                {error && 
+                                    <div className="py-2 text-danger">
+                                        {error}
+                                    </div>
+                                }
                             </div>
                             <div>
                                 <button type="submit" className="btn btn-success form-control">
@@ -84,8 +90,9 @@ export default function Home() {
             <style jsx>{`
                 .form-box {
                     margin-top: 10vh;
-                    min-width: 600px;
                     padding: 2rem;
+                    width: 100%;
+                    max-width: 600px;
                 }
             `}</style>
         </Layout>

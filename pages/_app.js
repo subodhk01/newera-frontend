@@ -26,6 +26,14 @@ function MyApp({ Component, pageProps }) {
         cookie.save('profile', data)
         setProfile(data)
     }
+    const handleLogout = () => {
+        cookie.remove('access_token')
+        setAccess(null)
+        cookie.remove('refresh_token')
+        setRefresh(null)
+        cookie.remove('profile')
+        setProfile({})
+    }
 	
 	return (
 		<AuthContext.Provider 
@@ -34,6 +42,7 @@ function MyApp({ Component, pageProps }) {
                 refreshToken : refresh,
                 setAccessToken : setAccessToken,
                 setRefreshToken : setRefreshToken,
+                handleLogout: handleLogout,
                 profile : profile,
                 setProfile : handleProfile
         }}>
