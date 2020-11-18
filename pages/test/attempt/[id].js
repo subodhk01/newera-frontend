@@ -5,7 +5,9 @@ import TestHeader from '../../../components/UI/TestHeader'
 import { BiTimeFive } from 'react-icons/bi'
 import Options from '../../../components/Test/Options'
 import { PRIMARY_DARK } from '../../../utils/Colors'
-
+import Modal from 'react-modal';
+import { fancyTimeFormat } from '../../../utils/functions'
+//Modal.setAppElement('#app');
 // import dynamic from 'next/dynamic'
 
 // const axiosInstance = dynamic(() =>
@@ -16,14 +18,56 @@ import { PRIMARY_DARK } from '../../../utils/Colors'
 function createMarkup(data) {
     return {__html: data};
 }
+const customStyles = {
+    overlay: {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(255, 255, 255, 0.75)',
+    },
+    content: {
+        borderRadius: "10px",
+        background: "white",
+        boxShadow: "0px 0px 30px 6px #ecf0f7",
+        border: "none"
+    }
+};
+const customStyles2 = {
+    overlay: {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(255, 255, 255, 0.75)',
+    },
+    content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+        borderRadius: "10px",
+        background: "white",
+        boxShadow: "0px 0px 30px 6px #ecf0f7",
+        border: "none"
+    }
+};
 
 export default function Test(props){  
     const router = useRouter()
     const { id } = router.query
 
+    const [ testStartModal,setTestStartModal ] = React.useState(false)
+    const [ testEndModal, setTestEndModal ] = React.useState(false)
+    const [ session, setSession ] = React.useState()
     const [ loading, setLoading ] = React.useState(true)
     const [ questionLoading, setQuestionLoading ] = React.useState(false)
     const [ test, setTest ] = React.useState()
+    const [ timeRemaining, setTimeRemaining ] = React.useState()
     const [ currentQuestion, setCurrentQuestion ] = React.useState(0)
     const [ response, setResponse ] = React.useState([{answer: "", marked: false},])
     const [ render, setRender ] = React.useState(0)
@@ -100,15 +144,80 @@ export default function Test(props){
                 }
                 newResponse[currentQuestion].visited = true
                 setResponse(newResponse)
-                setLoading(false)
+                setTestStartModal(true)
             }).catch((error) => {
                 console.log(error)
             })
         }
     }, [id])
 
+    React.useEffect(() => {
+        if(!loading){
+            setInterval(() => {
+                setTimeRemaining(timeRemaining => {
+                    console.log(timeRemaining)
+                    return timeRemaining - 1
+                })
+            }, 1000)
+        }
+    }, [loading])
+
+    const startTest = () => {
+        axiosInstance.post(`tests/${id}/sessions/`)
+            .then((response) => {
+                console.log("session create response: ", response.data)
+                setSession(response.data)
+                let session = response.data
+                var seconds = session.duration.split(":")[0]*3600 + session.duration.split(":")[1]*60 + session.duration.split(":")[2]*1
+                var session_start = new Date(session.checkin_time)
+                var time_remaining = Math.floor(((new Date()).getTime() - session_start.getTime())/1000)
+                console.log("session start time: ", session_start)
+                console.log("time remaining: ", seconds - time_remaining)
+                setTimeRemaining(seconds - time_remaining)
+                setTestStartModal(false)
+                setLoading(false)
+            }).catch((error) => {
+                console.log(error)
+            })
+    }
+    const endTest = () => {
+        console.log("endTest")
+    }
+
     return(
         <>
+            <Modal
+                isOpen={testStartModal}
+                onRequestClose={() => setTestStartModal(false)}
+                style={customStyles}
+                contentLabel="Example Modal"
+                //shouldCloseOnOverlayClick={false}
+            >
+                <div className="text-center">
+                    <div className="mb-3">
+                        Instructions of testName
+                    </div>
+                    <div className="btn btn-info" onClick={startTest}>
+                        Start Test
+                    </div>
+                </div>
+            </Modal>
+            <Modal
+                isOpen={testEndModal}
+                onRequestClose={() => setTestEndModal(false)}
+                style={customStyles2}
+                contentLabel="Example Modal"
+                //shouldCloseOnOverlayClick={false}
+            >
+                <div className="text-center">
+                    <div className="mb-3">
+                        Confirm End Test
+                    </div>
+                    <div className="btn btn-info" onClick={endTest}>
+                        End Test
+                    </div>
+                </div>
+            </Modal>
             { loading ?
                 <div>
                     Loading...
@@ -131,8 +240,8 @@ export default function Test(props){
                                 {test.questions[currentQuestion].type == 3 && "Matrix"}
                             </div>
                             <div className="m-2 d-flex align-items-center">
-                                <BiTimeFive className="m-1" size="30" color="grey" />
-                                <span className="font-12">Time</span>
+                                <BiTimeFive className="m-1" size="26" color="grey" />
+                                <span className="font-12">Time Remaining: {fancyTimeFormat(timeRemaining)}</span>
                             </div>
                             <div className="btn btn-danger m-2">
                                 End Test
@@ -198,6 +307,11 @@ export default function Test(props){
                                     </div>
                                 </>
                             }
+                            <div>
+                                <div className="btn btn-info" onClick={() => setTestEndModal(true)}>
+                                    Submit Test
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <style jsx>{`
