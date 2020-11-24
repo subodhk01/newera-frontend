@@ -308,7 +308,7 @@ export default function Test(props){
                                 </>
                             }
                             <div>
-                                <div className="btn btn-info" onClick={() => setTestEndModal(true)}>
+                                <div className="btn btn-danger" onClick={() => setTestEndModal(true)}>
                                     Submit Test
                                 </div>
                             </div>

@@ -23,9 +23,10 @@ axiosInstance.interceptors.response.use(
         console.log("access_token: ", cookie.load('access_token'))
         console.log(error.response)
         const originalRequest = error.config;
+        console.log("request url: ", originalRequest.url)
 
         // Prevent infinite loops
-        if ( error.response && error.response.status === 401 && originalRequest.url === baseURL + 'token/refresh/') {
+        if ( error.response && error.response.status === 401 && originalRequest.url === '/token/refresh/') {
             window.location.href = '/login/';
             return Promise.reject(error);
         }

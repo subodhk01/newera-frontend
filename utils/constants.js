@@ -13,8 +13,8 @@ export const SIDEBAR_ITEMS = [
     },
     {
         image: "",
-        title: "Assignments",
-        path: "/dashboard"
+        title: "Lecture Series",
+        path: "/lectureseries"
     },
     {
         image: "",

@@ -15,3 +15,9 @@ export function fancyTimeFormat(duration) {
     ret += "" + secs;
     return ret;
 }
+
+export function arrayRemove(arr, value) {  
+    return arr.filter(function(ele){ 
+        return ele != value; 
+    });
+}

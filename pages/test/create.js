@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import { axiosInstance, baseURL } from '../../utils/axios'
-import { useRouter } from 'next/router'
+import Router, { useRouter } from 'next/router'
 import TestHeader from '../../components/UI/TestHeader'
 import { BiTimeFive } from 'react-icons/bi'
 import Options from '../../components/Test/Options'
@@ -10,6 +10,7 @@ import { Select } from 'antd';
 const { Option } = Select;
 import { FilePond, File, registerPlugin } from 'react-filepond'
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
+import { arrayRemove } from '../../utils/functions'
 
 //registerPlugin(FilePondPluginImagePreview)
 
@@ -22,8 +23,8 @@ export default function Test(props){
     const [ loading, setLoading ] = React.useState(true)
     const [ questionLoading, setQuestionLoading ] = React.useState(false)
     const [ testName, setTestName ] = React.useState("")
-    const [ aits, setAits ] = React.useState("")
-    const [ free, setFree ] = React.useState("")
+    const [ aits, setAits ] = React.useState(false)
+    const [ free, setFree ] = React.useState(false)
     const [ questions, setQuestions ] = React.useState([{
         image: "",
         type: 0,
@@ -35,12 +36,13 @@ export default function Test(props){
     }])
     const [ currentQuestion, setCurrentQuestion ] = React.useState(0)
     const [ answers, setAnswers ] = React.useState([{
-        answer: "",
+        answer: [],
         topic: "",
         solution: ""
     }])
     const [ files, setFiles ] = React.useState([])
     const [ render, setRender ] = React.useState(0)
+    const [ error, setError ] = React.useState("")
 
     React.useEffect(() => {
         setLoading(false)
@@ -48,7 +50,7 @@ export default function Test(props){
     React.useEffect(() => {
         console.log(files)
         if(files.length){
-            console.log("strat")
+            console.log("start")
             console.log(files[0].id)
             console.log(files[0].origin)
             console.log(files[0].relativePath)
@@ -76,11 +78,11 @@ export default function Test(props){
     const handleMultipleCorrect = (answer) => {
         let newAnswers = answers
         if(newAnswers[currentQuestion].answer.includes(answer)){
-            newAnswers[currentQuestion].answer = newAnswers[currentQuestion].answer.replace(answer, "")
+            newAnswers[currentQuestion].answer = arrayRemove(newAnswers[currentQuestion].answer, answer)
         }else{
-            newAnswers[currentQuestion].answer += answer
+            newAnswers[currentQuestion].answer.push(answer)
         }
-        newAnswers[currentQuestion].answer = newAnswers[currentQuestion].answer.split("").sort().join("")
+        newAnswers[currentQuestion].answer = newAnswers[currentQuestion].answer.sort()
         newAnswers[currentQuestion].answered = true
         setAnswers(newAnswers)
         setRender((render + 1) % 100) // a pseudo update
@@ -102,7 +104,7 @@ export default function Test(props){
     const handleClear = () => {
         let newAnswers = answers
         if(newAnswers[currentQuestion]){
-            newAnswers[currentQuestion].answer = ""
+            newAnswers[currentQuestion].answer = []
         }
         setAnswers(newAnswers)
         setRender((render + 1) % 100) // a pseudo update
@@ -119,7 +121,7 @@ export default function Test(props){
 
     const handleNewQuestion = () => {
         setAnswers([...answers, {
-            answer: "",
+            answer: [],
             topic: "",
             solution: ""
         }])
@@ -152,7 +154,7 @@ export default function Test(props){
         let newQuestions = questions
         let newAnswers = answers
         newQuestions[currentQuestion].type = value
-        newAnswers[currentQuestion].answer = ""
+        newAnswers[currentQuestion].answer = []
         newAnswers[currentQuestion].answered = false
         setQuestions(newQuestions)
         setAnswers(answers)
@@ -160,6 +162,7 @@ export default function Test(props){
     }
 
     const handleTestSave = () => {
+        console.log(aits, free)
         axiosInstance.post("/tests/", {
             name: testName,
             questions: questions,
@@ -167,12 +170,16 @@ export default function Test(props){
             sections: [{
                 start: 0,
                 end: questions.length
-            }]
+            }],
+            aits: aits,
+            free: free
         })
         .then((response) => {
             console.log("test save response: ", response.data)
+            //Router.push("/tests")
         }).catch((error) => {
             console.log(error)
+            setError(error && error.response && error.response.data || "Unexpected error, please try again")
         })
     }
 
@@ -187,33 +194,18 @@ export default function Test(props){
                     <div>
                         <TestHeader testName={testName} />
                         <div className="d-flex flex-wrap align-items-center p-2 border-bottom">
-                            <div>
-                                Correct Marks: <input type="text" name="testname" value={questions[currentQuestion].correctMarks} onChange={handleCorrectMarks} />
+                            <div className="px-2">
+                                Test Name: 
+                                <input type="text" name="testname" className="form-control" placeholder="Test Name" value={testName} onChange={(event) => setTestName(event.target.value)} />
                             </div>
-                            <div>
-                                Incorrect Marks: <input type="text" name="testname" value={questions[currentQuestion].incorrectMarks} onChange={handleIncorrectMarks} />
-                            </div>
-                            <div className="circle border-green m-2">
-                                {questions[currentQuestion].correctMarks}
-                            </div>
-                            <div className="circle border-red m-2">
-                                {questions[currentQuestion].incorrectMarks}
-                            </div>
-                            <Select defaultValue={0} style={{ width: 220 }} onChange={handleQuestionTypeChange} value={questions[currentQuestion].type}>
-                                <Option value={0}>Single Correct</Option>
-                                <Option value={1}>Multiple Correct</Option>
-                                <Option value={2}>Integer Type</Option>
-                                <Option value={3}>Matrix</Option>
-                            </Select>
-                            <div>
-                                Test Name: <input type="text" name="testname" value={testName} onChange={(event) => setTestName(event.target.value)} />
-                            </div>
-                            <div>
-                                AITS: <input type="checkbox" value={aits} onChange={() => setAits(event.target.value)} />
-                            </div>
-                            <div>
-                                Free: <input type="checkbox" value={free} onChange={() => setFree(event.target.value)} />
-                            </div>
+                            <label className="p-2 m-1 cursor-pointer">
+                                <input type="checkbox" className="font-3 cursor-pointer" value={aits} onChange={(event) => {console.log(event.target.value); return setAits(event.target.value)}} />
+                                <span className="px-2">AITS</span>
+                            </label>
+                            <label className="p-2 m-1 cursor-pointer">
+                                <input type="checkbox" className="font-3 cursor-pointer" value={free} onChange={(event) => setFree(event.target.value)} />
+                                <span className="px-2">Free</span>
+                            </label>
                         </div>
                     </div>
                     <div className="row no-gutters">
@@ -318,10 +310,25 @@ export default function Test(props){
                                         />
                                     </div>
                                     <div>
-                                        <div>
-                                            <div dangerouslySetInnerHTML={createMarkup(questions[currentQuestion].text)}></div>
+                                        <div className="w-75 mx-auto p-1 row no-gutters">
+                                            <div className="col-12 p-2">
+                                                <Select defaultValue={0} style={{ width: "100%" }} onChange={handleQuestionTypeChange} value={questions[currentQuestion].type}>
+                                                    <Option value={0}>Single Correct</Option>
+                                                    <Option value={1}>Multiple Correct</Option>
+                                                    <Option value={2}>Integer Type</Option>
+                                                    <Option value={3}>Matrix</Option>
+                                                </Select>
+                                            </div>
+                                            <div className="col-6 p-2">
+                                                Correct Marks: 
+                                                <input type="text" name="testname" className="form-control" value={questions[currentQuestion].correctMarks} onChange={handleCorrectMarks} />
+                                            </div>
+                                            <div className="col-6 p-2">
+                                                Incorrect Marks: 
+                                                <input type="text" name="testname" className="form-control" value={questions[currentQuestion].incorrectMarks} onChange={handleIncorrectMarks} />
+                                            </div>
                                         </div>
-                                        <div>
+                                        <div className="p-1">
                                             <Options 
                                                 currentQuestion={currentQuestion} 
                                                 question={questions[currentQuestion]} 
@@ -330,7 +337,7 @@ export default function Test(props){
                                                 handleMultipleCorrect={handleMultipleCorrect}
                                             />
                                         </div>
-                                        <div className="d-flex align-items-center">
+                                        <div className="d-flex align-items-center p-3">
                                             <div className="btn btn-secondary" onClick={handleClear}>
                                                 Clear response
                                             </div>
@@ -339,8 +346,18 @@ export default function Test(props){
                                 </>
                             }
                         </div>
-                        <div className="btn btn-info" onClick={handleTestSave}>
-                            Create Test
+                        <div className="p-2">
+                            <div className="btn btn-info" onClick={handleTestSave}>
+                                Create Test
+                            </div>
+                            <div>
+                                {error && typeof(error) === "string" && <span className="text-danger">{error}</span>}
+                                {error && typeof(error) === "object" && 
+                                    Object.keys(error).map((key, index) => 
+                                        <span key={index} className="text-danger">{key} : {error[key]}</span>
+                                    )
+                                }
+                            </div>
                         </div>
                     </div>
                     <style jsx>{`
