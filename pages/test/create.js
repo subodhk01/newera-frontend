@@ -74,7 +74,6 @@ export default function Test(props){
         setAnswers(newAnswers)
         setRender((render + 1) % 100) // a pseudo update
     }
-
     const handleMultipleCorrect = (answer) => {
         let newAnswers = answers
         if(newAnswers[currentQuestion].answer.includes(answer)){
@@ -83,6 +82,25 @@ export default function Test(props){
             newAnswers[currentQuestion].answer.push(answer)
         }
         newAnswers[currentQuestion].answer = newAnswers[currentQuestion].answer.sort()
+        newAnswers[currentQuestion].answered = true
+        setAnswers(newAnswers)
+        setRender((render + 1) % 100) // a pseudo update
+    }
+    const handleNumericalCorrect = (answer) => {
+        let newAnswers = answers
+        newAnswers[currentQuestion].answer = answer
+        newAnswers[currentQuestion].answered = true
+        setAnswers(newAnswers)
+        setRender((render + 1) % 100) // a pseudo update
+    }
+    const handleMatrixCorrect = (answer, index) => {
+        let newAnswers = answers
+        if(newAnswers[currentQuestion].answer[index].includes(answer)){
+            newAnswers[currentQuestion].answer[index] = arrayRemove(newAnswers[currentQuestion].answer[index], answer)
+        }else{
+            newAnswers[currentQuestion].answer[index].push(answer)
+        }
+        newAnswers[currentQuestion].answer[index] = newAnswers[currentQuestion].answer[index].sort()
         newAnswers[currentQuestion].answered = true
         setAnswers(newAnswers)
         setRender((render + 1) % 100) // a pseudo update
@@ -151,10 +169,17 @@ export default function Test(props){
 
 
     const handleQuestionTypeChange = (value) => {
+        console.log("question type value: ", value)
         let newQuestions = questions
         let newAnswers = answers
         newQuestions[currentQuestion].type = value
-        newAnswers[currentQuestion].answer = []
+        if(value === 0 || value === 1){
+            newAnswers[currentQuestion].answer = []
+        }else if(value === 2){
+            newAnswers[currentQuestion].answer = ""
+        }else{
+            newAnswers[currentQuestion].answer = [[],[],[],[]]
+        }
         newAnswers[currentQuestion].answered = false
         setQuestions(newQuestions)
         setAnswers(answers)
@@ -176,6 +201,7 @@ export default function Test(props){
         })
         .then((response) => {
             console.log("test save response: ", response.data)
+            setError("Test successfully created!")
             //Router.push("/tests")
         }).catch((error) => {
             console.log(error)
@@ -335,6 +361,9 @@ export default function Test(props){
                                                 response={answers}
                                                 handleSingleCorrect={handleSingleCorrect}
                                                 handleMultipleCorrect={handleMultipleCorrect}
+                                                handleNumericalCorrect={handleNumericalCorrect}
+                                                handleMatrixCorrect={handleMatrixCorrect}
+                                                
                                             />
                                         </div>
                                         <div className="d-flex align-items-center p-3">

@@ -11,6 +11,14 @@ export default function Options(props) {
         props.handleMultipleCorrect(answer)
         setRender((render + 1) % 100)
     }
+    const middleNumericalCorrect = (answer) => {
+        props.handleNumericalCorrect(answer)
+        setRender((render + 1) % 100)
+    }
+    const middleMatrixCorrect = (answer, index) => {
+        props.handleMatrixCorrect(answer, index)
+        setRender((render + 1) % 100)
+    }
     return (
         <>
             <div>
@@ -45,6 +53,71 @@ export default function Options(props) {
                             D
                         </div>
                     </div>
+                }
+                {props.question && props.response && props.question.type === 2 && 
+                    <div className="form-group">
+                        <input onChange={(event) => middleNumericalCorrect(event.target.value)} value={props.response[props.currentQuestion].answer} className="form-control" placeholder="Answer" type={"number"} />
+                    </div>
+                }
+                {props.question && props.response && props.question.type === 3 && 
+                    <>
+                        <div className="d-flex flex-wrap align-items-center">
+                            <div onClick={() => middleMatrixCorrect(0, 0)} className={`single-correct ${props.response[props.currentQuestion].answer[0].includes(0) && `selected`}`}>
+                                A
+                            </div>
+                            <div onClick={() => middleMatrixCorrect(1, 0)} className={`single-correct ${props.response[props.currentQuestion].answer[0].includes(1)  && `selected`}`}>
+                                B
+                            </div>
+                            <div onClick={() => middleMatrixCorrect(2, 0)} className={`single-correct ${props.response[props.currentQuestion].answer[0].includes(2) && `selected`}`}>
+                                C
+                            </div>
+                            <div onClick={() => middleMatrixCorrect(3, 0)} className={`single-correct ${props.response[props.currentQuestion].answer[0].includes(3) && `selected`}`}>
+                                D
+                            </div>
+                        </div>
+                        <div className="d-flex flex-wrap align-items-center">
+                            <div onClick={() => middleMatrixCorrect(0, 1)} className={`single-correct ${props.response[props.currentQuestion].answer[1].includes(0) && `selected`}`}>
+                                A
+                            </div>
+                            <div onClick={() => middleMatrixCorrect(1, 1)} className={`single-correct ${props.response[props.currentQuestion].answer[1].includes(1)  && `selected`}`}>
+                                B
+                            </div>
+                            <div onClick={() => middleMatrixCorrect(2, 1)} className={`single-correct ${props.response[props.currentQuestion].answer[1].includes(2) && `selected`}`}>
+                                C
+                            </div>
+                            <div onClick={() => middleMatrixCorrect(3, 1)} className={`single-correct ${props.response[props.currentQuestion].answer[1].includes(3) && `selected`}`}>
+                                D
+                            </div>
+                        </div>
+                        <div className="d-flex flex-wrap align-items-center">
+                            <div onClick={() => middleMatrixCorrect(0, 2)} className={`single-correct ${props.response[props.currentQuestion].answer[2].includes(0) && `selected`}`}>
+                                A
+                            </div>
+                            <div onClick={() => middleMatrixCorrect(1, 2)} className={`single-correct ${props.response[props.currentQuestion].answer[2].includes(1)  && `selected`}`}>
+                                B
+                            </div>
+                            <div onClick={() => middleMatrixCorrect(2, 2)} className={`single-correct ${props.response[props.currentQuestion].answer[2].includes(2) && `selected`}`}>
+                                C
+                            </div>
+                            <div onClick={() => middleMatrixCorrect(3, 2)} className={`single-correct ${props.response[props.currentQuestion].answer[2].includes(3) && `selected`}`}>
+                                D
+                            </div>
+                        </div>
+                        <div className="d-flex flex-wrap align-items-center">
+                            <div onClick={() => middleMatrixCorrect(0, 3)} className={`single-correct ${props.response[props.currentQuestion].answer[3].includes(0) && `selected`}`}>
+                                A
+                            </div>
+                            <div onClick={() => middleMatrixCorrect(1, 3)} className={`single-correct ${props.response[props.currentQuestion].answer[3].includes(1)  && `selected`}`}>
+                                B
+                            </div>
+                            <div onClick={() => middleMatrixCorrect(2, 3)} className={`single-correct ${props.response[props.currentQuestion].answer[3].includes(2) && `selected`}`}>
+                                C
+                            </div>
+                            <div onClick={() => middleMatrixCorrect(3, 3)} className={`single-correct ${props.response[props.currentQuestion].answer[3].includes(3) && `selected`}`}>
+                                D
+                            </div>
+                        </div>
+                    </>
                 }
             </div>
             <style jsx>{`

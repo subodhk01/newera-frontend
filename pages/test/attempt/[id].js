@@ -6,7 +6,7 @@ import { BiTimeFive } from 'react-icons/bi'
 import Options from '../../../components/Test/Options'
 import { PRIMARY_DARK } from '../../../utils/Colors'
 import Modal from 'react-modal';
-import { fancyTimeFormat } from '../../../utils/functions'
+import { fancyTimeFormat, arrayRemove } from '../../../utils/functions'
 //Modal.setAppElement('#app');
 // import dynamic from 'next/dynamic'
 
@@ -48,6 +48,7 @@ const customStyles2 = {
         left: '50%',
         right: 'auto',
         bottom: 'auto',
+        position: 'absolute',
         marginRight: '-50%',
         transform: 'translate(-50%, -50%)',
         borderRadius: "10px",
@@ -92,16 +93,33 @@ export default function Test(props){
         setResponse(newResponse)
         setRender((render + 1) % 100) // a pseudo update
     }
-
     const handleMultipleCorrect = (answer) => {
         let newResponse = response
         if(newResponse[currentQuestion].answer.includes(answer)){
-            newResponse[currentQuestion].answer = newResponse[currentQuestion].answer.replace(answer, "")
+            newResponse[currentQuestion].answer = arrayRemove(newResponse[currentQuestion].answer, answer)
         }else{
-            newResponse[currentQuestion].answer += answer
+            newResponse[currentQuestion].answer.push(answer)
         }
-        newResponse[currentQuestion].answer = newResponse[currentQuestion].answer.split("").sort().join("")
-        console.log("new answer: ", typeof(newResponse[currentQuestion].answer), newResponse[currentQuestion].answer)
+        newResponse[currentQuestion].answer = newResponse[currentQuestion].answer.sort()
+        newResponse[currentQuestion].answered = true
+        setResponse(newResponse)
+        setRender((render + 1) % 100) // a pseudo update
+    }
+    const handleNumericalCorrect = (answer) => {
+        let newResponse = response
+        newResponse[currentQuestion].answer = answer
+        newResponse[currentQuestion].answered = true
+        setResponse(newResponse)
+        setRender((render + 1) % 100) // a pseudo update
+    }
+    const handleMatrixCorrect = (answer, index) => {
+        let newResponse = response
+        if(newResponse[currentQuestion].answer[index].includes(answer)){
+            newResponse[currentQuestion].answer[index] = arrayRemove(newResponse[currentQuestion].answer[index], answer)
+        }else{
+            newResponse[currentQuestion].answer[index].push(answer)
+        }
+        newResponse[currentQuestion].answer[index] = newResponse[currentQuestion].answer[index].sort()
         newResponse[currentQuestion].answered = true
         setResponse(newResponse)
         setRender((render + 1) % 100) // a pseudo update
@@ -139,8 +157,16 @@ export default function Test(props){
                 console.log("test: ", rawTest)
                 setTest(rawTest)
                 let newResponse = []
+                var count = 0
                 while(newResponse.length < rawTest.questions.length){
-                    newResponse.push({answer: "", marked: false, visited: false})
+                    if(rawTest.questions[count].type === 0 || rawTest.questions[count].type === 1){
+                        newResponse.push({answer: [], marked: false, visited: false})
+                    }else if(rawTest.questions[count].type === 2){
+                        newResponse.push({answer: "", marked: false, visited: false})
+                    }else{
+                        newResponse.push({answer: [[],[],[],[]], marked: false, visited: false})
+                    }
+                    count++
                 }
                 newResponse[currentQuestion].visited = true
                 setResponse(newResponse)
@@ -155,7 +181,6 @@ export default function Test(props){
         if(!loading){
             setInterval(() => {
                 setTimeRemaining(timeRemaining => {
-                    console.log(timeRemaining)
                     return timeRemaining - 1
                 })
             }, 1000)
@@ -182,6 +207,15 @@ export default function Test(props){
     }
     const endTest = () => {
         console.log("endTest")
+        axiosInstance.patch(`sessions/${session.id}/`, {
+            response: response,
+            completed: true
+        }).then((response) => {
+            console.log("session end response: ", response.data)
+            
+        }).catch((error) => {
+            console.log(error)
+        })
     }
 
     return(
@@ -191,6 +225,7 @@ export default function Test(props){
                 onRequestClose={() => setTestStartModal(false)}
                 style={customStyles}
                 contentLabel="Example Modal"
+                ariaHideApp={false}
                 //shouldCloseOnOverlayClick={false}
             >
                 <div className="text-center">
@@ -207,6 +242,7 @@ export default function Test(props){
                 onRequestClose={() => setTestEndModal(false)}
                 style={customStyles2}
                 contentLabel="Example Modal"
+                ariaHideApp={false}
                 //shouldCloseOnOverlayClick={false}
             >
                 <div className="text-center">
@@ -243,7 +279,7 @@ export default function Test(props){
                                 <BiTimeFive className="m-1" size="26" color="grey" />
                                 <span className="font-12">Time Remaining: {fancyTimeFormat(timeRemaining)}</span>
                             </div>
-                            <div className="btn btn-danger m-2">
+                            <div className="btn btn-danger m-2" onClick={() => setTestEndModal(true)}>
                                 End Test
                             </div>
                         </div>
@@ -294,6 +330,8 @@ export default function Test(props){
                                                 setResponse={setResponse}
                                                 handleSingleCorrect={handleSingleCorrect}
                                                 handleMultipleCorrect={handleMultipleCorrect}
+                                                handleNumericalCorrect={handleNumericalCorrect}
+                                                handleMatrixCorrect={handleMatrixCorrect}
                                             />
                                         </div>
                                         <div className="d-flex align-items-center">
