@@ -1,5 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'antd/dist/antd.css'
+import 'video.js/dist/video-js.min.css'
+import "video-react/dist/video-react.css";
 import '../styles/font.css'
 import '../styles/misc.css'
 import '../styles/globals.css'

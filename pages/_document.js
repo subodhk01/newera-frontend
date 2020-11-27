@@ -18,6 +18,8 @@ class MyDocument extends Document {
                 <body>
                     <Main />
                     <NextScript />
+                    <script src="/js/video.min.js"></script>
+                    <script src="/js/youtube.min.js"></script>
                 </body>
             </Html>
         )

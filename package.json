@@ -15,6 +15,7 @@
     "filepond-plugin-image-preview": "^4.6.4",
     "framer-motion": "^2.9.4",
     "next": "9.5.5",
+    "qier-player": "^1.2.10",
     "react": "17.0.1",
     "react-bootstrap": "^1.4.0",
     "react-cookies": "^0.1.1",
@@ -23,6 +24,13 @@
     "react-icons": "^3.11.0",
     "react-modal": "^3.11.2",
     "react-no-ssr": "^1.1.0",
-    "styled-components": "^5.2.0"
+    "react-player": "^2.7.0",
+    "styled-components": "^5.2.0",
+    "video-react": "^0.14.1",
+    "video.js": "^7.10.2",
+    "videojs-youtube": "^2.6.1"
+  },
+  "devDependencies": {
+    "react-video-thumbnail": "^0.1.3"
   }
 }
