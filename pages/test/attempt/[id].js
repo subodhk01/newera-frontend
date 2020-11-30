@@ -66,6 +66,7 @@ export default function Test(props){
     const [ testEndModal, setTestEndModal ] = React.useState(false)
     const [ session, setSession ] = React.useState()
     const [ loading, setLoading ] = React.useState(true)
+    const [ ending, setEnding ] = React.useState(false)
     const [ questionLoading, setQuestionLoading ] = React.useState(false)
     const [ test, setTest ] = React.useState()
     const [ timeRemaining, setTimeRemaining ] = React.useState()
@@ -187,6 +188,13 @@ export default function Test(props){
         }
     }, [loading])
 
+    React.useEffect(() => {
+        if(timeRemaining && timeRemaining <= 0){
+            setTestEndModal(true)
+            endTest()
+        }
+    })
+
     const startTest = () => {
         axiosInstance.post(`tests/${id}/sessions/`)
             .then((response) => {
@@ -207,6 +215,7 @@ export default function Test(props){
     }
     const endTest = () => {
         console.log("endTest")
+        setEnding(true)
         axiosInstance.patch(`sessions/${session.id}/`, {
             response: response,
             completed: true
@@ -243,15 +252,26 @@ export default function Test(props){
                 style={customStyles2}
                 contentLabel="Example Modal"
                 ariaHideApp={false}
-                //shouldCloseOnOverlayClick={false}
+                shouldCloseOnOverlayClick={false}
             >
                 <div className="text-center">
-                    <div className="mb-3">
-                        Confirm End Test
-                    </div>
-                    <div className="btn btn-info" onClick={endTest}>
-                        End Test
-                    </div>
+                    {!ending ?
+                        <div>
+                            <div className="mb-3">
+                                Confirm End Test
+                            </div>
+                            <div className="btn btn-info" onClick={endTest}>
+                                End Test
+                            </div>
+                            <div className="btn btn-warning" onClick={() => setTestEndModal(false)}>
+                                Cancel
+                            </div>
+                        </div>
+                        :
+                        <div>
+                            Submitting Responses...
+                        </div> 
+                    }
                 </div>
             </Modal>
             { loading ?

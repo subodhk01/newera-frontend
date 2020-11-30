@@ -6,7 +6,6 @@ import '../styles/font.css'
 import '../styles/misc.css'
 import '../styles/globals.css'
 import 'filepond/dist/filepond.min.css'
-import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 
 import React from 'react'
 import cookie from 'react-cookies'

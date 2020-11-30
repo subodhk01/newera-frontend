@@ -3,16 +3,16 @@ import axios from 'axios'
 import { axiosInstance, baseURL } from '../../utils/axios'
 import Router, { useRouter } from 'next/router'
 import TestHeader from '../../components/UI/TestHeader'
-import { BiTimeFive } from 'react-icons/bi'
 import Options from '../../components/Test/Options'
-import { PRIMARY_DARK } from '../../utils/Colors'
-import { Select } from 'antd';
-const { Option } = Select;
-import { FilePond, File, registerPlugin } from 'react-filepond'
-import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
-import { arrayRemove } from '../../utils/functions'
 
-//registerPlugin(FilePondPluginImagePreview)
+import { Select, DatePicker, Space } from 'antd';
+import moment from 'moment';
+
+const { RangePicker } = DatePicker;
+const { Option } = Select;
+
+import { FilePond } from 'react-filepond'
+import { arrayRemove } from '../../utils/functions'
 
 
 function createMarkup(data) {
@@ -25,6 +25,8 @@ export default function Test(props){
     const [ testName, setTestName ] = React.useState("")
     const [ aits, setAits ] = React.useState(false)
     const [ free, setFree ] = React.useState(false)
+    const [ dateTime, setDateTime ] = React.useState()
+    const [ duration, setDuration ] = React.useState(180)
     const [ questions, setQuestions ] = React.useState([{
         image: "",
         type: 0,
@@ -187,7 +189,7 @@ export default function Test(props){
     }
 
     const handleTestSave = () => {
-        console.log(aits, free)
+        console.log("aits: ", aits, " - free: ", free)
         axiosInstance.post("/tests/", {
             name: testName,
             questions: questions,
@@ -197,7 +199,10 @@ export default function Test(props){
                 end: questions.length
             }],
             aits: aits,
-            free: free
+            free: free,
+            activation_time: dateTime[0].toDate(),
+            closing_time: dateTime[1].toDate(),
+            time_alotted: duration*60
         })
         .then((response) => {
             console.log("test save response: ", response.data)
@@ -221,15 +226,29 @@ export default function Test(props){
                         <TestHeader testName={testName} />
                         <div className="d-flex flex-wrap align-items-center p-2 border-bottom">
                             <div className="px-2">
-                                Test Name: 
                                 <input type="text" name="testname" className="form-control" placeholder="Test Name" value={testName} onChange={(event) => setTestName(event.target.value)} />
                             </div>
+                            <div className="p-2">
+                                <RangePicker
+                                    size={"large"}
+                                    value={dateTime}
+                                    onChange={(value) => {console.log(value); return setDateTime(value)}}
+                                    showTime={{
+                                        hideDisabledOptions: true,
+                                        defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('11:59:59', 'HH:mm:ss')],
+                                    }}
+                                    format="YYYY-MM-DD HH:mm:ss"
+                                />
+                            </div>
+                            <div className="p-2">
+                                <input type="number" name="duration" className="form-control" placeholder="Duration (in Minutes)" value={duration} onChange={(event) => setDuration(event.target.value)} />
+                            </div>
                             <label className="p-2 m-1 cursor-pointer">
-                                <input type="checkbox" className="font-3 cursor-pointer" value={aits} onChange={(event) => {console.log(event.target.value); return setAits(event.target.value)}} />
+                                <input type="checkbox" className="font-3 cursor-pointer" value={aits} onChange={(event) => setAits(!aits)} />
                                 <span className="px-2">AITS</span>
                             </label>
                             <label className="p-2 m-1 cursor-pointer">
-                                <input type="checkbox" className="font-3 cursor-pointer" value={free} onChange={(event) => setFree(event.target.value)} />
+                                <input type="checkbox" className="font-3 cursor-pointer" value={free} onChange={(event) => setFree(!free)} />
                                 <span className="px-2">Free</span>
                             </label>
                         </div>
