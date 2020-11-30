@@ -7,7 +7,6 @@ import { MdClose } from 'react-icons/md'
 import { Collapse } from 'react-bootstrap'
 import SingleArrowButton from '../Buttons/SingleArrowButton'
 
-import { motion } from 'framer-motion'
 import { useAuth } from '../../utils/auth'
 
 const logoWhite = '/static/logoWhite.png'
@@ -69,19 +68,6 @@ const HEADER_ITEMS = [
     }
 ]
 
-const variants = {
-    hidden: {
-        top: "-100%",
-        opacity: 0,
-        transition: {duration: 0.3}
-    },
-    visible: {
-        top: "0px",
-        opacity: 1,
-        transition: {duration: 0.3}
-    }
-}
-
 export default function Header(props){
     const [ mobileNav, setMobileNav ] = React.useState(false)
     const [ mobileDropdown, setMobileDropdown ] = React.useState("")
@@ -95,8 +81,7 @@ export default function Header(props){
     }
     return (
         <div className="outer-container item-shadow">
-            <>
-            <motion.div variants={variants} initial="visible" animate={"visible"} className={`position-relative d-flex align-items-center ${props.full ? "full" : "container justify-content-between"}`}>
+            <div className={`position-relative d-flex align-items-center ${props.full ? "full" : "container justify-content-between"}`}>
                 <div>
                     <Link href="/">
                         <a>
@@ -251,8 +236,7 @@ export default function Header(props){
 
                     </div>
                 </div>
-            </motion.div>
-            </>
+            </div>
             <style jsx>{`
                 .outer-container {
                     ${props.white ? `background: black;` : `background: white;` }
@@ -345,6 +329,7 @@ export default function Header(props){
                 }
                 .mobile-nav-container {
                     position: fixed;
+                    z-index: 1;
                     background: black;
                     left: 0;
                     height: 100vh;

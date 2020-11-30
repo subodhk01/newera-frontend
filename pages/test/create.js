@@ -13,6 +13,7 @@ const { Option } = Select;
 
 import { FilePond } from 'react-filepond'
 import { arrayRemove } from '../../utils/functions'
+import AuthHOC from '../../components/AuthHOC'
 
 
 function createMarkup(data) {
@@ -215,7 +216,7 @@ export default function Test(props){
     }
 
     return(
-        <>
+        <AuthHOC teacher>
             { loading ?
                 <div>
                     Loading...
@@ -457,6 +458,6 @@ export default function Test(props){
                     `}</style>
                 </>
             }
-        </>
+        </AuthHOC>
     )
 }

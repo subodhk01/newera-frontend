@@ -8,6 +8,7 @@ import { FaHockeyPuck } from 'react-icons/fa'
 
 export default function Tests(props){
     const { profile, accessToken } = useAuth()
+    const [ loading, setLoading ] = React.useState(true)
     const [ tests, setTests ] = React.useState()
     const [ sessions, setSessions ] = React.useState()
     React.useEffect(() => {
@@ -24,6 +25,7 @@ export default function Tests(props){
             .then((response) => {
                 console.log("sessions: ", response.data)
                 setSessions(response.data)
+                setLoading(false)
             }).catch((error) => {
                 console.log(error)
             })
@@ -36,20 +38,28 @@ export default function Tests(props){
                         <h1>Tests</h1>
                     </div>
                     <div>
-                        <div>
-                            {profile.is_student &&
-                                <>
-                                    <StudentTestTable tests={tests} sessions={sessions} />
-                                </>
-                            }
-                        </div>
-                        <div>
-                            {profile.is_teacher &&
-                                <>
-                                    Teacher Table
-                                </>
-                            }
-                        </div>
+                        {loading ?
+                            <>
+                                Loading...
+                            </>
+                            :
+                            <>
+                                <div>
+                                    {profile.is_student &&
+                                        <>
+                                            <StudentTestTable tests={tests} sessions={sessions} />
+                                        </>
+                                    }
+                                </div>
+                                <div>
+                                    {profile.is_teacher &&
+                                        <>
+                                            Teacher Table
+                                        </>
+                                    }
+                                </div>
+                            </>
+                        }
                     </div>
                 </div>
             </SideBarLayout>
