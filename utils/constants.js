@@ -5,6 +5,14 @@ export const QUESTION_TYPE = {
     3: "Matrix Match",
 }
 
+export const TEST_STATUS = {
+    0: "Not Started",
+    1: "LIVE",
+    2: "Ended",
+    3: "Ended",
+    4: "Ended"
+}
+
 export const SIDEBAR_ITEMS = [
     {
         image: "",

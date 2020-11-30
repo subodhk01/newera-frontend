@@ -99,6 +99,7 @@ body {
 .btn {
 	padding: 0.4rem 1.5rem;
 	border-radius: 50px;
+	margin: 0px 5px;
 }
 .hero-container {
 	min-height: 100vh;

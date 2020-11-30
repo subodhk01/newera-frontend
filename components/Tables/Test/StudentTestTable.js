@@ -1,8 +1,8 @@
 import React from 'react'
 import Link from 'next/link'
 import { Table, Badge, Menu, Dropdown, Space } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
-import { axiosInstance } from '../../../utils/axios';
+import { TEST_STATUS } from '../../../utils/constants';
+
 
 const menu = (
 	<Menu>
@@ -37,7 +37,7 @@ export default function StudentTestTable(props) {
 				},
 			},
 			{ 
-				title: 'Time', 
+				title: 'Start Time', 
 				dataIndex: 'time', 
 				key: 'time',
 				render: (time) => (
@@ -67,14 +67,31 @@ export default function StudentTestTable(props) {
 		})
 		return(
 			<>
-				{/* <div className="text-right">
-					<div className="btn btn-primary">
-						Start Test
+				{data.length ? 
+					<div className="w-75 mx-auto">
+						<Table columns={columns} dataSource={data} pagination={false} />
 					</div>
-				</div> */}
-				<div className="w-75 mx-auto">
-					<Table columns={columns} dataSource={data} pagination={false} />
-				</div>
+					:
+					<div className="text-center">
+						<p>No Attempts yet</p>
+						<div>
+							<Link href={`/test/attempt/${row.id}`}>
+								<a>
+									<div className="btn btn-primary">
+										Attempt Test
+									</div>
+								</a>
+							</Link>
+							<Link href={`/test/attempt/${row.id}`}>
+								<a>
+									<div className="btn btn-warning">
+										Practise Attempt
+									</div>
+								</a>
+							</Link>
+						</div>
+					</div>
+				}
 			</>	
 		)
 	};
@@ -86,7 +103,7 @@ export default function StudentTestTable(props) {
 		{ title: 'Action', key: 'operation', render: (test) => 
 			<Link href={`/test/attempt/${test.id}`}>
 				<a>
-					<div className="btn btn-primary">
+					<div className="btn btn-info">
 						Start Test
 					</div>
 				</a>
@@ -99,9 +116,12 @@ export default function StudentTestTable(props) {
 		data.push({
 			key: item.id,
 			id: item.id,
-			name: item.name
+			name: item.name,
+			status: TEST_STATUS[item.status]
 		})
 	})
+
+	data.sort((x,y) =>  y.id - x.id)
 
 	return (
 		<>

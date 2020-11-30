@@ -72,8 +72,10 @@ export default function Test(props){
                                             <Player
                                                 playsInline
                                                 poster=""
-                                                src={video.url}
+                                                //src={video.url}
+                                                
                                             />
+                                                <source src={video.url} />
                                                 <h6 className="m-0">{video.title}</h6>
                                                 <hr />
                                                 {video.description}
