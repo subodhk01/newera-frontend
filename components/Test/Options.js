@@ -60,10 +60,14 @@ export default function Options(props) {
                     </div>
                 }
                 {props.question && props.response && props.question.type === 2 && 
-                    <div className="form-group">
+                    <div className="form-group mx-auto w-75">
+                        {props.readOnly && <label className="mt-3">Your Answer</label>}
                         <input onChange={(event) => middleNumericalCorrect(event.target.value)} value={props.response[props.currentQuestion].answer} className="form-control" placeholder="Answer" type={"number"} disabled={props.readOnly} />
                         {props.readOnly &&
-                            <input value={props.answers && props.answers[props.currentQuestion].answer} className="form-control" placeholder="Answer" type={"number"} disabled={props.readOnly} />
+                            <>
+                                <label className="mt-3">Correct Answer</label>
+                                <input value={props.answers && props.answers[props.currentQuestion].answer} className="form-control" placeholder="Answer" type={"number"} disabled={props.readOnly} />
+                            </>
                         }
                     </div>
                 }

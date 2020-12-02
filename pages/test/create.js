@@ -216,7 +216,7 @@ export default function Test(props){
     }
 
     return(
-        <AuthHOC teacher>
+        <AuthHOC >
             { loading ?
                 <div>
                     Loading...

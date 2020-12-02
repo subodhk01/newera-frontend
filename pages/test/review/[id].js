@@ -2,7 +2,8 @@ import React from 'react'
 import { axiosInstance } from '../../../utils/axios'
 import { useRouter } from 'next/router'
 import TestHeader from '../../../components/UI/TestHeader'
-import { BiTimeFive } from 'react-icons/bi'
+import { RiTimerFill } from 'react-icons/ri'
+import { BsArrowLeft, BsArrowRight } from 'react-icons/bs'
 import Options from '../../../components/Test/Options'
 import { PRIMARY_DARK } from '../../../utils/Colors'
 import Modal from 'react-modal';
@@ -118,10 +119,10 @@ export default function Test(props){
                                 {test.questions[currentQuestion].type == 2 && "Integer Type"}
                                 {test.questions[currentQuestion].type == 3 && "Matrix"}
                             </div>
-                            <div className="m-2 d-flex align-items-center">
-                                <BiTimeFive className="m-1" size="26" color="grey" />
-                                <span className="font-12">Time spent on this question: </span>
-                            </div>
+                            <button className="btn btn-hollow d-flex align-items-center justify-content-center" style={{minWidth: "300px"}} disabled>
+                                <RiTimerFill className="m-1" size="17" color="grey" />
+                                <span className="font-1">Time spent on this question: </span>
+                            </button>
                             <Link href={'/tests'}>
                                 <a>
                                     <div className="btn btn-danger m-2">
@@ -132,25 +133,7 @@ export default function Test(props){
                         </div>
                     </div>
                     <div className="row no-gutters">
-                        <div className="col-12 col-lg-3 border-right px-2 py-4">
-                            <div className="d-flex flex-wrap justify-content-center">
-                                {response.map((question, index) =>
-                                    <div 
-                                        key={index} 
-                                        className={`m-2 item-shadow circle-big 
-                                            ${index === currentQuestion && "active"}
-                                            ${response[index].marked && response[index].answered && "answered-marked"} 
-                                            ${response[index].marked && !response[index].answered && "unanswered-marked"} 
-                                            ${!response[index].marked && response[index].answered && "answered"} 
-                                            ${!response[index].marked && !response[index].answered && response[index].visited && "unanswered"} 
-                                        `} 
-                                        onClick={() => handleCurrentQuestion(index)}>
-                                        {index + 1}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                        <div className="col-12 col-lg-9">
+                        <div className="col-12 col-lg-9 p-3">
                             {questionLoading ?
                                 <div>
                                     Loading
@@ -200,6 +183,38 @@ export default function Test(props){
                                 </div> */}
                             </div>
                         </div>
+                        <div className="col-12 col-lg-3 position-relative border-left py-4">
+                            <div className="d-flex flex-wrap justify-content-center">
+                                {response.map((question, index) =>
+                                    <div 
+                                        key={index} 
+                                        className={`m-2 item-shadow circle-big 
+                                            ${index === currentQuestion && "active"}
+                                            ${response[index].marked && response[index].answered && "answered-marked"} 
+                                            ${response[index].marked && !response[index].answered && "unanswered-marked"} 
+                                            ${!response[index].marked && response[index].answered && "answered"} 
+                                            ${!response[index].marked && !response[index].answered && response[index].visited && "unanswered"} 
+                                        `} 
+                                        onClick={() => handleCurrentQuestion(index)}>
+                                        {index + 1}
+                                    </div>
+                                )}
+                            </div>
+                            <div className="np-container position-absolute w-100 p-3">
+                                <div className="row no-gutters text-center">
+                                    <div className="col-6 p-2">
+                                        <button className="btn btn-warning w-75" onClick={() => handleCurrentQuestion(currentQuestion - 1)} disabled={currentQuestion === 0}>
+                                            <BsArrowLeft color="white" size="30" />
+                                        </button>
+                                    </div>
+                                    <div className="col-6 p-2">
+                                        <button className="btn btn-warning w-75" onClick={() => handleCurrentQuestion(currentQuestion + 1)} disabled={currentQuestion === response.length - 1}>
+                                            <BsArrowRight color="white" size="30" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <style jsx>{`
                         .circle {
@@ -239,14 +254,7 @@ export default function Test(props){
                             background-color: green;
                             color: white;
                         }
-                        .unanswered-marked {
-                            background-color: blue;
-                            color: white;
-                        }
-                        .answered-marked {
-                            background-color: purple;
-                            color: white;
-                        }
+                        
                     `}</style>
                 </>
             }
