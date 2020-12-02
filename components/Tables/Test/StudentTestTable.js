@@ -46,20 +46,28 @@ export default function StudentTestTable(props) {
 			},
 			{
 				title: 'Action',
-				dataIndex: 'operation',
+				//dataIndex: 'operation',
 				key: 'operation',
-				render: () => (
-					<Space size="middle">
-						<a>Pause</a>
-						<a>Stop</a>
+				render: (attempt) => (
+					<Space>
+						<div className="btn btn-warning font-08">
+							Review Test
+						</div>
+						<Link href={`/result/${attempt.key}`}>
+							<a>
+								<div className="btn btn-warning font-08">
+									View Result
+								</div>
+							</a>
+						</Link>
 					</Space>
 				),
 			},
 		];
 		props.sessions.map((session, index) => {
-			if(session.test === row.id){
+			if(session.test === row.id || (session.test && session.test.id) === row.id){
 				data.push({
-					key: index,
+					key: session.id,
 					practice: session.practice,
 					time: session.checkin_time,
 				})
