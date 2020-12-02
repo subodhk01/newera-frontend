@@ -1,12 +1,13 @@
 import React from 'react'
 import { axiosInstance } from '../../../utils/axios'
-import Router, { useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 import TestHeader from '../../../components/UI/TestHeader'
 import { BiTimeFive } from 'react-icons/bi'
 import Options from '../../../components/Test/Options'
 import { PRIMARY_DARK } from '../../../utils/Colors'
 import Modal from 'react-modal';
 import { fancyTimeFormat, arrayRemove } from '../../../utils/functions'
+import Link from 'next/link'
 //Modal.setAppElement('#app');
 // import dynamic from 'next/dynamic'
 
@@ -62,21 +63,15 @@ export default function Test(props){
     const router = useRouter()
     const { id } = router.query
 
-    const [ testStartModal,setTestStartModal ] = React.useState(false)
-    const [ testEndModal, setTestEndModal ] = React.useState(false)
     const [ session, setSession ] = React.useState()
     const [ loading, setLoading ] = React.useState(true)
     const [ ending, setEnding ] = React.useState(false)
     const [ questionLoading, setQuestionLoading ] = React.useState(false)
+    const [ result, setResult ] = React.useState()
     const [ test, setTest ] = React.useState()
-    const [ timeRemaining, setTimeRemaining ] = React.useState()
     const [ currentQuestion, setCurrentQuestion ] = React.useState(0)
-    const [ response, setResponse ] = React.useState([{answer: "", marked: false},])
+    const [ response, setResponse ] = React.useState()
     const [ render, setRender ] = React.useState(0)
-
-    React.useEffect(() => {
-        console.log("response change: ", response)
-    }, [response])
 
     const handleCurrentQuestion = (index) => {
         let newResponse = response
@@ -85,195 +80,23 @@ export default function Test(props){
         setCurrentQuestion(index)
     }
 
-    const handleSingleCorrect = (answer) => {
-        let newResponse = response
-        if(newResponse[currentQuestion]){
-            newResponse[currentQuestion].answer = answer 
-            newResponse[currentQuestion].answered = true
-        }
-        setResponse(newResponse)
-        setRender((render + 1) % 100) // a pseudo update
-    }
-    const handleMultipleCorrect = (answer) => {
-        let newResponse = response
-        if(newResponse[currentQuestion].answer.includes(answer)){
-            newResponse[currentQuestion].answer = arrayRemove(newResponse[currentQuestion].answer, answer)
-        }else{
-            newResponse[currentQuestion].answer.push(answer)
-        }
-        newResponse[currentQuestion].answer = newResponse[currentQuestion].answer.sort()
-        newResponse[currentQuestion].answered = true
-        setResponse(newResponse)
-        setRender((render + 1) % 100) // a pseudo update
-    }
-    const handleNumericalCorrect = (answer) => {
-        let newResponse = response
-        newResponse[currentQuestion].answer = answer
-        newResponse[currentQuestion].answered = true
-        setResponse(newResponse)
-        setRender((render + 1) % 100) // a pseudo update
-    }
-    const handleMatrixCorrect = (answer, index) => {
-        let newResponse = response
-        if(newResponse[currentQuestion].answer[index].includes(answer)){
-            newResponse[currentQuestion].answer[index] = arrayRemove(newResponse[currentQuestion].answer[index], answer)
-        }else{
-            newResponse[currentQuestion].answer[index].push(answer)
-        }
-        newResponse[currentQuestion].answer[index] = newResponse[currentQuestion].answer[index].sort()
-        newResponse[currentQuestion].answered = true
-        setResponse(newResponse)
-        setRender((render + 1) % 100) // a pseudo update
-    }
-    
-    const handleClear = () => {
-        let newResponse = response
-        if(newResponse[currentQuestion]){
-            newResponse[currentQuestion].answer = ""
-            newResponse[currentQuestion].answered = false
-        }
-        setResponse(newResponse)
-        setRender((render + 1) % 100) // a pseudo update
-    }
-
-    const handleMark = () => {
-        let newResponse = response
-        if(newResponse[currentQuestion]){
-            newResponse[currentQuestion].marked = true
-        }
-        setResponse(newResponse)
-        setRender((render + 1) % 100) // a pseudo update
-    }
-
     React.useEffect(() => {
-        console.log(id)
         if(id){
             console.log(id)
-            axiosInstance.get(`tests/${id}/`).then((response) => {
-                console.log("response test: ", response.data)
-                let rawTest = response.data
-                // rawTest.questions = JSON.parse(rawTest.questions)
-                // rawTest.sections = JSON.parse(rawTest.sections)
-                // rawTest.answers = JSON.parse(rawTest.answers)
-                console.log("test: ", rawTest)
-                setTest(rawTest)
-                let newResponse = []
-                var count = 0
-                while(newResponse.length < rawTest.questions.length){
-                    if(rawTest.questions[count].type === 0 || rawTest.questions[count].type === 1){
-                        newResponse.push({answer: [], marked: false, visited: false})
-                    }else if(rawTest.questions[count].type === 2){
-                        newResponse.push({answer: "", marked: false, visited: false})
-                    }else{
-                        newResponse.push({answer: [[],[],[],[]], marked: false, visited: false})
-                    }
-                    count++
-                }
-                newResponse[currentQuestion].visited = true
-                setResponse(newResponse)
-                setTestStartModal(true)
+            axiosInstance.get(`results/${id}/`).then((response) => {
+                console.log("result response: ", response.data)
+                setResult(response.data)
+                setTest(response.data && response.data.test)
+                setResponse(response.data && response.data.response)
+                setLoading(false)
             }).catch((error) => {
                 console.log(error)
             })
         }
     }, [id])
 
-    React.useEffect(() => {
-        if(!loading){
-            setInterval(() => {
-                setTimeRemaining(timeRemaining => {
-                    return timeRemaining - 1
-                })
-            }, 1000)
-        }
-    }, [loading])
-
-    React.useEffect(() => {
-        if(timeRemaining && timeRemaining <= 0){
-            setTestEndModal(true)
-            endTest()
-        }
-    })
-
-    const startTest = () => {
-        axiosInstance.post(`tests/${id}/sessions/`)
-            .then((response) => {
-                console.log("session create response: ", response.data)
-                setSession(response.data)
-                let session = response.data
-                var seconds = session.duration.split(":")[0]*3600 + session.duration.split(":")[1]*60 + session.duration.split(":")[2]*1
-                var session_start = new Date(session.checkin_time)
-                var time_remaining = Math.floor(((new Date()).getTime() - session_start.getTime())/1000)
-                console.log("session start time: ", session_start)
-                console.log("time remaining: ", seconds - time_remaining)
-                setTimeRemaining(seconds - time_remaining)
-                setTestStartModal(false)
-                setLoading(false)
-            }).catch((error) => {
-                console.log(error)
-            })
-    }
-    const endTest = () => {
-        console.log("endTest")
-        setEnding(true)
-        axiosInstance.patch(`sessions/${session.id}/`, {
-            response: response,
-            completed: true
-        }).then((response) => {
-            console.log("session end response: ", response.data)
-            Router.push(`/result/${session.id}`)
-        }).catch((error) => {
-            console.log(error)
-        })
-    }
-
     return(
         <>
-            <Modal
-                isOpen={testStartModal}
-                onRequestClose={() => setTestStartModal(false)}
-                style={customStyles}
-                contentLabel="Example Modal"
-                ariaHideApp={false}
-                //shouldCloseOnOverlayClick={false}
-            >
-                <div className="text-center">
-                    <div className="mb-3">
-                        Instructions of testName
-                    </div>
-                    <div className="btn btn-info" onClick={startTest}>
-                        Start Test
-                    </div>
-                </div>
-            </Modal>
-            <Modal
-                isOpen={testEndModal}
-                onRequestClose={() => setTestEndModal(false)}
-                style={customStyles2}
-                contentLabel="Example Modal"
-                ariaHideApp={false}
-                shouldCloseOnOverlayClick={false}
-            >
-                <div className="text-center">
-                    {!ending ?
-                        <div>
-                            <div className="mb-3">
-                                Confirm End Test
-                            </div>
-                            <div className="btn btn-info" onClick={endTest}>
-                                End Test
-                            </div>
-                            <div className="btn btn-warning" onClick={() => setTestEndModal(false)}>
-                                Cancel
-                            </div>
-                        </div>
-                        :
-                        <div>
-                            Submitting Responses...
-                        </div> 
-                    }
-                </div>
-            </Modal>
             { loading ?
                 <div>
                     Loading...
@@ -297,11 +120,15 @@ export default function Test(props){
                             </div>
                             <div className="m-2 d-flex align-items-center">
                                 <BiTimeFive className="m-1" size="26" color="grey" />
-                                <span className="font-12">Time Remaining: {fancyTimeFormat(timeRemaining)}</span>
+                                <span className="font-12">Time spent on this question: </span>
                             </div>
-                            <div className="btn btn-danger m-2" onClick={() => setTestEndModal(true)}>
-                                End Test
-                            </div>
+                            <Link href={'/tests'}>
+                                <a>
+                                    <div className="btn btn-danger m-2">
+                                        End Review
+                                    </div>
+                                </a>
+                            </Link>
                         </div>
                     </div>
                     <div className="row no-gutters">
@@ -344,31 +171,33 @@ export default function Test(props){
                                         </div>
                                         <div>
                                             <Options 
+                                                readOnly
                                                 currentQuestion={currentQuestion} 
                                                 question={test.questions[currentQuestion]} 
                                                 response={response}
+                                                answers={test.answers}
                                                 setResponse={setResponse}
-                                                handleSingleCorrect={handleSingleCorrect}
-                                                handleMultipleCorrect={handleMultipleCorrect}
-                                                handleNumericalCorrect={handleNumericalCorrect}
-                                                handleMatrixCorrect={handleMatrixCorrect}
+                                                // handleSingleCorrect={handleSingleCorrect}
+                                                // handleMultipleCorrect={handleMultipleCorrect}
+                                                // handleNumericalCorrect={handleNumericalCorrect}
+                                                // handleMatrixCorrect={handleMatrixCorrect}
                                             />
                                         </div>
-                                        <div className="d-flex align-items-center">
+                                        {/* <div className="d-flex align-items-center">
                                             <div className="btn btn-secondary" onClick={handleClear}>
                                                 Clear response
                                             </div>
                                             <div className="btn btn-info" onClick={handleMark}>
                                                 Review Later
                                             </div>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </>
                             }
                             <div>
-                                <div className="btn btn-danger" onClick={() => setTestEndModal(true)}>
+                                {/* <div className="btn btn-danger" onClick={() => setTestEndModal(true)}>
                                     Submit Test
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     </div>

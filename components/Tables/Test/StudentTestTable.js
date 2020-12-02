@@ -50,9 +50,13 @@ export default function StudentTestTable(props) {
 				key: 'operation',
 				render: (attempt) => (
 					<Space>
-						<div className="btn btn-warning font-08">
-							Review Test
-						</div>
+						<Link href={`/test/review/${attempt.key}`}>
+							<a>
+								<div className="btn btn-warning font-08">
+								Review Test
+								</div>
+							</a>
+						</Link>
 						<Link href={`/result/${attempt.key}`}>
 							<a>
 								<div className="btn btn-warning font-08">
