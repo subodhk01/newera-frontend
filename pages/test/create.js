@@ -5,7 +5,7 @@ import Router, { useRouter } from 'next/router'
 import TestHeader from '../../components/UI/TestHeader'
 import Options from '../../components/Test/Options'
 
-import { Select, DatePicker, Space } from 'antd';
+import { Select, DatePicker, Space, Checkbox } from 'antd';
 import moment from 'moment';
 
 const { RangePicker } = DatePicker;
@@ -245,12 +245,10 @@ export default function Test(props){
                                 <input type="number" name="duration" className="form-control" placeholder="Duration (in Minutes)" value={duration} onChange={(event) => setDuration(event.target.value)} />
                             </div>
                             <label className="p-2 m-1 cursor-pointer">
-                                <input type="checkbox" className="font-3 cursor-pointer" value={aits} onChange={(event) => setAits(!aits)} />
-                                <span className="px-2">AITS</span>
+                                <Checkbox checked={aits} onChange={(event) => setAits(event.target.checked)}>AITS</Checkbox>
                             </label>
                             <label className="p-2 m-1 cursor-pointer">
-                                <input type="checkbox" className="font-3 cursor-pointer" value={free} onChange={(event) => setFree(!free)} />
-                                <span className="px-2">Free</span>
+                                <Checkbox checked={free} onChange={(event) => setFree(event.target.checked)}>Free</Checkbox>
                             </label>
                         </div>
                     </div>

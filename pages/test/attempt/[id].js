@@ -283,7 +283,7 @@ export default function Test(props){
                 <>
                     <div>
                         <TestHeader testName="Custom Test 1" />
-                        <div className="d-flex align-items-center p-2 border-bottom">
+                        <div className="d-flex flex-wrap align-items-center p-2 border-bottom">
                             <div className="circle border-green m-2">
                                 {test.questions[currentQuestion].correctMarks}
                             </div>
@@ -354,7 +354,7 @@ export default function Test(props){
                                 </div>
                             </div>
                         </div>
-                        <div className="col-12 col-lg-3 position-relative border-left py-4">
+                        <div className="col-12 col-lg-3 position-relative border-left pt-4 pb-10">
                             <div className="d-flex flex-wrap justify-content-center">
                                 {response.map((question, index) =>
                                     <div 

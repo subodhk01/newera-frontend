@@ -1,6 +1,7 @@
 import React from 'react'
 import SideBarLayout from '../components/UI/WithSideBar'
 import StudentTestTable from '../components/Tables/Test/StudentTestTable'
+import TeacherTestTable from '../components/Tables/Test/TeacherTestTable'
 import { useAuth } from '../utils/auth'
 import { axiosInstance } from '../utils/axios'
 import AuthHOC from '../components/AuthHOC'
@@ -54,7 +55,7 @@ export default function Tests(props){
                                 <div>
                                     {profile.is_teacher &&
                                         <>
-                                            Teacher Table
+                                            <TeacherTestTable tests={tests} />
                                         </>
                                     }
                                 </div>
