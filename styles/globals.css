@@ -101,6 +101,10 @@ body {
 	border-radius: 50px;
 	margin: 0px 5px;
 }
+.btn-success {
+	background-color: #25ba99;
+	border-color: #25ba99;
+}
 .btn-hollow {
 	border: 1px solid grey;
 }

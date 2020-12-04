@@ -4,6 +4,7 @@ import { axiosInstance, baseURL } from '../../../utils/axios'
 import Router, { useRouter } from 'next/router'
 import TestHeader from '../../../components/UI/TestHeader'
 import Options from '../../../components/Test/Options'
+import { BsArrowLeft, BsArrowRight } from 'react-icons/bs'
 
 import { Select, DatePicker, Space, Checkbox } from 'antd';
 import moment from 'moment';
@@ -144,16 +145,13 @@ export default function Test(props){
     const handleClear = () => {
         let newAnswers = answers
         if(newAnswers[currentQuestion]){
-            newAnswers[currentQuestion].answer = []
-        }
-        setAnswers(newAnswers)
-        setRender((render + 1) % 100) // a pseudo update
-    }
-
-    const handleMark = () => {
-        let newAnswers = answers
-        if(newAnswers[currentQuestion]){
-            newAnswers[currentQuestion].marked = true
+            if(questions[currentQuestion].type === 0 || questions[currentQuestion].type === 1){
+                newAnswers[currentQuestion].answer = []
+            }else if(questions[currentQuestion].type === 2){
+                newAnswers[currentQuestion].answer = ""
+            }else{
+                newAnswers[currentQuestion].answer = [[],[],[],[]]
+            }
         }
         setAnswers(newAnswers)
         setRender((render + 1) % 100) // a pseudo update
@@ -274,27 +272,6 @@ export default function Test(props){
                         </div>
                     </div>
                     <div className="row no-gutters">
-                        <div className="col-12 col-lg-3 border-right px-2 py-4">
-                            <div className="d-flex flex-wrap justify-content-center">
-                                {answers.map((question, index) =>
-                                    <div 
-                                        key={index} 
-                                        className={`m-2 item-shadow circle-big 
-                                            ${index === currentQuestion && "active"}
-                                            ${answers[index].marked && answers[index].answered && "answered-marked"} 
-                                            ${answers[index].marked && !answers[index].answered && "unanswered-marked"} 
-                                            ${!answers[index].marked && answers[index].answered && "answered"} 
-                                            ${!answers[index].marked && !answers[index].answered && answers[index].visited && "unanswered"} 
-                                        `} 
-                                        onClick={() => handleCurrentQuestion(index)}>
-                                        {index + 1}
-                                    </div>
-                                )}
-                                <div className={`m-2 item-shadow circle-big`} style={{fontSize: "3rem"}} onClick={() => handleNewQuestion()}>
-                                    +
-                                </div>
-                            </div>
-                        </div>
                         <div className="col-12 col-lg-9">
                             {questionLoading ?
                                 <div>
@@ -307,7 +284,7 @@ export default function Test(props){
                                         </div>
                                     </div>
                                     <div className="p-3">
-                                        {questions[currentQuestion].image && <img src={questions[currentQuestion].image} style={{maxWidth: "80%"}} />}
+                                        {questions[currentQuestion] && questions[currentQuestion].image && <img src={questions[currentQuestion].image} style={{maxWidth: "80%"}} />}
                                     </div>
                                     <div className="p-3">
                                         <FilePond
@@ -393,7 +370,7 @@ export default function Test(props){
                                                 <input type="text" name="testname" className="form-control" value={questions[currentQuestion].incorrectMarks} onChange={handleIncorrectMarks} />
                                             </div>
                                         </div>
-                                        <div className="p-1">
+                                        <div className="p-3">
                                             <Options 
                                                 currentQuestion={currentQuestion} 
                                                 question={questions[currentQuestion]} 
@@ -411,25 +388,60 @@ export default function Test(props){
                                             </div>
                                         </div>
                                     </div>
+                                    <div className="p-2">
+                                        <div className="btn btn-info" onClick={handleTestSave}>
+                                            Update Test
+                                        </div>
+                                        {success &&
+                                            <div className="text-success">
+                                                Test Updated successfully
+                                            </div>
+                                        }
+                                        <div>
+                                            {error && typeof (error) === "string" && <span className="text-danger">{error}</span>}
+                                            {error && typeof (error) === "object" &&
+                                                Object.keys(error).map((key, index) =>
+                                                    <span key={index} className="text-danger">{key} : {error[key]}</span>
+                                                )
+                                            }
+                                        </div>
+                                    </div>
                                 </>
                             }
                         </div>
-                        <div className="p-2">
-                            <div className="btn btn-info" onClick={handleTestSave}>
-                                Update Test
-                            </div>
-                            {success && 
-                                <div className="text-success">
-                                    Test Updated successfully
+                        <div className="col-12 col-lg-3 position-relative border-left px-2 py-4 questions-container">
+                            <div className="d-flex flex-wrap justify-content-center">
+                                {answers.map((question, index) =>
+                                    <div 
+                                        key={index} 
+                                        className={`m-2 item-shadow circle-big 
+                                            ${index === currentQuestion && "active"}
+                                            ${answers[index].marked && answers[index].answered && "answered-marked"} 
+                                            ${answers[index].marked && !answers[index].answered && "unanswered-marked"} 
+                                            ${!answers[index].marked && answers[index].answered && "answered"} 
+                                            ${!answers[index].marked && !answers[index].answered && answers[index].visited && "unanswered"} 
+                                        `} 
+                                        onClick={() => handleCurrentQuestion(index)}>
+                                        {index + 1}
+                                    </div>
+                                )}
+                                <div className={`m-2 item-shadow circle-big`} style={{fontSize: "3rem"}} onClick={() => handleNewQuestion()}>
+                                    +
                                 </div>
-                            }
-                            <div>
-                                {error && typeof(error) === "string" && <span className="text-danger">{error}</span>}
-                                {error && typeof(error) === "object" && 
-                                    Object.keys(error).map((key, index) => 
-                                        <span key={index} className="text-danger">{key} : {error[key]}</span>
-                                    )
-                                }
+                            </div>
+                            <div className="np-container position-absolute w-100 p-3">
+                                <div className="row no-gutters text-center">
+                                    <div className="col-6 p-2">
+                                        <button className="btn btn-warning w-75" onClick={() => handleCurrentQuestion(currentQuestion - 1)} disabled={currentQuestion === 0}>
+                                            <BsArrowLeft color="white" size="30" />
+                                        </button>
+                                    </div>
+                                    <div className="col-6 p-2">
+                                        <button className="btn btn-warning w-75" onClick={() => handleCurrentQuestion(currentQuestion + 1)} disabled={currentQuestion === questions.length - 1}>
+                                            <BsArrowRight color="white" size="30" />
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -478,6 +490,11 @@ export default function Test(props){
                         .answered-marked {
                             background-color: purple;
                             color: white;
+                        }
+                        @media(min-width: 768px){
+                            .questions-container {
+                                min-height: calc(100vh - 133px);
+                            }
                         }
                     `}</style>
                 </>

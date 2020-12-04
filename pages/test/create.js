@@ -125,16 +125,13 @@ export default function Test(props){
     const handleClear = () => {
         let newAnswers = answers
         if(newAnswers[currentQuestion]){
-            newAnswers[currentQuestion].answer = []
-        }
-        setAnswers(newAnswers)
-        setRender((render + 1) % 100) // a pseudo update
-    }
-
-    const handleMark = () => {
-        let newAnswers = answers
-        if(newAnswers[currentQuestion]){
-            newAnswers[currentQuestion].marked = true
+            if(questions[currentQuestion].type === 0 || questions[currentQuestion].type === 1){
+                newResponse[currentQuestion].answer = []
+            }else if(questions[currentQuestion].type === 2){
+                newResponse[currentQuestion].answer = ""
+            }else{
+                newResponse[currentQuestion].answer = [[],[],[],[]]
+            }
         }
         setAnswers(newAnswers)
         setRender((render + 1) % 100) // a pseudo update

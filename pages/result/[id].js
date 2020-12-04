@@ -39,6 +39,15 @@ export default function Test(props){
                 <div className="p-2 p-md-5">
                     {!loading &&
                         <>
+                            <div className="py-3 d-flex align-items-center justify-content-end">
+                                <Link href={`/test/review/${id}`}>
+                                    <a>
+                                        <div className="btn btn-info">
+                                            Question Wise Review
+                                        </div>
+                                    </a>
+                                </Link>
+                            </div>
                             <div className="row no-gutters">
                                 <div className="col-12 col-md-6">
                                     <div>

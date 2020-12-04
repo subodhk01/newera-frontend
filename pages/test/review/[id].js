@@ -76,7 +76,6 @@ export default function Test(props){
 
     const handleCurrentQuestion = (index) => {
         let newResponse = response
-        newResponse[index].visited = true
         setResponse(newResponse)
         setCurrentQuestion(index)
     }
@@ -105,7 +104,7 @@ export default function Test(props){
                 :
                 <>
                     <div>
-                        <TestHeader testName="Custom Test 1" />
+                        <TestHeader testName={test.name} />
                         <div className="d-flex align-items-center p-2 border-bottom">
                             <div className="circle border-green m-2">
                                 {test.questions[currentQuestion].correctMarks}
@@ -183,7 +182,7 @@ export default function Test(props){
                                 </div> */}
                             </div>
                         </div>
-                        <div className="col-12 col-lg-3 position-relative border-left py-4">
+                        <div className="col-12 col-lg-3 position-relative border-left py-4 questions-container">
                             <div className="d-flex flex-wrap justify-content-center">
                                 {response.map((question, index) =>
                                     <div 
@@ -254,7 +253,11 @@ export default function Test(props){
                             background-color: green;
                             color: white;
                         }
-                        
+                        @media(min-width: 768px){
+                            .questions-container {
+                                min-height: calc(100vh - 133px);
+                            }
+                        }
                     `}</style>
                 </>
             }

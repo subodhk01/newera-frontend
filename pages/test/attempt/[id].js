@@ -130,7 +130,13 @@ export default function Test(props){
     const handleClear = () => {
         let newResponse = response
         if(newResponse[currentQuestion]){
-            newResponse[currentQuestion].answer = ""
+            if(test.questions[currentQuestion].type === 0 || test.questions[currentQuestion].type === 1){
+                newResponse[currentQuestion].answer = []
+            }else if(test.questions[currentQuestion].type === 2){
+                newResponse[currentQuestion].answer = ""
+            }else{
+                newResponse[currentQuestion].answer = [[],[],[],[]]
+            }
             newResponse[currentQuestion].answered = false
         }
         setResponse(newResponse)
@@ -290,12 +296,12 @@ export default function Test(props){
                             <div className="circle border-red m-2">
                                 {test.questions[currentQuestion].incorrectMarks}
                             </div>
-                            <div className="btn btn-secondary m-2">
+                            <button className="btn btn-hollow m-2" disabled>
                                 {test.questions[currentQuestion].type == 0 && "Single Correct"}
                                 {test.questions[currentQuestion].type == 1 && "Multiple Correct"}
                                 {test.questions[currentQuestion].type == 2 && "Integer Type"}
                                 {test.questions[currentQuestion].type == 3 && "Matrix"}
-                            </div>
+                            </button>
                             <div className="btn btn-danger m-2" onClick={() => setTestEndModal(true)}>
                                 End Test
                             </div>
@@ -338,11 +344,14 @@ export default function Test(props){
                                             />
                                         </div>
                                         <div className="d-flex align-items-center p-3">
-                                            <div className="btn btn-secondary" onClick={handleClear}>
-                                                Clear response
+                                            <div className="btn btn-success" onClick={() => handleCurrentQuestion(currentQuestion + 1)}>
+                                                Save and Next
                                             </div>
                                             <div className="btn btn-info" onClick={handleMark}>
                                                 Mark for Review
+                                            </div>
+                                            <div className="btn btn-secondary" onClick={handleClear}>
+                                                Clear response
                                             </div>
                                         </div>
                                     </div>
@@ -354,12 +363,12 @@ export default function Test(props){
                                 </div>
                             </div>
                         </div>
-                        <div className="col-12 col-lg-3 position-relative border-left pt-4 pb-10">
+                        <div className="col-12 col-lg-3 position-relative border-left pt-4 pb-10 questions-container">
                             <div className="d-flex flex-wrap justify-content-center">
                                 {response.map((question, index) =>
                                     <div 
                                         key={index} 
-                                        className={`m-2 item-shadow circle-big 
+                                        className={`m-2 item-shadow circle-big position-relative 
                                             ${index === currentQuestion && "active"}
                                             ${response[index].marked && response[index].answered && "answered-marked"} 
                                             ${response[index].marked && !response[index].answered && "unanswered-marked"} 
@@ -368,6 +377,11 @@ export default function Test(props){
                                         `} 
                                         onClick={() => handleCurrentQuestion(index)}>
                                         {index + 1}
+                                        {response[index].marked && response[index].answered && 
+                                            <div className="position-absolute tick-box">
+                                                <img src="/tick.png" />
+                                            </div>
+                                        } 
                                     </div>
                                 )}
                             </div>
@@ -406,9 +420,19 @@ export default function Test(props){
                             width: 60px;
                             border-radius: 50%;
                             font-size: 1.1rem;
-                            color: rgba(0,0,0,0.7);
+                            color: white;
                             cursor: pointer;
+                            background-color: #d2d2d2;
                             transition: 0.3s;
+                        }
+                        .tick-box {
+                            right: 0;
+                            bottom: 0;
+                        }
+                        .tick-box img {
+                            width: 20px;
+                            border: 2px solid white;
+                            border-radius: 50px;
                         }
                         .np-container {
                             bottom: 0;
@@ -418,23 +442,28 @@ export default function Test(props){
                             transform: scale(1.1);
                         }
                         .unattempted {
-                            background-color: rgba(0,0,0,0.1);
+                            background-color: #d2d2d2;
                         }
                         .unanswered {
-                            background-color: red;
+                            background-color: #ec605f;
                             color: white;
                         }
                         .answered {
-                            background-color: green;
+                            background-color: #25ba99;
                             color: white;
                         }
                         .unanswered-marked {
-                            background-color: blue;
+                            background-color: #585fb9;
                             color: white;
                         }
                         .answered-marked {
-                            background-color: purple;
+                            background-color: #585fb9;
                             color: white;
+                        }
+                        @media(min-width: 768px){
+                            .questions-container {
+                                min-height: calc(100vh - 133px);
+                            }
                         }
                     `}</style>
                 </>
