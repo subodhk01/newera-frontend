@@ -154,7 +154,7 @@ export default function Test(props){
     React.useEffect(() => {
         if(id){
             axiosInstance.get(`tests/${id}/`).then((response) => {
-                //console.log("response test: ", response.data)
+                console.log("response test: ", response.data)
                 let rawTest = response.data
                 setTest(response.data)
                 let newResponse = []

@@ -187,10 +187,10 @@ export default function Test(props){
                                         key={index} 
                                         className={`m-2 item-shadow circle-big 
                                             ${index === currentQuestion && "active"}
-                                            ${response[index].marked && response[index].answered && "answered-marked"} 
-                                            ${response[index].marked && !response[index].answered && "unanswered-marked"} 
-                                            ${!response[index].marked && response[index].answered && "answered"} 
-                                            ${!response[index].marked && !response[index].answered && response[index].visited && "unanswered"} 
+                                            ${result.result.question_wise_marks[index].status < 2 && "incorrect"} 
+                                            ${result.result.question_wise_marks[index].status === 2 && "correct"} 
+                                            ${typeof(result.result.question_wise_marks[index].status) === "object" && result.result.question_wise_marks[index].status.includes(2) && "correct"} 
+                                            ${typeof(result.result.question_wise_marks[index].status) === "object" && result.result.question_wise_marks[index].status.includes(3) && "partially-correct"} 
                                         `} 
                                         onClick={() => handleCurrentQuestion(index)}>
                                         {index + 1}
@@ -241,14 +241,17 @@ export default function Test(props){
                             transform: scale(1.1);
                         }
                         .unattempted {
-                            background-color: rgba(0,0,0,0.1);
+                            background-color: #d2d2d2;
                         }
-                        .unanswered {
-                            background-color: red;
+                        .incorrect {
+                            background-color: #ec605f;
                             color: white;
                         }
-                        .answered {
-                            background-color: green;
+                        .partially-correct {
+                            background-color: #17a2b8;
+                        }
+                        .correct {
+                            background-color: #25ba99;
                             color: white;
                         }
                         @media(min-width: 768px){

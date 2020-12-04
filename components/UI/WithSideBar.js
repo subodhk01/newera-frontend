@@ -32,9 +32,7 @@ export default function SideBarLayout(props){
     }
     React.useEffect(() => {
         SIDEBAR_ITEMS.map((item, index) => {
-            console.log(document.location.pathname, item.path)
             if(document.location.pathname === item.path){
-                console.log(index)
                 setINDEX(index)
             }
         })
