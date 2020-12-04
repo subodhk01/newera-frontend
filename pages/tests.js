@@ -6,6 +6,7 @@ import { useAuth } from '../utils/auth'
 import { axiosInstance } from '../utils/axios'
 import AuthHOC from '../components/AuthHOC'
 import { FaHockeyPuck } from 'react-icons/fa'
+import Link from 'next/link'
 
 export default function Tests(props){
     const { profile, accessToken } = useAuth()
@@ -55,6 +56,15 @@ export default function Tests(props){
                                 <div>
                                     {profile.is_teacher &&
                                         <>
+                                            <div className="py-3 text-right">
+                                                <Link href="/test/create">
+                                                    <a>
+                                                        <div className="btn btn-success">
+                                                            Create New Test
+                                                        </div>
+                                                    </a>
+                                                </Link>
+                                            </div>
                                             <TeacherTestTable tests={tests} />
                                         </>
                                     }

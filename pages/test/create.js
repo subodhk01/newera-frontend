@@ -187,7 +187,12 @@ export default function Test(props){
     }
 
     const handleTestSave = () => {
+        setError("")
         console.log("aits: ", aits, " - free: ", free)
+        if(!testName || !dateTime || !duration){
+            setError("Please fill all details and mark answers to all the questions")
+            return
+        }
         axiosInstance.post("/tests/", {
             name: testName,
             questions: questions,

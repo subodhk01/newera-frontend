@@ -27,16 +27,16 @@ export const SIDEBAR_ITEMS = [
     {
         image: "",
         title: "Online Classes",
-        path: "/dashboard"
+        path: "/onlineclasses"
     },
     {
         image: "",
         title: "Report",
-        path: "/dashboard"
+        path: "/report"
     },
     {
         image: "",
         title: "Profile",
-        path: "/dashboard"
+        path: "/profile"
     },
 ]
