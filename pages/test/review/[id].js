@@ -7,7 +7,7 @@ import { BsArrowLeft, BsArrowRight } from 'react-icons/bs'
 import Options from '../../../components/Test/Options'
 import { PRIMARY_DARK } from '../../../utils/Colors'
 import Modal from 'react-modal';
-import { fancyTimeFormat, arrayRemove } from '../../../utils/functions'
+import { fancyTimeFormat, arrayRemove, fancyToNormalTimeFormat } from '../../../utils/functions'
 import Link from 'next/link'
 //Modal.setAppElement('#app');
 // import dynamic from 'next/dynamic'
@@ -75,8 +75,6 @@ export default function Test(props){
     const [ render, setRender ] = React.useState(0)
 
     const handleCurrentQuestion = (index) => {
-        let newResponse = response
-        setResponse(newResponse)
         setCurrentQuestion(index)
     }
 
@@ -112,15 +110,15 @@ export default function Test(props){
                             <div className="circle border-red m-2">
                                 {test.questions[currentQuestion].incorrectMarks}
                             </div>
-                            <div className="btn btn-secondary m-2">
+                            <button className="btn btn-hollow m-2" disabled>
                                 {test.questions[currentQuestion].type == 0 && "Single Correct"}
                                 {test.questions[currentQuestion].type == 1 && "Multiple Correct"}
                                 {test.questions[currentQuestion].type == 2 && "Integer Type"}
                                 {test.questions[currentQuestion].type == 3 && "Matrix"}
-                            </div>
+                            </button>
                             <button className="btn btn-hollow d-flex align-items-center justify-content-center" style={{minWidth: "300px"}} disabled>
                                 <RiTimerFill className="m-1" size="17" color="grey" />
-                                <span className="font-1">Time spent on this question: </span>
+                                <span className="font-1">Time spent on this question: {fancyToNormalTimeFormat(response[currentQuestion].time)}</span>
                             </button>
                             <Link href={'/tests'}>
                                 <a>

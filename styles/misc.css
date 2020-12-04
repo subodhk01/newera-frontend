@@ -4,3 +4,6 @@ svg {
 .menu-item:hover > svg {
     transform: rotate(180deg) !important;
 }
+.np-container {
+    bottom: 0;
+}

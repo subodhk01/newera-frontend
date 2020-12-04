@@ -8,6 +8,7 @@ import Options from '../../../components/Test/Options'
 import { PRIMARY_DARK } from '../../../utils/Colors'
 import Modal from 'react-modal';
 import { fancyTimeFormat, arrayRemove } from '../../../utils/functions'
+import { load } from 'react-cookies'
 //Modal.setAppElement('#app');
 // import dynamic from 'next/dynamic'
 
@@ -72,7 +73,7 @@ export default function Test(props){
     const [ test, setTest ] = React.useState()
     const [ timeRemaining, setTimeRemaining ] = React.useState()
     const [ currentQuestion, setCurrentQuestion ] = React.useState(0)
-    const [ response, setResponse ] = React.useState([{answer: "", marked: false},])
+    const [ response, setResponse ] = React.useState([{answer: "", marked: false, visited: true, time: 0},])
     const [ render, setRender ] = React.useState(0)
 
     React.useEffect(() => {
@@ -168,11 +169,11 @@ export default function Test(props){
                 var count = 0
                 while(newResponse.length < rawTest.questions.length){
                     if(rawTest.questions[count].type === 0 || rawTest.questions[count].type === 1){
-                        newResponse.push({answer: [], marked: false, visited: false})
+                        newResponse.push({answer: [], marked: false, visited: false, time: 0})
                     }else if(rawTest.questions[count].type === 2){
-                        newResponse.push({answer: "", marked: false, visited: false})
+                        newResponse.push({answer: "", marked: false, visited: false, time: 0})
                     }else{
-                        newResponse.push({answer: [[],[],[],[]], marked: false, visited: false})
+                        newResponse.push({answer: [[],[],[],[]], marked: false, visited: false, time: 0})
                     }
                     count++
                 }
@@ -186,19 +187,36 @@ export default function Test(props){
     }, [id])
 
     React.useEffect(() => {
+        var time = "", increase = ""
         if(!loading){
-            setInterval(() => {
+            time = setInterval(() => {
                 setTimeRemaining(timeRemaining => {
                     return timeRemaining - 1
                 })
             }, 1000)
+            increase = setInterval(() => {
+                setCurrentQuestion((currentQuestion) => {
+                    setResponse((response) => {
+                        let newResponse = response
+                        newResponse[currentQuestion].time++
+                        return newResponse
+                    })
+                    return currentQuestion
+                })
+                }, 1000)
+        }
+        return () => {
+            if(time) clearInterval(time)
+            if(increase) clearInterval(increase)
         }
     }, [loading])
 
     React.useEffect(() => {
-        if(timeRemaining && timeRemaining <= 0){
-            setTestEndModal(true)
-            endTest()
+        if(!loading){
+            if(timeRemaining && timeRemaining <= 0){
+                setTestEndModal(true)
+                endTest()
+            }
         }
     })
 
@@ -223,6 +241,14 @@ export default function Test(props){
     const endTest = () => {
         console.log("endTest")
         setEnding(true)
+        let finalResponse = response
+        finalResponse.map((response, index) => {
+            console.log("-----")
+            console.log(response.time, fancyTimeFormat(response.time))
+            response.time = fancyTimeFormat(response.time)
+            console.log(response.time)
+        })
+        console.log("final Response: ", finalResponse)
         axiosInstance.patch(`sessions/${session.id}/`, {
             response: response,
             completed: true
@@ -286,7 +312,7 @@ export default function Test(props){
                     Loading...
                 </div>
                 :
-                <>
+                <React.StrictMode>
                     <div>
                         <TestHeader testName="Custom Test 1" />
                         <div className="d-flex flex-wrap align-items-center p-2 border-bottom">
@@ -376,7 +402,7 @@ export default function Test(props){
                                             ${!response[index].marked && !response[index].answered && response[index].visited && "unanswered"} 
                                         `} 
                                         onClick={() => handleCurrentQuestion(index)}>
-                                        {index + 1}
+                                        {index + 1} {question.time}
                                         {response[index].marked && response[index].answered && 
                                             <div className="position-absolute tick-box">
                                                 <img src="/tick.png" />
@@ -434,9 +460,6 @@ export default function Test(props){
                             border: 2px solid white;
                             border-radius: 50px;
                         }
-                        .np-container {
-                            bottom: 0;
-                        }
                         .active {
                             box-shadow: 0px 0px 10px 7px silver;
                             transform: scale(1.1);
@@ -466,7 +489,7 @@ export default function Test(props){
                             }
                         }
                     `}</style>
-                </>
+                </React.StrictMode>
             }
         </>
     )

@@ -112,6 +112,7 @@ export default function StudentTestTable(props) {
 		{ title: 'TestId', dataIndex: 'id', key: 'id' },
 		{ title: 'Name', dataIndex: 'name', key: 'name' },
 		{ title: 'Status', dataIndex: 'status', key: 'status' },
+		{ title: 'Duration', dataIndex: 'duration', key: 'duration' },
 		{ title: 'Action', key: 'operation', render: (test) => 
 			<Link href={`/test/attempt/${test.id}`}>
 				<a>
@@ -129,6 +130,7 @@ export default function StudentTestTable(props) {
 			key: item.id,
 			id: item.id,
 			name: item.name,
+			duration: item.time_alotted,
 			status: TEST_STATUS[item.status]
 		})
 	})
