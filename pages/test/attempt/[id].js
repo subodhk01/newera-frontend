@@ -9,6 +9,7 @@ import { PRIMARY_DARK } from '../../../utils/Colors'
 import Modal from 'react-modal';
 import { fancyTimeFormat, arrayRemove } from '../../../utils/functions'
 import { load } from 'react-cookies'
+import { Alert } from 'antd'
 //Modal.setAppElement('#app');
 // import dynamic from 'next/dynamic'
 
@@ -64,6 +65,7 @@ export default function Test(props){
     const router = useRouter()
     const { id } = router.query
 
+    const [ error, setError ] = React.useState("")
     const [ testStartModal,setTestStartModal ] = React.useState(false)
     const [ testEndModal, setTestEndModal ] = React.useState(false)
     const [ session, setSession ] = React.useState()
@@ -75,10 +77,6 @@ export default function Test(props){
     const [ currentQuestion, setCurrentQuestion ] = React.useState(0)
     const [ response, setResponse ] = React.useState([{answer: "", marked: false, visited: true, time: 0},])
     const [ render, setRender ] = React.useState(0)
-
-    React.useEffect(() => {
-        console.log("response change: ", response)
-    }, [response])
 
     const handleCurrentQuestion = (index) => {
         let newResponse = response
@@ -154,17 +152,11 @@ export default function Test(props){
     }
 
     React.useEffect(() => {
-        console.log(id)
         if(id){
-            console.log(id)
             axiosInstance.get(`tests/${id}/`).then((response) => {
-                console.log("response test: ", response.data)
+                //console.log("response test: ", response.data)
                 let rawTest = response.data
-                // rawTest.questions = JSON.parse(rawTest.questions)
-                // rawTest.sections = JSON.parse(rawTest.sections)
-                // rawTest.answers = JSON.parse(rawTest.answers)
-                console.log("test: ", rawTest)
-                setTest(rawTest)
+                setTest(response.data)
                 let newResponse = []
                 var count = 0
                 while(newResponse.length < rawTest.questions.length){
@@ -182,6 +174,7 @@ export default function Test(props){
                 setTestStartModal(true)
             }).catch((error) => {
                 console.log(error)
+                setError("Unable to fetch test, try refreshing the page or try again later.")
             })
         }
     }, [id])
@@ -221,6 +214,7 @@ export default function Test(props){
     })
 
     const startTest = () => {
+        setError("")
         axiosInstance.post(`tests/${id}/sessions/`)
             .then((response) => {
                 console.log("session create response: ", response.data)
@@ -236,6 +230,9 @@ export default function Test(props){
                 setLoading(false)
             }).catch((error) => {
                 console.log(error)
+                if(error.response.status === 403 && error.response.data.detail === "You have already attempted the test. You can practice after the live test ends."){
+                    setError(error.response.data.detail)
+                }
             })
     }
     const endTest = () => {
@@ -277,6 +274,14 @@ export default function Test(props){
                     <div className="btn btn-info" onClick={startTest}>
                         Start Test
                     </div>
+                    {error && 
+                        <Alert
+                            className="mt-3"
+                            message="Cannot Attempt Test"
+                            description={error}
+                            type="error"
+                        />
+                    }
                 </div>
             </Modal>
             <Modal
@@ -310,6 +315,14 @@ export default function Test(props){
             { loading ?
                 <div>
                     Loading...
+                    {error && 
+                        <Alert
+                            className="mt-3"
+                            message="Cannot Attempt Test"
+                            description={error}
+                            type="error"
+                        />
+                    }
                 </div>
                 :
                 <React.StrictMode>

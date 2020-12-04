@@ -18,12 +18,12 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.response.use(
     response => response,
     error => {
-        console.log("error at interceptor: ", error)
-        console.log("refresh_token: ", cookie.load('refresh_token'))
-        console.log("access_token: ", cookie.load('access_token'))
-        console.log(error.response)
+        //console.log("error at interceptor: ", error)
+        //console.log("refresh_token: ", cookie.load('refresh_token'))
+        //console.log("access_token: ", cookie.load('access_token'))
+        //console.log(error.response)
         const originalRequest = error.config;
-        console.log("request url: ", originalRequest.url)
+        //console.log("request url: ", originalRequest.url)
 
         // Prevent infinite loops
         if ( error.response && error.response.status === 401 && originalRequest.url === '/token/refresh/') {

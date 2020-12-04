@@ -73,7 +73,7 @@ export default function SideBarLayout(props){
                 >
                     <Menu mode="inline" selectedKeys={[INDEX.toString(),]}>
                         {SIDEBAR_ITEMS.map((child, index) =>
-                            <Menu.Item key={index} icon={ICONS[child.path]}>
+                            <Menu.Item key={index} icon={ICONS[child.path]} className="py-lg-2 font-10 d-flex align-items-center" style={{height: "auto"}}>
                                 <Link href={child.path}>
                                     <a>
                                         {child.title}
