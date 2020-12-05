@@ -4,40 +4,115 @@ import { axiosInstance } from '../../utils/axios'
 import { useRouter } from 'next/router'
 import AuthHOC from '../../components/AuthHOC'
 import SideBarLayout from '../../components/UI/WithSideBar'
+import Modal from 'react-modal'
 import VideoThumbnail from 'react-video-thumbnail'
 import ReactPlayer from 'react-player'
-//import QierPlayer from 'qier-player';
-import { Player } from 'video-react';
+//import QierPlayer from 'qier-player'
+import { Player } from 'video-react'
+import { useAuth } from '../../utils/auth'
+import { Alert } from 'antd'
 
-// import dynamic from 'next/dynamic'
-
-// const axiosInstance = dynamic(() =>
-//   import('../../utils/axios').then((mod) => mod.axiosInstance),
-//   {ssr: false}
-// )
-
-function createMarkup(data) {
-    return {__html: data};
-}
+const customStyles2 = {
+    overlay: {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(255, 255, 255, 0.75)',
+    },
+    content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        position: 'absolute',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+        borderRadius: "10px",
+        background: "white",
+        boxShadow: "0px 0px 30px 6px #ecf0f7",
+        border: "none"
+    }
+};
 
 export default function TestSeries(props){  
     const router = useRouter()
     const { id } = router.query
 
+    const { profile } = useAuth()
+
     const [ loading, setLoading ] = React.useState(true)
+    const [ paymentModal, setPaymentModal ] = React.useState(false)
+    const [ paymentLoading, setPaymentLoading ] = React.useState(false)
+    const [ error, setError ] = React.useState("")
     const [ series, setSeries ] = React.useState()
+    const [ isRegistered, setRegistered ] = React.useState(false)
     
     React.useEffect(() => {
         if(id){
             axiosInstance.get(`testseries/${id}/`).then((response) => {
                 console.log("series: ", response.data)
                 setSeries(response.data)
+                if(response.data.registered_students.includes(profile.id)){
+                    console.log("student is registered")
+                    setRegistered(true)
+                }
                 setLoading(false)
             }).catch((error) => {
                 console.log(error)
             })
         }
     }, [id])
+
+    async function verifySignature(response, amount) {
+        //console.log("Payload for verify signature : ", response)
+        //console.log("orderId: ", orderId)
+        axiosInstance.post('/payments', {
+                ...response,
+                orderId: orderId,
+                amount
+            })
+            .then((res) => {
+                console.log("PAYMENT RESPONSE", res)
+                if (res.status == 200) {
+                    setPaymentLoading(false)
+                    console.log("payment success")
+                } else {
+                    setPaymentLoading(false)
+                    setError("Unable to process your request try again, if your account has been deducted email us at...")
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+                setPaymentLoading(false)
+                setError("Unable to process your request try again, if your account has been deducted email us at...")
+            })
+    }
+
+    async function makePayment(totalAmount, notes) {
+        var options = {
+            key: "rzp_test_0FEqUw0sDmZiwi",
+            amount: totalAmount * 100,
+            name: "Newera Coaching",
+            currency: "INR",
+            description: "Test Purchase",
+            //image: "/images/logos/icon.png",
+            handler: (response) => {
+                verifySignature(response, totalAmount);
+            },
+            prefill: {
+                name: profile.name,
+                email: profile.email
+            },
+            notes: notes,
+            theme: {
+                color: "#027ff7"
+            }
+        }
+        var rzp1 = new Razorpay(options)
+        rzp1.open()
+    }
 
     return(
         <AuthHOC>
@@ -49,21 +124,43 @@ export default function TestSeries(props){
                                 <h1>{series.name}</h1>
                             </div>
                             <div className="p-3">
-                                <div className="btn btn-info font-11 px-5">
-                                    Buy Now
-                                </div>
+                                {isRegistered ?
+                                    <Alert description="Go to Tests section to see all your tests and attempts" />
+                                    :
+                                    <div className="btn btn-info font-11 px-5" onClick={() => setPaymentModal(true)}>
+                                        Buy Now &#8377;{series.price}
+                                    </div>    
+                                }
                             </div>
+                            <Modal
+                                isOpen={paymentModal}
+                                onRequestClose={() => setPaymentModal(false)}
+                                style={customStyles2}
+                                contentLabel="Example Modal"
+                                ariaHideApp={false}
+                                shouldCloseOnOverlayClick={true}
+                            >
+                                <div className="text-center">
+                                    <p>Confirm payment of &#8377;{series.price}</p>
+                                    <div className="btn btn-success" onClick={() => makePayment(series.price)}>
+                                        Confirm
+                                    </div>
+                                    <div className="btn btn-danger" onClick={() => setPaymentModal(false)}>
+                                        Cancel
+                                    </div>
+                                </div>
+                            </Modal>
                             <div className="pt-3">
                                 <div className="d-flex flex-wrap align-items-center justify-content-center">
                                     {series && series.tests && series.tests.map((test, index) =>
                                         <>
-                                            {test.free ?
+                                            {isRegistered ?
                                                 <div className="item-shadow p-3 py-4 m-3 cursor-pointer border text-center" key={index}>
                                                     <h5>{test.name}</h5>
                                                     <hr />
-                                                    <div className="text-right">
+                                                    {/* <div className="text-right">
                                                         BUY
-                                                    </div>
+                                                    </div> */}
                                                     <div>
                                                         <Link href={`/test/attempt/${test.id}`}>
                                                             <a>

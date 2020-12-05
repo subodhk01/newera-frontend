@@ -11,7 +11,7 @@ export default function AuthHOC(props){
         console.log("accessToken at useEffect: ", accessToken)
         console.log("profile: ", profile)
         if(!accessToken){
-            router.push("login")
+            router.push("/login")
         }
     }, [accessToken])
     

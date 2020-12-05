@@ -6,7 +6,7 @@ import { RiTimerFill } from 'react-icons/ri'
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs'
 import Options from '../../../components/Test/Options'
 import { PRIMARY_DARK } from '../../../utils/Colors'
-import Modal from 'react-modal';
+import Modal from 'react-modal'
 import { fancyTimeFormat, arrayRemove } from '../../../utils/functions'
 import { load } from 'react-cookies'
 import { Alert } from 'antd'

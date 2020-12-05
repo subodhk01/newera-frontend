@@ -30,9 +30,7 @@ export default function Home() {
                 setAccessToken(response.data.access)
                 setRefreshToken(response.data.refresh)
                 axiosInstance
-                    .get("profile/", {
-                        
-                    })
+                    .get("profile/")
                     .then((response) => {
                         console.log("Profile Response :", response)
                         setProfile(response.data)
