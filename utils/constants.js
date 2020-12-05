@@ -13,11 +13,24 @@ export const TEST_STATUS = {
     4: "Ended"
 }
 
+export const TEST_SERIES_STATUS = {
+    0: "User not authorized",
+    1: "User is not a student",
+    2: "Not Registered",
+    3: "Payment not verified",
+    4: "Registered"
+}
+
 export const SIDEBAR_ITEMS = [
     {
         image: "",
         title: "Tests",
         path: "/tests"
+    },
+    {
+        image: "",
+        title: "Test Series",
+        path: "/testseries"
     },
     {
         image: "",
@@ -28,11 +41,6 @@ export const SIDEBAR_ITEMS = [
         image: "",
         title: "Online Classes",
         path: "/onlineclasses"
-    },
-    {
-        image: "",
-        title: "Report",
-        path: "/report"
     },
     {
         image: "",

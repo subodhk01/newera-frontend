@@ -20,7 +20,7 @@ function createMarkup(data) {
     return {__html: data};
 }
 
-export default function Test(props){  
+export default function LectureSeries(props){  
     const router = useRouter()
     const { id } = router.query
 

@@ -105,6 +105,10 @@ body {
 	background-color: #25ba99;
 	border-color: #25ba99;
 }
+.btn-success:hover {
+	background-color: #1ba386;
+	border-color: #1ba386;
+}
 .btn-hollow {
 	border: 1px solid grey;
 }

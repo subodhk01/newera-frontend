@@ -31,8 +31,9 @@ export default function SideBarLayout(props){
         '/profile': <UserOutlined />
     }
     React.useEffect(() => {
+        const current_path = `/${document.location.pathname.split("/")[1]}`
         SIDEBAR_ITEMS.map((item, index) => {
-            if(document.location.pathname === item.path){
+            if(current_path === item.path){
                 setINDEX(index)
             }
         })
