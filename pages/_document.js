@@ -13,7 +13,6 @@ class MyDocument extends Document {
                     <meta name="description" content=""></meta>
                     <meta name="keywords" content=""></meta>
                     <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
                     <link rel="icon" href="/images/logos/icon.png" type="image/png" />
                     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
                 </Head>

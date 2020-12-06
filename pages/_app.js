@@ -10,6 +10,7 @@ import 'filepond/dist/filepond.min.css'
 import React from 'react'
 import cookie from 'react-cookies'
 import { AuthContext } from '../utils/auth'
+import Head from 'next/head';
 
 function MyApp({ Component, pageProps }) {
     const [ profile, setProfile ] = React.useState(cookie.load('profile') || {})
@@ -47,6 +48,9 @@ function MyApp({ Component, pageProps }) {
                 profile : profile,
                 setProfile : handleProfile
         }}>
+            <Head>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+            </Head>
             <Component {...pageProps} />
         </AuthContext.Provider>
 	)
