@@ -66,33 +66,41 @@ export default function TestSeries(props){
     }, [id])
 
     async function verifySignature(response, amount) {
-        //console.log("Payload for verify signature : ", response)
+        setPaymentLoading(true)
+        console.log("Payload for verify signature : ", response)
         //console.log("orderId: ", orderId)
-        axiosInstance.post('/payments', {
-                ...response,
-                orderId: orderId,
-                amount
+        axiosInstance.post('/payments/', {
+                transaction_id: response.razorpay_payment_id,
+                amount: amount,
+                student: profile.id,
+                test_series: id,
             })
             .then((res) => {
                 console.log("PAYMENT RESPONSE", res)
-                if (res.status == 200) {
-                    setPaymentLoading(false)
+                if (res.status == 201) {
+                    //setPaymentLoading(false)
                     console.log("payment success")
+                    window.location.reload()
                 } else {
                     setPaymentLoading(false)
                     setError("Unable to process your request try again, if your account has been deducted email us at...")
                 }
             })
-            .catch((err) => {
-                console.log(err)
+            .catch((error) => {
+                console.log("error: ", error)
                 setPaymentLoading(false)
+                if(error.response && error.response.status === 400 && error.response.data.test_series && error.response.data.test_series.length && error.response.data.test_series[0] === "You have already made a payment"){
+                    setError("You have already made a payment")
+                    return
+                }
                 setError("Unable to process your request try again, if your account has been deducted email us at...")
             })
     }
 
     async function makePayment(totalAmount, notes) {
+        setError("")
         var options = {
-            key: "rzp_test_0FEqUw0sDmZiwi",
+            key: "rzp_test_zhhsJUxL30bSZl",
             amount: totalAmount * 100,
             name: "Newera Coaching",
             currency: "INR",
@@ -138,15 +146,24 @@ export default function TestSeries(props){
                                 style={customStyles2}
                                 contentLabel="Example Modal"
                                 ariaHideApp={false}
-                                shouldCloseOnOverlayClick={true}
+                                shouldCloseOnOverlayClick={false}
                             >
                                 <div className="text-center">
-                                    <p>Confirm payment of &#8377;{series.price}</p>
-                                    <div className="btn btn-success" onClick={() => makePayment(series.price)}>
-                                        Confirm
-                                    </div>
-                                    <div className="btn btn-danger" onClick={() => setPaymentModal(false)}>
-                                        Cancel
+                                    {paymentLoading ?
+                                        <div>Processing your payment, please wait...</div>
+                                        :
+                                        <>
+                                            <p>Confirm payment of &#8377;{series.price}</p>
+                                            <div className="btn btn-success" onClick={() => makePayment(series.price)}>
+                                                Confirm
+                                            </div>
+                                            <div className="btn btn-danger" onClick={() => setPaymentModal(false)}>
+                                                Cancel
+                                            </div>
+                                        </>
+                                    }
+                                    <div>
+                                        {error && <div className="text-danger p-1 pt-4">{error}</div>}
                                     </div>
                                 </div>
                             </Modal>
@@ -179,7 +196,7 @@ export default function TestSeries(props){
                                                         BUY
                                                     </div>
                                                     <div>
-                                                        <div className="btn btn-warning">
+                                                        <div className="btn btn-warning" onClick={() => setPaymentModal(true)}>
                                                             BUY
                                                         </div>
                                                     </div>
