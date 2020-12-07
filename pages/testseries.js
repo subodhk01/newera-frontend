@@ -9,6 +9,8 @@ import { FaHockeyPuck } from 'react-icons/fa'
 
 export default function TestSeries(props){
     const { profile, accessToken } = useAuth()
+
+    const [ loading, setLoading ] = React.useState(true)
     const [ series, setSeries ] = React.useState()
     const [ sessions, setSessions ] = React.useState()
     React.useEffect(() => {
@@ -17,6 +19,7 @@ export default function TestSeries(props){
             .then((response) => {
                 console.log("test series: ", response.data)
                 setSeries(response.data)
+                setLoading(false)
             }).catch((error) => {
                 console.log(error)
             })
@@ -31,20 +34,28 @@ export default function TestSeries(props){
                     <div className="pt-3">
                         <div className="d-flex flex-wrap align-items-center justify-content-center text-center">
                             {/* <LectureSeriesTable tests={series} sessions={sessions} /> */}
-                            {series && series.map((item, index) =>
-                                <div className="item-shadow p-3 py-4 m-3 cursor-pointer border">
-                                    <h4>{item.name}</h4>
-                                    <div>
-                                        {item.tests.length} Tests
-                                    </div>
-                                    <hr />
-                                    <Link href={`/testseries/${item.id}`} key={index}>
-                                        <div className="btn btn-info">
-                                            Open
+                            {loading ?
+                                <>
+                                    Loading...
+                                </>
+                                :
+                                <>
+                                    {series && series.map((item, index) =>
+                                        <div className="item-shadow p-3 py-4 m-3 cursor-pointer border">
+                                            <h4>{item.name}</h4>
+                                            <div>
+                                                {item.tests.length} Tests
+                                            </div>
+                                            <hr />
+                                            <Link href={`/testseries/${item.id}`} key={index}>
+                                                <div className="btn btn-info">
+                                                    Open
+                                                </div>
+                                            </Link>
                                         </div>
-                                    </Link>
-                                </div>
-                            )}
+                                    )}
+                                </>
+                            }
                         </div>
                     </div>
                 </div>

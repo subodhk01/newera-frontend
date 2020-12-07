@@ -171,7 +171,7 @@ export default function TestSeries(props){
                                 <div className="d-flex flex-wrap align-items-center justify-content-center">
                                     {series && series.tests && series.tests.map((test, index) =>
                                         <>
-                                            {isRegistered ?
+                                            {isRegistered || test.free ?
                                                 <div className="item-shadow p-3 py-4 m-3 cursor-pointer border text-center" key={index}>
                                                     <h5>{test.name}</h5>
                                                     <hr />

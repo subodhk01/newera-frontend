@@ -1,7 +1,8 @@
 import React from 'react'
 import Link from 'next/link'
-import { Table, Badge, Menu, Dropdown, Space } from 'antd';
+import { Table, Badge, Menu, Dropdown, Space, Empty } from 'antd';
 import { TEST_STATUS } from '../../../utils/constants';
+import Router from 'next/router';
 
 
 const menu = (
@@ -145,6 +146,12 @@ export default function StudentTestTable(props) {
 					columns={columns}
 					expandable={{ expandedRowRender }}
 					dataSource={data}
+					locale={{
+						emptyText: 
+							<Empty description={<span>Not enrolled in any tests yet</span>}>
+								<div className="btn btn-info font-08 mb-4" onClick={() => Router.push('/testseries')}>View all Test Series</div>
+							</Empty>
+					}}
 				/>
 			}
 		</>

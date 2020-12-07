@@ -41,9 +41,9 @@ export default function Tests(props){
                     </div>
                     <div>
                         {loading ?
-                            <>
+                            <div className="text-center">
                                 Loading...
-                            </>
+                            </div>
                             :
                             <>
                                 <div>

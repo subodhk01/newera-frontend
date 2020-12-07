@@ -146,6 +146,10 @@ export default function TeacherTestTable(props) {
 					columns={columns}
 					//expandable={{ expandedRowRender }}
 					dataSource={data}
+					locale={{
+						emptyText: 
+							<Empty description={<span>No tests yet, create one from above</span>} />
+					}}
 				/>
 			}
 		</>
