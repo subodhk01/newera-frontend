@@ -14,6 +14,7 @@ const { Option } = Select;
 import { FilePond } from 'react-filepond'
 import { arrayRemove } from '../../utils/functions'
 import AuthHOC from '../../components/AuthHOC'
+import { useAuth } from '../../utils/auth'
 
 
 function createMarkup(data) {
@@ -21,6 +22,8 @@ function createMarkup(data) {
 }
 
 export default function Test(props){  
+    const { profile, accessToken } = useAuth()
+
     const [ loading, setLoading ] = React.useState(true)
     const [ questionLoading, setQuestionLoading ] = React.useState(false)
     const [ testName, setTestName ] = React.useState("")
@@ -195,6 +198,7 @@ export default function Test(props){
         }
         axiosInstance.post("/tests/", {
             name: testName,
+            created_by: profile.id,
             questions: questions,
             answers: answers,
             sections: [{
