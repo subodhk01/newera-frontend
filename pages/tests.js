@@ -19,10 +19,12 @@ export default function Tests(props){
             .then((response) => {
                 console.log("tests: ", response.data)
                 setTests(response.data)
+                if(profile.is_teacher) setLoading(false)
             }).catch((error) => {
                 console.log(error)
             })
-        axiosInstance
+        if(profile.is_student){
+            axiosInstance
             .get("/sessions")
             .then((response) => {
                 console.log("sessions: ", response.data)
@@ -31,6 +33,7 @@ export default function Tests(props){
             }).catch((error) => {
                 console.log(error)
             })
+        }
     }, [])
     return(
         <AuthHOC>

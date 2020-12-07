@@ -6,16 +6,22 @@ import { useAuth } from '../utils/auth'
 import { axiosInstance } from '../utils/axios'
 import AuthHOC from '../components/AuthHOC'
 import { FaHockeyPuck } from 'react-icons/fa'
+import { Empty } from 'antd'
 
 export default function TestSeries(props){
     const { profile, accessToken } = useAuth()
-
+    
     const [ loading, setLoading ] = React.useState(true)
+    const [ name, setName ] = React.useState()
     const [ series, setSeries ] = React.useState()
     const [ sessions, setSessions ] = React.useState()
     React.useEffect(() => {
+        console.log("window: ", window)
+        let query = JSON.parse('{"' + decodeURI(window.location.search.substring(1)).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}')
+        console.log(query)
+        setName(query.name)
         axiosInstance
-            .get("/testseries/user")
+            .get(`/testseries/${window.location.search}`)
             .then((response) => {
                 console.log("test series: ", response.data)
                 setSeries(response.data)
@@ -26,10 +32,10 @@ export default function TestSeries(props){
     }, [])
     return(
         <AuthHOC>
-            <SideBarLayout title="Test Series">
+            <SideBarLayout title="Tests">
                 <div className="p-2 p-md-5">
                     <div>
-                        <h1>My Test Series</h1>
+                        <h2>Exam : {name}</h2>
                     </div>
                     <div className="pt-3">
                         <div className="d-flex flex-wrap align-items-center justify-content-center text-center">
@@ -40,8 +46,8 @@ export default function TestSeries(props){
                                 </>
                                 :
                                 <>
-                                    {series && series.map((item, index) => {
-                                        if(item.registered_students.includes(profile.id) || profile.is_teacher){
+                                    {series && series.length ? series.map((item, index) => {
+                                        if(true){
                                             return (
                                                 <div className="item-shadow p-3 py-4 m-3 cursor-pointer border" key={index}>
                                                     <h4>{item.name}</h4>
@@ -57,7 +63,12 @@ export default function TestSeries(props){
                                                 </div>
                                             )
                                         }
-                                    })}
+                                    })
+                                    :
+                                    <div>
+                                        <Empty description="No test series" />
+                                    </div>
+                                    }
                                 </>
                             }
                         </div>

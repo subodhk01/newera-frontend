@@ -415,7 +415,7 @@ export default function Test(props){
                                             ${!response[index].marked && !response[index].answered && response[index].visited && "unanswered"} 
                                         `} 
                                         onClick={() => handleCurrentQuestion(index)}>
-                                        {index + 1} {question.time}
+                                        {index + 1}
                                         {response[index].marked && response[index].answered && 
                                             <div className="position-absolute tick-box">
                                                 <img src="/tick.png" />

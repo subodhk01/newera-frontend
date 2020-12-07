@@ -24,12 +24,12 @@ export const TEST_SERIES_STATUS = {
 export const SIDEBAR_ITEMS = [
     {
         image: "",
-        title: "Tests",
+        title: "My Tests",
         path: "/tests"
     },
     {
         image: "",
-        title: "Test Series",
+        title: "My Test Series",
         path: "/testseries"
     },
     {

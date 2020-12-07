@@ -2,12 +2,13 @@ import React from 'react'
 import Link from 'next/link'
 import { PRIMARY, PRIMARY_DARK } from '../../utils/Colors'
 import { FaChevronDown } from 'react-icons/fa'
-import { RiMenu3Line } from 'react-icons/ri'
+import { RiMenu3Line, RiSafariFill } from 'react-icons/ri'
 import { MdClose } from 'react-icons/md'
 import { Collapse } from 'react-bootstrap'
 import SingleArrowButton from '../Buttons/SingleArrowButton'
 
 import { useAuth } from '../../utils/auth'
+import { axiosInstance } from '../../utils/axios'
 
 const logoWhite = '/static/logoWhite.png'
 const logoBlack = '/static/logoBlack.png'
@@ -18,34 +19,9 @@ const HEADER_ITEMS = [
         dropdown: true,
         items: [
             {
-                title: "NEET",
+                title: "Loading",
                 content: "",
                 image: "/static/header/about.png",
-                path: "/about"
-            },
-            {
-                title: "JEE (Mains + Advance)",
-                content: "",
-                image: "/static/header/approach.png",
-                path: "/approach"
-            },
-            {
-                title: "BITSAT",
-                content: "",
-                image: "/static/header/outsource.png",
-                path: "/outsource"
-            },
-            {
-                title: "WBJEE",
-                content: "",
-                image: "/static/header/outsource.png",
-                path: "/outsource"
-            },
-            {
-                title: "Topicwise Tests",
-                content: "",
-                image: "/static/header/outsource.png",
-                path: "/outsource"
             }
         ]
     },
@@ -69,6 +45,7 @@ const HEADER_ITEMS = [
 ]
 
 export default function Header(props){
+    const [ headerItems, setHeaderItems ] = React.useState()
     const [ mobileNav, setMobileNav ] = React.useState(false)
     const [ mobileDropdown, setMobileDropdown ] = React.useState("")
     const { accessToken, handleLogout } = useAuth()
@@ -79,6 +56,27 @@ export default function Header(props){
             setMobileDropdown(item.title)
         }
     }
+    React.useEffect(() => {
+        axiosInstance.get("/exams")
+            .then((response) => {
+                console.log("exams resp: ", response.data)
+                let temp_header = HEADER_ITEMS, exams = []
+                response.data.map((exam) => {
+                    exams.push({
+                        title: exam.name,
+                        content: "",
+                        image: "",
+                        path: `/aits/?exam=${exam.slug}&name=${exam.name}`
+                    })
+                })
+                temp_header[0].items = exams
+                console.log("item headers: ", temp_header)
+                setHeaderItems(temp_header)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }, [])
     return (
         <div className="outer-container item-shadow">
             <div className={`position-relative d-flex align-items-center ${props.full ? "full" : "container justify-content-between"}`}>
@@ -98,7 +96,7 @@ export default function Header(props){
                             <div className="mobile-nav-close text-right py-3 px-4 mr-2 cursor-pointer" onClick={() => setMobileNav(false)}>
                                 <MdClose size="30" color="white" />
                             </div>
-                            { HEADER_ITEMS.map((item, index1) => 
+                            { headerItems && headerItems.map((item, index1) => 
                                 <React.Fragment key={index1}>
                                     {item.path && 
                                         <div className="py-2">
