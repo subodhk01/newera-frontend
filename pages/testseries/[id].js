@@ -80,7 +80,9 @@ export default function TestSeries(props){
                 if (res.status == 201) {
                     //setPaymentLoading(false)
                     console.log("payment success")
-                    window.location.reload()
+                    setPaymentLoading(false)
+                    setPaymentModal(false)
+                    setRegistered(true)
                 } else {
                     setPaymentLoading(false)
                     setError("Unable to process your request try again, if your account has been deducted email us at...")
