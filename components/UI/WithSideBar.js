@@ -43,9 +43,6 @@ export default function SideBarLayout(props){
             <Head>
                 <title>{props.title ? `${props.title} | NewEra Coaching Classes` : `NewEra Coaching Classes`}</title>
             </Head>
-            <div>
-                <Header full={props.header && props.header.full} />
-            </div>
             <div className="side-outer-container position-relative">
                 {/* <div className="position-fixed sidebar-container item-shadow">
                     <div className="sidebar d-flex flex-column align-items-center justify-content-center pt-5">

@@ -1,6 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { axiosInstance } from '../../utils/axios'
+import { customStyles2 } from '../../utils/constants'
 import { useRouter } from 'next/router'
 import AuthHOC from '../../components/AuthHOC'
 import SideBarLayout from '../../components/UI/WithSideBar'
@@ -11,30 +12,6 @@ import ReactPlayer from 'react-player'
 import { Player } from 'video-react'
 import { useAuth } from '../../utils/auth'
 import { Alert } from 'antd'
-
-const customStyles2 = {
-    overlay: {
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(255, 255, 255, 0.75)',
-    },
-    content: {
-        top: '50%',
-        left: '50%',
-        right: 'auto',
-        bottom: 'auto',
-        position: 'absolute',
-        marginRight: '-50%',
-        transform: 'translate(-50%, -50%)',
-        borderRadius: "10px",
-        background: "white",
-        boxShadow: "0px 0px 30px 6px #ecf0f7",
-        border: "none"
-    }
-};
 
 export default function TestSeries(props){  
     const router = useRouter()
@@ -133,13 +110,22 @@ export default function TestSeries(props){
                             <div>
                                 <h1>{series.name}</h1>
                             </div>
-                            <div className="p-3">
+                            <div className="p-3 text-right">
                                 {isRegistered ?
                                     <Alert description="Go to Tests section to see all your tests and attempts" />
                                     :
                                     <div className="btn btn-info font-11 px-5" onClick={() => setPaymentModal(true)}>
                                         Buy Now &#8377;{series.price}
                                     </div>    
+                                }
+                                {profile.is_teacher && 
+                                    <Link href={`/testseries/edit/${series.id}`}>
+                                        <a>
+                                            <div className="btn btn-warning font-11 px-5">
+                                                Edit Test Series
+                                            </div>
+                                        </a>
+                                    </Link>
                                 }
                             </div>
                             <Modal
@@ -173,21 +159,33 @@ export default function TestSeries(props){
                                 <div className="d-flex flex-wrap align-items-center justify-content-center">
                                     {series && series.tests && series.tests.map((test, index) =>
                                         <>
-                                            {isRegistered || test.free ?
+                                            {isRegistered || test.free || profile.is_teacher ?
                                                 <div className="item-shadow p-3 py-4 m-3 cursor-pointer border text-center" key={index}>
                                                     <h5>{test.name}</h5>
                                                     <hr />
-                                                    {/* <div className="text-right">
-                                                        BUY
-                                                    </div> */}
                                                     <div>
-                                                        <Link href={`/test/attempt/${test.id}`}>
-                                                            <a>
-                                                                <div className="btn btn-success">
-                                                                    Attempt Test
-                                                                </div>
-                                                            </a>
-                                                        </Link>
+                                                        {profile.is_teacher ?
+                                                            <>
+                                                                <Link href={`/test/edit/${test.id}`}>
+                                                                    <a>
+                                                                        <div className="btn btn-warning">
+                                                                            Edit Test
+                                                                        </div>
+                                                                    </a>
+                                                                </Link>
+                                                                {/* <div className="btn btn-danger">
+                                                                    Remove Test
+                                                                </div> */}
+                                                            </>
+                                                            :
+                                                            <Link href={`/test/attempt/${test.id}`}>
+                                                                <a>
+                                                                    <div className="btn btn-success">
+                                                                        Attempt Test
+                                                                    </div>
+                                                                </a>
+                                                            </Link>
+                                                            }
                                                     </div>
                                                 </div>
                                             :

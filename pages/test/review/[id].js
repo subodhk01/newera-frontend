@@ -6,6 +6,7 @@ import { RiTimerFill } from 'react-icons/ri'
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs'
 import Options from '../../../components/Test/Options'
 import { PRIMARY_DARK } from '../../../utils/Colors'
+import { customStyles, customStyles2 } from '../../../utils/constants'
 import Modal from 'react-modal';
 import { fancyTimeFormat, arrayRemove, fancyToNormalTimeFormat } from '../../../utils/functions'
 import Link from 'next/link'
@@ -20,45 +21,6 @@ import Link from 'next/link'
 function createMarkup(data) {
     return {__html: data};
 }
-const customStyles = {
-    overlay: {
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(255, 255, 255, 0.75)',
-    },
-    content: {
-        borderRadius: "10px",
-        background: "white",
-        boxShadow: "0px 0px 30px 6px #ecf0f7",
-        border: "none"
-    }
-};
-const customStyles2 = {
-    overlay: {
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(255, 255, 255, 0.75)',
-    },
-    content: {
-        top: '50%',
-        left: '50%',
-        right: 'auto',
-        bottom: 'auto',
-        position: 'absolute',
-        marginRight: '-50%',
-        transform: 'translate(-50%, -50%)',
-        borderRadius: "10px",
-        background: "white",
-        boxShadow: "0px 0px 30px 6px #ecf0f7",
-        border: "none"
-    }
-};
 
 export default function Test(props){  
     const router = useRouter()

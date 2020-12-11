@@ -48,3 +48,43 @@ export const SIDEBAR_ITEMS = [
         path: "/profile"
     },
 ]
+
+export const customStyles = {
+    overlay: {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(255, 255, 255, 0.75)',
+    },
+    content: {
+        borderRadius: "10px",
+        background: "white",
+        boxShadow: "0px 0px 30px 6px #ecf0f7",
+        border: "none"
+    }
+};
+export const customStyles2 = {
+    overlay: {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(255, 255, 255, 0.75)',
+    },
+    content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        position: 'absolute',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+        borderRadius: "10px",
+        background: "white",
+        boxShadow: "0px 0px 30px 6px #ecf0f7",
+        border: "none"
+    }
+};

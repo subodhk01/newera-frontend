@@ -29,9 +29,20 @@ export default function TestSeries(props){
             <SideBarLayout title="Test Series">
                 <div className="p-2 p-md-5">
                     <div>
-                        <h1>My Test Series</h1>
+                        <h1>{profile.is_student && "My "}Test Series</h1>
                     </div>
                     <div className="pt-3">
+                        {profile.is_teacher && 
+                            <div className="py-3 text-right">
+                                <Link href="/testseries/create">
+                                    <a>
+                                        <div className="btn btn-success">
+                                            Create New Test Series
+                                        </div>
+                                    </a>
+                                </Link>
+                            </div>
+                        }
                         <div className="d-flex flex-wrap align-items-center justify-content-center text-center">
                             {/* <LectureSeriesTable tests={series} sessions={sessions} /> */}
                             {loading ?
@@ -49,11 +60,18 @@ export default function TestSeries(props){
                                                         {item.tests.length} Tests
                                                     </div>
                                                     <hr />
-                                                    <Link href={`/testseries/${item.id}`} key={index}>
+                                                    <Link href={`/testseries/${item.id}`}>
                                                         <div className="btn btn-info">
                                                             Open
                                                         </div>
                                                     </Link>
+                                                    {profile.is_teacher && 
+                                                        <Link href={`/testseries/edit/${item.id}`}>
+                                                            <div className="btn btn-warning">
+                                                                Edit
+                                                            </div>
+                                                        </Link>
+                                                    }
                                                 </div>
                                             )
                                         }

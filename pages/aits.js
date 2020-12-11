@@ -39,7 +39,6 @@ export default function TestSeries(props){
                     </div>
                     <div className="pt-3">
                         <div className="d-flex flex-wrap align-items-center justify-content-center text-center">
-                            {/* <LectureSeriesTable tests={series} sessions={sessions} /> */}
                             {loading ?
                                 <>
                                     Loading...
@@ -60,6 +59,13 @@ export default function TestSeries(props){
                                                             Open
                                                         </div>
                                                     </Link>
+                                                    {profile.is_teacher && 
+                                                        <Link href={`/testseries/edit/${item.id}`}>
+                                                            <div className="btn btn-warning">
+                                                                Edit
+                                                            </div>
+                                                        </Link>
+                                                    }
                                                 </div>
                                             )
                                         }

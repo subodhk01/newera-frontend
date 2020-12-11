@@ -8,7 +8,8 @@ export default function AuthHOC(props){
     const { teacher, student } = props
 
     React.useEffect(() => {
-        console.log("accessToken at useEffect: ", accessToken)
+        // console.log("accessToken at useEffect: ", accessToken)
+        console.log("Auth check")
         console.log("profile: ", profile)
         if(!accessToken){
             router.push("/login")

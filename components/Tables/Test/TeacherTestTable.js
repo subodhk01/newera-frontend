@@ -114,15 +114,20 @@ export default function TeacherTestTable(props) {
 		{ title: 'Name', dataIndex: 'name', key: 'name' },
 		{ title: 'Status', dataIndex: 'status', key: 'status' },
 		{ title: 'Action', key: 'operation', render: (test) => 
-			<Link href={`/test/edit/${test.id}`}>
-				<a>
-					<div className="btn btn-success ">
-                        <div className="d-flex align-items-center justify-content-center">
-                            <FaPencilAlt color="white" className="mr-2" /> Edit
-                            </div>
-					</div>
-				</a>
-			</Link>
+			<>
+				<Link href={`/test/edit/${test.id}`}>
+					<a>
+						<div className="btn btn-success ">
+							<div className="d-flex align-items-center justify-content-center">
+								<FaPencilAlt color="white" className="mr-2" /> Edit
+								</div>
+						</div>
+					</a>
+				</Link>
+				<div className="btn btn-danger" onClick={() => props.deleteTest(test.id)}>
+					<div className="d-flex align-items-center justify-content-center">Delete</div>
+				</div>
+			</>
 		},
 	];
 

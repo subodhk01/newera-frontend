@@ -1,16 +1,18 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'antd/dist/antd.css'
 import 'video.js/dist/video-js.min.css'
-import "video-react/dist/video-react.css";
+import "video-react/dist/video-react.css"
 import '../styles/font.css'
 import '../styles/misc.css'
 import '../styles/globals.css'
 import 'filepond/dist/filepond.min.css'
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 
 import React from 'react'
 import cookie from 'react-cookies'
 import { AuthContext } from '../utils/auth'
-import Head from 'next/head';
+import Head from 'next/head'
+import Header from '../components/UI/Header'
 
 function MyApp({ Component, pageProps }) {
     const [ profile, setProfile ] = React.useState(cookie.load('profile') || {})
@@ -51,6 +53,9 @@ function MyApp({ Component, pageProps }) {
             <Head>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
             </Head>
+            <div>
+                <Header full />
+            </div>
             <Component {...pageProps} />
         </AuthContext.Provider>
 	)
