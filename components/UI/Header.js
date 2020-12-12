@@ -22,6 +22,7 @@ const HEADER_ITEMS = [
                 title: "Loading",
                 content: "",
                 image: "/static/header/about.png",
+                path: ""
             }
         ]
     },
@@ -118,11 +119,13 @@ export default function Header(props){
                                             <Collapse in={mobileDropdown == item.title}>
                                                 <div>
                                                     {item.items && item.items.map((child, index2) => 
-                                                        <a href={child.path} key={index2}>
-                                                            <div className="dropdown-item-mobile">
-                                                                <div className="heading-bold font-12 text-white">{child.title}</div>
-                                                            </div>
-                                                        </a>
+                                                        <Link href={child.path} key={index2}>
+                                                            <a>
+                                                                <div className="dropdown-item-mobile">
+                                                                    <div className="heading-bold font-12 text-white">{child.title}</div>
+                                                                </div>
+                                                            </a>
+                                                        </Link>
                                                     )}
                                                 </div>
                                             </Collapse>
@@ -185,14 +188,16 @@ export default function Header(props){
                                     <div className="dropdown-container" style={{left: "-70px"}}>
                                         <div className="dropdown d-flex flex-column align-items-center justify-content-center">
                                             {item.items && item.items.map((child, index2) => 
-                                                <a href={child.path} key={index2}>
-                                                    <div className="dropdown-item">
-                                                        <div className="d-flex align-items-center">
-                                                            <div className="heading-bold font-1">{child.title}</div>
+                                                <Link href={child.path} key={index2}>
+                                                    <a>
+                                                        <div className="dropdown-item">
+                                                            <div className="d-flex align-items-center">
+                                                                <div className="heading-bold font-1">{child.title}</div>
+                                                            </div>
+                                                            <div className="content font-08">{child.content}</div>
                                                         </div>
-                                                        <div className="content font-08">{child.content}</div>
-                                                    </div>
-                                                </a>
+                                                    </a>
+                                                </Link>
                                             )}
                                         </div>
                                     </div>
@@ -202,7 +207,7 @@ export default function Header(props){
                                 <>
                                     {accessToken ?
                                         <>
-                                            <div>
+                                            <div key={'dashboard-button'}>
                                                 <Link href="/dashboard">
                                                     <a className={`menu-item position-relative`}>
                                                         Dashboard
@@ -218,7 +223,7 @@ export default function Header(props){
                                             </div>
                                         </>
                                         :
-                                        <div className="btn btn-arrow ml-3">
+                                        <div className="btn btn-arrow ml-3" key={'auth-button'}>
                                             <a href={item.to}>
                                                 <SingleArrowButton>
                                                     {item.title}

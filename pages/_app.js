@@ -40,7 +40,6 @@ function MyApp({ Component, pageProps }) {
         cookie.remove('profile')
         setProfile({})
     }
-    console.log("page props: ", pageProps)
 	
 	return (
 		<AuthContext.Provider 

@@ -28,7 +28,7 @@ export default function TestSeries(props){
     
     React.useEffect(() => {
         if(id){
-            props.setHeader(false)
+            props.setHeader(true)
             axiosInstance.get(`testseries/${id}/`).then((response) => {
                 console.log("series: ", response.data)
                 setSeries(response.data)
@@ -113,7 +113,9 @@ export default function TestSeries(props){
                             </div>
                             <div className="p-3 text-right">
                                 {isRegistered ?
-                                    <Alert description="Go to Tests section to see all your tests and attempts" />
+                                    <div className="text-left">
+                                        <Alert description="Go to Tests section to see all your tests and attempts" />
+                                    </div>
                                     :
                                     <div className="btn btn-info font-11 px-5" onClick={() => setPaymentModal(true)}>
                                         Buy Now &#8377;{series.price}

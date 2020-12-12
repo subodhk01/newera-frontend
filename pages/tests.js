@@ -26,20 +26,20 @@ export default function Tests(props){
                 console.log("tests: ", response.data)
                 setTests(response.data)
                 if(profile.is_teacher) setLoading(false)
+                if(profile.is_student){
+                    axiosInstance
+                        .get("/sessions")
+                        .then((response) => {
+                            console.log("sessions: ", response.data)
+                            setSessions(response.data)
+                            setLoading(false)
+                        }).catch((error) => {
+                            console.log(error)
+                        })
+                }
             }).catch((error) => {
                 console.log(error)
             })
-        if(profile.is_student){
-            axiosInstance
-                .get("/sessions")
-                .then((response) => {
-                    console.log("sessions: ", response.data)
-                    setSessions(response.data)
-                    setLoading(false)
-                }).catch((error) => {
-                    console.log(error)
-                })
-        }
     }, [])
 
     const [ open, setOpen ] = React.useState(false)

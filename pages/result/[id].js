@@ -22,6 +22,7 @@ export default function Test(props){
     
     React.useEffect(() => {
         if(id){
+            props.setHeader(true)
             axiosInstance.get(`results/${id}`).then((response) => {
                 console.log("result: ", response.data)
                 setResult(response.data)

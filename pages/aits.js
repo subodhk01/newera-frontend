@@ -12,15 +12,14 @@ export default function TestSeries(props){
     const { profile, accessToken } = useAuth()
     
     const [ loading, setLoading ] = React.useState(true)
-    const [ name, setName ] = React.useState()
+    const [ name, setName ] = React.useState("dkfjjdk")
     const [ series, setSeries ] = React.useState()
     const [ sessions, setSessions ] = React.useState()
     React.useEffect(() => {
         props.setHeader(true)
-        console.log("window: ", window)
         let query = JSON.parse('{"' + decodeURI(window.location.search.substring(1)).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}')
-        console.log(query)
-        setName(query.name)
+        console.log("query: ", query)
+        setName(query.name || query.exam)
         axiosInstance
             .get(`/testseries/${window.location.search}`)
             .then((response) => {
@@ -35,7 +34,7 @@ export default function TestSeries(props){
         <AuthHOC>
             <SideBarLayout title="Tests">
                 <div className="p-2 p-md-5">
-                    <div>
+                    <div className="pt-0">
                         <h2>Exam : {name}</h2>
                     </div>
                     <div className="pt-3">

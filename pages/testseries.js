@@ -79,7 +79,7 @@ export default function TestSeries(props){
                                         }
                                     })
                                     :
-                                    <Empty description={<span>No tests yet, create one from above</span>} />
+                                    <Empty description={<span>Not Registered for any Test Series yet</span>} />
                                 }
                                 </>
                             }
