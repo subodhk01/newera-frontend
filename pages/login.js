@@ -4,7 +4,7 @@ import Layout from '../components/UI/Layout'
 import { axiosInstance } from '../utils/axios'
 import { useAuth } from '../utils/auth'
 
-export default function Home() {
+export default function Login(props) {
     const router = useRouter()
 
     const [ signup, setSignup ] = React.useState(false)
@@ -117,6 +117,9 @@ export default function Home() {
     // if( isLoggedIn ){
     //     return <Redirect to="/dashboard" />
     // }
+    React.useEffect(() => {
+        props.setHeader(true)
+    }, [])
     return (
         <Layout>
             <div className="d-flex align-items-center justify-content-center">

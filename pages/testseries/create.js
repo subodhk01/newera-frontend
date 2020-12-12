@@ -46,6 +46,7 @@ export default function Test(props){
     const [ success, setSuccess ] = React.useState("")
 
     React.useEffect(() => {
+        props.setHeader(false)
         axiosInstance.get("/tests/")
             .then((response) => {
                 console.log("test list: ", response.data)

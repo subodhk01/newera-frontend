@@ -7,7 +7,6 @@ export default function Layout(props){
             <Head>
                 <title>{props.title ? `${props.title} | NewEra Coaching Classes` : `NewEra Coaching Classes`}</title>
             </Head>
-            <Header full={props.header && props.header.full} />
             <div className="outer-container">
                 {props.children}
             </div>

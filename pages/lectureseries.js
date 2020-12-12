@@ -12,6 +12,7 @@ export default function LectureSeries(props){
     const [ series, setSeries ] = React.useState()
     const [ sessions, setSessions ] = React.useState()
     React.useEffect(() => {
+        props.setHeader(true)
         axiosInstance
             .get("/lectureseries")
             .then((response) => {

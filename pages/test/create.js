@@ -51,6 +51,7 @@ export default function Test(props){
     const [ error, setError ] = React.useState("")
 
     React.useEffect(() => {
+        props.setHeader(false)
         setLoading(false)
     }, [])
     React.useEffect(() => {

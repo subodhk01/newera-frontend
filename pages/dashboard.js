@@ -1,9 +1,13 @@
 import Link from 'next/link'
+import React from 'react'
 import AuthHOC from '../components/AuthHOC'
 import Layout from '../components/UI/Layout'
 import { SIDEBAR_ITEMS } from '../utils/constants'
 
 export default function Dashboard(props){
+    React.useEffect(() => {
+        props.setHeader(true)
+    })
     return(
         <AuthHOC>
             <Layout title="Dashboard">

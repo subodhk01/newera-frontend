@@ -54,6 +54,7 @@ export default function Test(props){
 
     React.useEffect(() => {
         if(id){
+            props.setHeader(false)
             axiosInstance.get(`tests/${id}/`).then((response) => {
                 console.log("test response: ", response.data)
                 let test = response.data

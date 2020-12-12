@@ -15,6 +15,8 @@ import Head from 'next/head'
 import Header from '../components/UI/Header'
 
 function MyApp({ Component, pageProps }) {
+    const [ header, setHeader ] = React.useState(true)
+
     const [ profile, setProfile ] = React.useState(cookie.load('profile') || {})
 	const [ access, setAccess ] = React.useState(cookie.load('access_token'))
     const [ refresh, setRefresh ] = React.useState(cookie.load('refresh_token'))
@@ -38,6 +40,7 @@ function MyApp({ Component, pageProps }) {
         cookie.remove('profile')
         setProfile({})
     }
+    console.log("page props: ", pageProps)
 	
 	return (
 		<AuthContext.Provider 
@@ -53,10 +56,12 @@ function MyApp({ Component, pageProps }) {
             <Head>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
             </Head>
-            <div>
-                <Header full />
-            </div>
-            <Component {...pageProps} />
+            {header &&
+                <div>
+                    <Header full />
+                </div>
+            }
+            <Component {...pageProps} setHeader={setHeader} />
         </AuthContext.Provider>
 	)
 }

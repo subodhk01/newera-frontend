@@ -28,6 +28,7 @@ export default function TestSeries(props){
     
     React.useEffect(() => {
         if(id){
+            props.setHeader(false)
             axiosInstance.get(`testseries/${id}/`).then((response) => {
                 console.log("series: ", response.data)
                 setSeries(response.data)

@@ -1,6 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import SideBarLayout from '../components/UI/WithSideBar'
+import { Empty } from 'antd'
 import LectureSeriesTable from '../components/Tables/LectureSeries/LectureSeriesTable'
 import { useAuth } from '../utils/auth'
 import { axiosInstance } from '../utils/axios'
@@ -14,6 +15,7 @@ export default function TestSeries(props){
     const [ series, setSeries ] = React.useState()
     const [ sessions, setSessions ] = React.useState()
     React.useEffect(() => {
+        props.setHeader(true)
         axiosInstance
             .get("/testseries/user")
             .then((response) => {
@@ -51,7 +53,7 @@ export default function TestSeries(props){
                                 </>
                                 :
                                 <>
-                                    {series && series.map((item, index) => {
+                                    {series && series.length ? series.map((item, index) => {
                                         if(item.registered_students.includes(profile.id) || profile.is_teacher){
                                             return (
                                                 <div className="item-shadow p-3 py-4 m-3 cursor-pointer border" key={index}>
@@ -75,7 +77,10 @@ export default function TestSeries(props){
                                                 </div>
                                             )
                                         }
-                                    })}
+                                    })
+                                    :
+                                    <Empty description={<span>No tests yet, create one from above</span>} />
+                                }
                                 </>
                             }
                         </div>

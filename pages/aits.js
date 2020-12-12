@@ -16,6 +16,7 @@ export default function TestSeries(props){
     const [ series, setSeries ] = React.useState()
     const [ sessions, setSessions ] = React.useState()
     React.useEffect(() => {
+        props.setHeader(true)
         console.log("window: ", window)
         let query = JSON.parse('{"' + decodeURI(window.location.search.substring(1)).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}')
         console.log(query)

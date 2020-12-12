@@ -19,6 +19,7 @@ export default function Tests(props){
     const [ sessions, setSessions ] = React.useState()
 
     React.useEffect(() => {
+        props.setHeader(true)
         axiosInstance
             .get("/tests")
             .then((response) => {
