@@ -35,6 +35,7 @@ export default function Test(props){
     const [ ending, setEnding ] = React.useState(false)
     const [ questionLoading, setQuestionLoading ] = React.useState(false)
     const [ test, setTest ] = React.useState()
+    const [ localSections, setLocalSections ] = React.useState({})
     const [ timeRemaining, setTimeRemaining ] = React.useState()
     const [ currentQuestion, setCurrentQuestion ] = React.useState(0)
     const [ response, setResponse ] = React.useState([{answer: "", marked: false, visited: true, time: 0},])
@@ -121,8 +122,12 @@ export default function Test(props){
                 let rawTest = response.data
                 setTest(response.data)
                 let newResponse = []
+                let localSections = {}
                 var count = 0
                 while(newResponse.length < rawTest.questions.length){
+                    if( !localSections[rawTest.questions[count].section] && localSections[rawTest.questions[count].section] != 0 ){
+                        localSections[rawTest.questions[count].section] = count
+                    }
                     if(rawTest.questions[count].type === 0 || rawTest.questions[count].type === 1){
                         newResponse.push({answer: [], marked: false, visited: false, time: 0})
                     }else if(rawTest.questions[count].type === 2){
@@ -134,6 +139,7 @@ export default function Test(props){
                 }
                 newResponse[currentQuestion].visited = true
                 setResponse(newResponse)
+                setLocalSections(localSections)
                 setTestStartModal(true)
             }).catch((error) => {
                 console.log(error)
@@ -203,10 +209,7 @@ export default function Test(props){
         setEnding(true)
         let finalResponse = response
         finalResponse.map((response, index) => {
-            console.log("-----")
-            console.log(response.time, fancyTimeFormat(response.time))
             response.time = fancyTimeFormat(response.time)
-            console.log(response.time)
         })
         console.log("final Response: ", finalResponse)
         axiosInstance.patch(`sessions/${session.id}/`, {
@@ -228,7 +231,7 @@ export default function Test(props){
                 style={customStyles}
                 contentLabel="Example Modal"
                 ariaHideApp={false}
-                //shouldCloseOnOverlayClick={false}
+                shouldCloseOnOverlayClick={false}
             >
                 <div className="text-center">
                     <div className="mb-3">
@@ -366,6 +369,21 @@ export default function Test(props){
                             </div>
                         </div>
                         <div className="col-12 col-lg-3 position-relative border-left pt-4 pb-10 questions-container">
+                            <div>
+                                <div className="d-flex flex-wrap justify-content-center mb-4">
+                                    {test && test.sections && test.sections.length ? test.sections.map((section, index) =>
+                                        <div className="d-flex" key={`section-${index}`}>
+                                            <div className={`font-09 mr-0 btn d-flex align-items-center ${test.questions[currentQuestion].section === section ? 'btn-warning' : 'btn-hollow text-muted'}`} key={`section-${index}`} onClick={() => setCurrentQuestion(localSections[section])}>
+                                                {section}
+                                            </div>
+                                            {/* <div className="btn ml-0 btn-danger py-0 px-2 d-flex align-items-center btn-right" onClick={() => handleSectionRemove(section)} style={{right: "5px", top: "3px"}}><IoIosCloseCircle size="24" /></div> */}
+                                        </div>
+                                    )
+                                    :
+                                        <Alert description="No sections" />
+                                    }
+                                </div>
+                            </div>
                             <div className="d-flex flex-wrap justify-content-center">
                                 {response.map((question, index) =>
                                     <div 

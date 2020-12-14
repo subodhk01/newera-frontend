@@ -4,8 +4,9 @@ import { axiosInstance, baseURL } from '../../utils/axios'
 import Router, { useRouter } from 'next/router'
 import TestHeader from '../../components/UI/TestHeader'
 import Options from '../../components/Test/Options'
+import { IoIosCloseCircle } from 'react-icons/io'
 
-import { Select, DatePicker, Space, Checkbox } from 'antd';
+import { Select, DatePicker, Space, Checkbox, Alert } from 'antd';
 import moment from 'moment';
 
 const { RangePicker } = DatePicker;
@@ -31,7 +32,10 @@ export default function Test(props){
     const [ free, setFree ] = React.useState(false)
     const [ dateTime, setDateTime ] = React.useState()
     const [ duration, setDuration ] = React.useState(180)
+    const [ sections, setSections ] = React.useState([])
+    const [ newSection, setNewSection ] = React.useState("")
     const [ questions, setQuestions ] = React.useState([{
+        section: "",
         image: "",
         type: 0,
         topic: "none",
@@ -130,14 +134,41 @@ export default function Test(props){
         let newAnswers = answers
         if(newAnswers[currentQuestion]){
             if(questions[currentQuestion].type === 0 || questions[currentQuestion].type === 1){
-                newResponse[currentQuestion].answer = []
+                newAnswers[currentQuestion].answer = []
             }else if(questions[currentQuestion].type === 2){
-                newResponse[currentQuestion].answer = ""
+                newAnswers[currentQuestion].answer = ""
             }else{
-                newResponse[currentQuestion].answer = [[],[],[],[]]
+                newAnswers[currentQuestion].answer = [[],[],[],[]]
             }
         }
         setAnswers(newAnswers)
+        setRender((render + 1) % 100) // a pseudo update
+    }
+
+    const handleNewSection = () => {
+        if(!newSection) return
+        setSections(sections => [...sections, newSection])
+        setNewSection("")
+        setRender((render + 1) % 100) // a pseudo update
+    }
+    const handleSectionRemove = (section) => {
+        let oldSections = sections
+        oldSections =  oldSections.filter((value) => {
+            console.log(value, section, value != section)
+            return value != section
+        })
+        console.log(oldSections)
+        setSections(oldSections)
+        setQuestions(questions => {
+            console.log("old questions: ", questions)
+            questions.map((question) => {
+                console.log("before: ", question.section)
+                if(question.section === section) question.section = ""
+                console.log("after: ", question.section)
+            })
+            console.log("new questions: ", questions)
+            return questions
+        })
         setRender((render + 1) % 100) // a pseudo update
     }
 
@@ -155,6 +186,7 @@ export default function Test(props){
             correctMarks: 4,
             incorrectMarks: 0,
             partialMarks: 0,
+            section: ""
         }])
     }
 
@@ -190,6 +222,13 @@ export default function Test(props){
         setRender((render + 1) % 100) // a pseudo update
     }
 
+    const handleSectionChange = (value) => {
+        let newQuestions = questions
+        newQuestions[currentQuestion].section = value
+        setQuestions(newQuestions)
+        setRender((render + 1) % 100) // a pseudo update
+    }
+
     const handleTestSave = () => {
         setError("")
         console.log("aits: ", aits, " - free: ", free)
@@ -202,10 +241,7 @@ export default function Test(props){
             created_by: profile.id,
             questions: questions,
             answers: answers,
-            sections: [{
-                start: 0,
-                end: questions.length
-            }],
+            sections: sections,
             aits: aits,
             free: free,
             activation_time: dateTime[0].toDate(),
@@ -215,7 +251,7 @@ export default function Test(props){
         .then((response) => {
             console.log("test save response: ", response.data)
             setError("Test successfully created!")
-            //Router.push("/tests")
+            Router.push("/tests")
         }).catch((error) => {
             console.log(error)
             setError(error && error.response && error.response.data || "Unexpected error, please try again")
@@ -261,6 +297,24 @@ export default function Test(props){
                     </div>
                     <div className="row no-gutters">
                         <div className="col-12 col-lg-3 border-right px-2 py-4">
+                            <div>
+                                <div className="d-flex flex-wrap justify-content-center mb-4">
+                                    {sections && sections.length ? sections.map((section, index) =>
+                                        <div className="d-flex" key={`section-${index}`}>
+                                            <div className={`font-09 mr-0 btn d-flex align-items-center btn-left ${questions[currentQuestion].section === section ? 'btn-warning' : 'btn-hollow text-muted'}`} key={`section-${index}`} onClick={() => handleSectionChange(section)}>
+                                                {section}
+                                            </div>
+                                            <div className="btn ml-0 btn-danger py-0 px-2 d-flex align-items-center btn-right" onClick={() => handleSectionRemove(section)} style={{right: "5px", top: "3px"}}><IoIosCloseCircle size="24" /></div>
+                                        </div>
+                                    )
+                                    :
+                                        <Alert description="No sections created" />
+                                    }
+                                </div>
+                            </div>
+                            <div>
+                                {!questions[currentQuestion].section && <Alert type="warning" className="px-2 py-1 mb-4 d-flex align-items-center" description="No section selected for the current question" />}
+                            </div>
                             <div className="d-flex flex-wrap justify-content-center">
                                 {answers.map((question, index) =>
                                     <div 
@@ -278,6 +332,18 @@ export default function Test(props){
                                 )}
                                 <div className={`m-2 item-shadow circle-big`} style={{fontSize: "3rem"}} onClick={() => handleNewQuestion()}>
                                     +
+                                </div>
+                            </div>
+                            <div>
+                                <div className="row no-gutters align-item-center mt-3">
+                                    <div className="col-7 p-2">
+                                        <input type="text" className="form-control" value={newSection} onChange={(event) => setNewSection(event.target.value)} placeholder="Section Name" />
+                                    </div>
+                                    <div className="col-5 p-2">
+                                        <div className="btn btn-info font-07 w-100 h-100 m-0 d-flex align-items-center justify-content-center" onClick={handleNewSection}>
+                                            Add Section
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -363,6 +429,16 @@ export default function Test(props){
                                     <div>
                                         <div className="w-75 mx-auto p-1 row no-gutters">
                                             <div className="col-12 p-2">
+                                                Section: {questions[currentQuestion].section}
+
+                                                {/* <Select style={{ width: "100%" }} onChange={handleSectionChange} value={questions[currentQuestion].section}>
+                                                    {sections && sections.map((section, index) => 
+                                                        <Option value={index}>{section}</Option>
+                                                    )}
+                                                </Select> */}
+                                            </div>
+                                            <div className="col-12 p-2">
+                                                Question Type: 
                                                 <Select defaultValue={0} style={{ width: "100%" }} onChange={handleQuestionTypeChange} value={questions[currentQuestion].type}>
                                                     <Option value={0}>Single Correct</Option>
                                                     <Option value={1}>Multiple Correct</Option>

@@ -40,6 +40,9 @@ export default function Test(props){
                 <div className="p-2 p-md-5">
                     {!loading &&
                         <>
+                            <div>
+                                <h2>Result Analysis</h2>
+                            </div>
                             <div className="py-3 d-flex align-items-center justify-content-end">
                                 <Link href={`/test/review/${id}`}>
                                     <a>
@@ -61,6 +64,29 @@ export default function Test(props){
                                 <div className="col-12 col-md-6">
                                     <h2>Marks Obtained: {result.marks && result.marks.total}/{result.marks && result.marks.max_marks && result.marks.max_marks[result.marks.max_marks.length - 1]}</h2>
                                 </div>
+                            </div>
+                            <div className="w-75 mx-auto">
+                                <h6>Ranks</h6>
+                                <table className="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Section</th>
+                                            <th>Ranks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {test.sections && test.sections.map((section, index) =>
+                                            <tr key={`sectionRow-${index}`}>
+                                                <td>{section}</td>
+                                                <td>{result && result.ranks && result.ranks.section_wise && result.ranks.section_wise[index]}</td>
+                                            </tr>
+                                        )}
+                                        <tr>
+                                            <td><strong>Overall</strong></td>
+                                            <td>{result && result.ranks && result.ranks.overall}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                             <div className="pt-3">
                                 <div className="row no-gutters">

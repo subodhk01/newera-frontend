@@ -99,7 +99,7 @@ body {
 .btn {
 	padding: 0.4rem 1.5rem;
 	border-radius: 50px;
-	margin: 0px 5px;
+	margin: 5px 5px;
 }
 .btn-success {
 	background-color: #25ba99;
@@ -111,6 +111,14 @@ body {
 }
 .btn-hollow {
 	border: 1px solid grey;
+}
+.btn-left {
+	border-bottom-right-radius: 0px;
+	border-top-right-radius: 0px;
+}
+.btn-right {
+	border-bottom-left-radius: 0px;
+	border-top-left-radius: 0px;
 }
 .hero-container {
 	min-height: 100vh;

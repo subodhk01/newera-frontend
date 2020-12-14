@@ -168,7 +168,7 @@ export default function Header(props){
                 </div>
                 <div className="d-none d-lg-flex align-items-center">
                     { HEADER_ITEMS.map((item, index1) => 
-                        <React.Fragment key={index1}>
+                        <React.Fragment key={`desktopNav${index1}`}>
                             {item.path && 
                                 <div>
                                     <Link href={item.path}>

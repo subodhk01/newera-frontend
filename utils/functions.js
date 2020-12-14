@@ -17,7 +17,6 @@ export function fancyTimeFormat(duration) {
 }
 
 export function fancyToNormalTimeFormat(time){
-    console.log("fancyTime: ", time)
     var result = "", hr = 0, min = 0, sec = 0
     if(time){
         if (time.split(":").length === 2){
