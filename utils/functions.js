@@ -41,3 +41,17 @@ export function arrayRemove(arr, value) {
         return ele != value; 
     });
 }
+
+export function numberToAlphabet(value){
+    const alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    return alpha[value]
+}
+
+export function arrayToAlphabet(arr){
+    const alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    let final = ""
+    arr.map((item) => {
+        final += numberToAlphabet(item)
+    })
+    return final
+}

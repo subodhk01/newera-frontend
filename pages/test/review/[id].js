@@ -8,7 +8,7 @@ import Options from '../../../components/Test/Options'
 import { PRIMARY_DARK } from '../../../utils/Colors'
 import { customStyles, customStyles2 } from '../../../utils/constants'
 import Modal from 'react-modal';
-import { fancyTimeFormat, arrayRemove, fancyToNormalTimeFormat } from '../../../utils/functions'
+import { fancyTimeFormat, arrayRemove, fancyToNormalTimeFormat, numberToAlphabet, arrayToAlphabet } from '../../../utils/functions'
 import Link from 'next/link'
 //Modal.setAppElement('#app');
 // import dynamic from 'next/dynamic'
@@ -110,6 +110,19 @@ export default function Test(props){
                                         <div>
                                             {/* <div dangerouslySetInnerHTML={createMarkup(test.questions[currentQuestion].text)}></div> */}
                                             <img src={test.questions[currentQuestion].image} />
+                                        </div>
+                                        <div className="font-12 mt-bold">
+                                            {result.result.question_wise_marks[currentQuestion].status === 0 && <div className="text-muted">Unattempted</div>}
+                                            {result.result.question_wise_marks[currentQuestion].status === 1 && <div className="text-danger">Incorrect</div>}
+                                            {result.result.question_wise_marks[currentQuestion].status === 2 && <div className="text-success">Correct</div>}
+                                            {result.result.question_wise_marks[currentQuestion].status === 3 && <div className="text-info">Partially Correct</div>}
+                                        </div>
+                                        <div className="font-12 mt-bold">
+                                            Correct Answer:{' '}
+                                                {typeof(test.answers[currentQuestion].answer) === 'object' && test.answers[currentQuestion].answer.length === 1 && typeof(test.answers[currentQuestion].answer[0]) === 'number' && numberToAlphabet(test.answers[currentQuestion].answer[0])}
+                                                {typeof(test.answers[currentQuestion].answer) === 'object' && test.answers[currentQuestion].answer.length > 1 && typeof(test.answers[currentQuestion].answer[0]) === 'number' &&  arrayToAlphabet(test.answers[currentQuestion].answer)}
+                                                {typeof(test.answers[currentQuestion].answer) != 'object' && test.answers[currentQuestion].answer}
+                                                {typeof(test.answers[currentQuestion].answer) === 'object' && typeof(test.answers[currentQuestion].answer[0]) === 'object' && `${arrayToAlphabet(test.answers[currentQuestion].answer[0])}, ${arrayToAlphabet(test.answers[currentQuestion].answer[1])}, ${arrayToAlphabet(test.answers[currentQuestion].answer[2])}, ${arrayToAlphabet(test.answers[currentQuestion].answer[3])}`}
                                         </div>
                                         <div>
                                             <Options 
