@@ -6,6 +6,7 @@ import AuthHOC from '../../components/AuthHOC'
 import SideBarLayout from '../../components/UI/WithSideBar'
 
 import { Bar } from "react-chartjs-2";
+import { Alert } from 'antd'
 
 // import dynamic from 'next/dynamic'
 
@@ -83,110 +84,126 @@ export default function Test(props){
                             <div>
                                 <h2>Result Analysis {result.practice && <span className="text-warning">Practice Attempt</span>}</h2>
                             </div>
-                            <div className="py-3 d-flex align-items-center justify-content-end">
-                                <Link href={`/test/review/${id}`}>
-                                    <a>
-                                        <div className="btn btn-info">
-                                            Question Wise Review
+                            {test.status > 1 ?
+                                <>
+                                    <div className="py-3 d-flex align-items-center justify-content-end">
+                                        <Link href={`/test/review/${id}`}>
+                                            <a>
+                                                <div className="btn btn-info">
+                                                    Question Wise Review
+                                                </div>
+                                            </a>
+                                        </Link>
+                                    </div>
+                                    <div className="row no-gutters">
+                                        <div className="col-12 col-md-6">
+                                            <div>
+                                                Test Name: {test.name}
+                                            </div>
+                                            <div>
+                                                Start Time: {new Date(result.checkin_time).toLocaleString()}
+                                            </div>
                                         </div>
-                                    </a>
-                                </Link>
-                            </div>
-                            <div className="row no-gutters">
-                                <div className="col-12 col-md-6">
-                                    <div>
-                                        Test Name: {test.name}
+                                        <div className="col-12 col-md-6">
+                                            <h2>Marks Obtained: {result.marks && result.marks.total}/{result.marks && result.marks.max_marks && result.marks.max_marks[result.marks.max_marks.length - 1]}</h2>
+                                        </div>
                                     </div>
-                                    <div>
-                                        Start Time: {new Date(result.checkin_time).toLocaleString()}
+                                    <div className="d-flex flex-wrap align-items-center justify-content-center py-4">
+                                        {result.ranks &&
+                                            <div className="">
+                                                <h6>Ranks</h6>
+                                                <table className="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Section</th>
+                                                            <th>Ranks</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {test.sections && test.sections.map((section, index) =>
+                                                            <tr key={`sectionRow-${index}`}>
+                                                                <td>{section}</td>
+                                                                <td>{result && result.ranks && result.ranks.section_wise && result.ranks.section_wise[index]}</td>
+                                                            </tr>
+                                                        )}
+                                                        <tr>
+                                                            <td><strong>Overall</strong></td>
+                                                            <td>{result && result.ranks && result.ranks.overall}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        }
+                                        <div className="col-12 col-lg-auto">
+                                            <Bar
+                                                data={data1}
+                                                options={{
+                                                    scales: {
+                                                        yAxes: [{
+                                                            ticks: {
+                                                                suggestedMin: 0,
+                                                                suggestedMax: result.marks.max_marks[result.marks.max_marks.length - 1]
+                                                            }
+                                                        }]
+                                                    },
+                                                    // maintainAspectRatio: false,
+                                                    // aspectRatio: 0.5
+                                                }}
+                                            />
+                                        </div>
+                                        <div className="col-12 col-lg-auto">
+                                            <Bar
+                                                data={data2}
+                                            // height="100%"
+                                            // width="100%"
+                                            // options={{
+                                            //     maintainAspectRatio: false,
+                                            //     aspectRatio: 0.5
+                                            // }}
+                                            />
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="col-12 col-md-6">
-                                    <h2>Marks Obtained: {result.marks && result.marks.total}/{result.marks && result.marks.max_marks && result.marks.max_marks[result.marks.max_marks.length - 1]}</h2>
-                                </div>
-                            </div>
-                            <div className="d-flex flex-wrap align-items-center justify-content-center py-4">
-                                {result.ranks && 
-                                    <div className="">
-                                        <h6>Ranks</h6>
-                                        <table className="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th>Section</th>
-                                                    <th>Ranks</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {test.sections && test.sections.map((section, index) =>
-                                                    <tr key={`sectionRow-${index}`}>
-                                                        <td>{section}</td>
-                                                        <td>{result && result.ranks && result.ranks.section_wise && result.ranks.section_wise[index]}</td>
-                                                    </tr>
-                                                )}
-                                                <tr>
-                                                    <td><strong>Overall</strong></td>
-                                                    <td>{result && result.ranks && result.ranks.overall}</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                }
-                                <div className="col-12 col-lg-auto">
-                                    <Bar
-                                        data={data1}
-                                        options={{
-                                            scales: {
-                                                yAxes: [{
-                                                    ticks: {
-                                                        suggestedMin: 0,
-                                                        suggestedMax: result.marks.max_marks[result.marks.max_marks.length - 1]
-                                                    }
-                                                }]
-                                            },
-                                            // maintainAspectRatio: false,
-                                            // aspectRatio: 0.5
-                                        }}
-                                    />
-                                </div>
-                                <div className="col-12 col-lg-auto">
-                                    <Bar
-                                        data={data2}
-                                        // height="100%"
-                                        // width="100%"
-                                        // options={{
-                                        //     maintainAspectRatio: false,
-                                        //     aspectRatio: 0.5
-                                        // }}
-                                    />
-                                </div>
-                            </div>
-                            <div className="pt-3">
-                                <div className="row no-gutters">
-                                    <div className="col-12 col-lg-5">
-                                        <table className="table table-bordered table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>Question No.</th>
-                                                    <th>Marks Obtained</th>
-                                                    <th>Status</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {result.result && result.result.question_wise_marks && result.result.question_wise_marks.map((item, index) => 
-                                                    <tr key={index}>
-                                                        <td>{index+1}</td>
-                                                        <td>{item.marks}</td>
-                                                        <td>{item.status}</td>
-                                                    </tr>
-                                                )}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div className="col-12 col-lg-7">
+                                    {/* <div className="pt-3">
+                                        <div className="row no-gutters">
+                                            <div className="col-12 col-lg-5">
+                                                <table className="table table-bordered table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Question No.</th>
+                                                            <th>Marks Obtained</th>
+                                                            <th>Status</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {result.result && result.result.question_wise_marks && result.result.question_wise_marks.map((item, index) => 
+                                                            <tr key={index}>
+                                                                <td>{index+1}</td>
+                                                                <td>{item.marks}</td>
+                                                                <td>{item.status}</td>
+                                                            </tr>
+                                                        )}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div className="col-12 col-lg-7">
+                                                
+                                            </div>
+                                        </div>
+                                    </div> */}
+                                </>
+                            :
+                                <div className="text-center">
+                                    <Alert description="Results will be available once test ends" />
+                                    <div className="mt-2">
+                                        <Link href="/tests">
+                                            <a className="btn btn-success">
+                                                Go to My Tests
+                                            </a>
+                                        </Link>
                                         
                                     </div>
                                 </div>
-                            </div>
+                            }
                         </>
                     }
                 </div>
