@@ -310,7 +310,7 @@ export default function Test(props){
                         </div>
                     </div>
                     <div className="row no-gutters">
-                        <div className="col-12 col-lg-9">
+                        <div className="col-12 col-lg-8">
                             {questionLoading ?
                                 <div>
                                     Loading
@@ -450,7 +450,7 @@ export default function Test(props){
                                 </>
                             }
                         </div>
-                        <div className="col-12 col-lg-3 position-relative border-left px-2 py-4 questions-container">
+                        <div className="col-12 col-lg-4 position-relative border-left px-2 py-4 questions-container">
                             <div>
                                 <div className="d-flex flex-wrap justify-content-center mb-4">
                                     {sections && sections.length ? sections.map((section, index) =>

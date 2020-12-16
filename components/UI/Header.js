@@ -119,13 +119,11 @@ export default function Header(props){
                                             <Collapse in={mobileDropdown == item.title}>
                                                 <div>
                                                     {item.items && item.items.map((child, index2) => 
-                                                        <Link href={child.path} key={index2}>
-                                                            <a>
-                                                                <div className="dropdown-item-mobile">
-                                                                    <div className="heading-bold font-12 text-white">{child.title}</div>
-                                                                </div>
-                                                            </a>
-                                                        </Link>
+                                                        <a href={child.path} key={index2}>
+                                                            <div className="dropdown-item-mobile">
+                                                                <div className="heading-bold font-12 text-white">{child.title}</div>
+                                                            </div>
+                                                        </a>
                                                     )}
                                                 </div>
                                             </Collapse>
@@ -135,16 +133,16 @@ export default function Header(props){
                                         <>
                                             {accessToken ?
                                                 <>
-                                                    <div>
+                                                    <div className="py-2">
                                                         <Link href="/dashboard">
-                                                            <a className={`menu-item position-relative`}>
+                                                            <a className={`position-relative`}>
                                                                 Dashboard
                                                                 <div className="menu-item-underline"></div>
                                                             </a>
                                                         </Link>
                                                     </div>
-                                                    <div onClick={() => handleLogout()}>
-                                                        <a className={`menu-item position-relative`}>
+                                                    <div onClick={() => handleLogout()} className="py-2">
+                                                        <a className={`position-relative`}>
                                                             Logout
                                                             <div className="menu-item-underline"></div>
                                                         </a>
@@ -188,16 +186,14 @@ export default function Header(props){
                                     <div className="dropdown-container" style={{left: "-70px"}}>
                                         <div className="dropdown d-flex flex-column align-items-center justify-content-center">
                                             {item.items && item.items.map((child, index2) => 
-                                                <Link href={child.path} key={index2}>
-                                                    <a>
-                                                        <div className="dropdown-item">
-                                                            <div className="d-flex align-items-center">
-                                                                <div className="heading-bold font-1">{child.title}</div>
-                                                            </div>
-                                                            <div className="content font-08">{child.content}</div>
+                                                <a href={child.path} key={index2}>
+                                                    <div className="dropdown-item">
+                                                        <div className="d-flex align-items-center">
+                                                            <div className="heading-bold font-1">{child.title}</div>
                                                         </div>
-                                                    </a>
-                                                </Link>
+                                                        <div className="content font-08">{child.content}</div>
+                                                    </div>
+                                                </a>
                                             )}
                                         </div>
                                     </div>
@@ -206,9 +202,9 @@ export default function Header(props){
                             {item.button &&
                                 <>
                                     {accessToken ?
-                                        <>
+                                        <div className="d-flex">
                                             <div key={'dashboard-button'}>
-                                                <Link href="/dashboard">
+                                                <Link href="/dashboard" key={'dashboard-link-button'}>
                                                     <a className={`menu-item position-relative`}>
                                                         Dashboard
                                                         <div className="menu-item-underline"></div>
@@ -221,7 +217,7 @@ export default function Header(props){
                                                     <div className="menu-item-underline"></div>
                                                 </a>
                                             </div>
-                                        </>
+                                        </div>
                                         :
                                         <div className="btn btn-arrow ml-3" key={'auth-button'}>
                                             <a href={item.to}>

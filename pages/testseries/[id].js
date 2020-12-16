@@ -32,7 +32,7 @@ export default function TestSeries(props){
             axiosInstance.get(`testseries/${id}/`).then((response) => {
                 console.log("series: ", response.data)
                 setSeries(response.data)
-                if(response.data.registered_students.includes(profile.id)){
+                if(response.data.registered_students.includes(profile.id) || response.data.price === 0 || response.data.free){
                     console.log("student is registered")
                     setRegistered(true)
                 }
