@@ -69,7 +69,7 @@ export default function Test(props){
                             let testseries = response.data, temptests = [], tempexam = 0
                             setTestSeriesName(testseries.name)
                             setPrice(testseries.price)
-                            setSelectedExam(testseries.exams[0].id)
+                            setSelectedExam(testseries.exams && testseries.exams.length && testseries.exams[0].id)
                             testseries.tests.map((test) => {temptests.push(test.id)})
                             setSelectedTests(temptests)
                             setLoading(false)

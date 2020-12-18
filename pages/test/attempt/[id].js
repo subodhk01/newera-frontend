@@ -220,6 +220,8 @@ export default function Test(props){
             Router.push(`/result/${session.id}`)
         }).catch((error) => {
             console.log(error)
+            setEnding(false)
+            setError("Unable to submit test, please try again")
         })
     }
 
@@ -270,10 +272,26 @@ export default function Test(props){
                             <div className="btn btn-warning" onClick={() => setTestEndModal(false)}>
                                 Cancel
                             </div>
+                            {error && 
+                                <Alert
+                                    className="mt-3"
+                                    message="Cannot Submit Test"
+                                    description={error}
+                                    type="error"
+                                />
+                            }
                         </div>
                         :
                         <div>
                             Submitting Responses...
+                            {error && 
+                                <Alert
+                                    className="mt-3"
+                                    message="Cannot Attempt Test"
+                                    description={error}
+                                    type="error"
+                                />
+                            }
                         </div> 
                     }
                 </div>
@@ -335,6 +353,13 @@ export default function Test(props){
                                         <div>
                                             {/* <div dangerouslySetInnerHTML={createMarkup(test.questions[currentQuestion].text)}></div> */}
                                             <img src={test.questions[currentQuestion].image} />
+                                        </div>
+                                        <div>
+                                            {test.questions[currentQuestion].text && 
+                                                <div className="p-3 font-12">
+                                                    {test.questions[currentQuestion].text}
+                                                </div>
+                                            }
                                         </div>
                                         <div>
                                             <Options 

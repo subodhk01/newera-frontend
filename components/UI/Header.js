@@ -219,7 +219,7 @@ export default function Header(props){
                                             </div>
                                         </div>
                                         :
-                                        <div className="btn btn-arrow ml-3" key={'auth-button'}>
+                                        <div className="btn btn-arrow ml-3 d-flex" key={'auth-button'}>
                                             <a href={item.to}>
                                                 <SingleArrowButton>
                                                     {item.title}

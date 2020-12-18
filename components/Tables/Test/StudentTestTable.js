@@ -1,6 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
-import { Table, Badge, Menu, Dropdown, Space, Empty } from 'antd';
+import { Table, Badge, Menu, Dropdown, Space, Empty, Alert } from 'antd';
 import { TEST_STATUS } from '../../../utils/constants';
 import Router from 'next/router';
 
@@ -23,6 +23,7 @@ export default function StudentTestTable(props) {
 	}, [props.tests])
 
 	const expandedRowRender = (row) => {
+		console.log(row)
 		let data = [];
 		const columns = [
 			{
@@ -50,21 +51,24 @@ export default function StudentTestTable(props) {
 				//dataIndex: 'operation',
 				key: 'operation',
 				render: (attempt) => (
-					<Space>
-						<Link href={`/test/review/${attempt.key}`}>
-							<a>
-								<div className="btn btn-warning font-08">
-								Review Test
-								</div>
-							</a>
-						</Link>
-						<Link href={`/result/${attempt.key}`}>
-							<a>
-								<div className="btn btn-warning font-08">
-									View Result
-								</div>
-							</a>
-						</Link>
+					<Space direction="vertical">
+						{TEST_STATUS[row.status] === "LIVE" && <Alert className="py-2" description="Results will be available after test ends" />}
+						<div>
+							<Link href={`/test/review/${attempt.key}`}>
+								<a>
+									<button className="btn btn-warning font-08" disabled={TEST_STATUS[row.status] === "LIVE"}>
+										Review Test
+									</button>
+								</a>
+							</Link>
+							<Link href={`/result/${attempt.key}`}>
+								<a>
+									<button className="btn btn-warning font-08" disabled={TEST_STATUS[row.status] === "LIVE"}>
+										View Result
+									</button>
+								</a>
+							</Link>
+						</div>
 					</Space>
 				),
 			},
@@ -112,14 +116,18 @@ export default function StudentTestTable(props) {
 	const columns = [
 		{ title: 'TestId', dataIndex: 'id', key: 'id' },
 		{ title: 'Name', dataIndex: 'name', key: 'name' },
-		{ title: 'Status', dataIndex: 'status', key: 'status' },
+		{ title: 'Status', key: 'status', render: (test) => TEST_STATUS[test.status] },
 		{ title: 'Duration', dataIndex: 'duration', key: 'duration' },
 		{ title: 'Action', key: 'operation', render: (test) => 
 			<Link href={`/test/attempt/${test.id}`}>
 				<a>
-					<div className="btn btn-info">
-						Start Test
-					</div>
+					{test.status < 1 ? 
+						<div>Test not yet started</div> 
+						: 
+						<button className="btn btn-info">
+							Start Test
+						</button>
+					}
 				</a>
 			</Link>
 		},
@@ -132,7 +140,7 @@ export default function StudentTestTable(props) {
 			id: item.id,
 			name: item.name,
 			duration: item.time_alotted,
-			status: TEST_STATUS[item.status]
+			status: item.status
 		})
 	})
 

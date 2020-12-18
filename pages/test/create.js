@@ -38,11 +38,16 @@ export default function Test(props){
         section: "",
         image: "",
         type: 0,
-        topic: "none",
+        text: "",
+        topic: "topic1",
         section: 0,
         correctMarks: 4,
         incorrectMarks: 0,
         partialMarks: 0,
+        option1text: "",
+        option2text: "",
+        option3text: "",
+        option4text: ""
     }])
     const [ currentQuestion, setCurrentQuestion ] = React.useState(0)
     const [ answers, setAnswers ] = React.useState([{
@@ -129,6 +134,18 @@ export default function Test(props){
         setQuestions(newQuestions)
         setRender((render + 1) % 100) // a pseudo update
     }
+    const handleQuestionText = (event) => {
+        let newQuestions = questions
+        newQuestions[currentQuestion].text = event.target.value
+        setQuestions(newQuestions)
+        setRender((render + 1) % 100) // a pseudo update
+    }
+    const handleOptionText = (option, value) => {
+        let newQuestions = questions
+        newQuestions[currentQuestion][`option${option}text`] = value
+        setQuestions(newQuestions)
+        setRender((render + 1) % 100) // a pseudo update
+    }
     
     const handleClear = () => {
         let newAnswers = answers
@@ -181,12 +198,17 @@ export default function Test(props){
         setQuestions([...questions, {
             image: "",
             type: 0,
-            topic: "none",
+            text: "",
+            topic: "topic1",
             section: 0,
             correctMarks: 4,
             incorrectMarks: 0,
             partialMarks: 0,
-            section: ""
+            section: "",
+            option1text: "",
+            option2text: "",
+            option3text: "",
+            option4text: ""
         }])
     }
 
@@ -234,6 +256,10 @@ export default function Test(props){
         console.log("aits: ", aits, " - free: ", free)
         if(!testName || !dateTime || !duration){
             setError("Please fill all details and mark answers to all the questions")
+            return
+        }
+        if(!sections.length){
+            setError("There should be at least one section")
             return
         }
         axiosInstance.post("/tests/", {
@@ -346,6 +372,19 @@ export default function Test(props){
                                     </div>
                                 </div>
                             </div>
+                            <div className="px-2 py-5 text-center">
+                                <div>
+                                    {error && typeof(error) === "string" && <span className="text-danger">{error}</span>}
+                                    {error && typeof(error) === "object" && 
+                                        Object.keys(error).map((key, index) => 
+                                            <span key={index} className="text-danger">{key} : {error[key]}</span>
+                                        )
+                                    }
+                                </div>
+                                <div className="btn btn-success" onClick={handleTestSave}>
+                                    Create Test
+                                </div>
+                            </div>
                         </div>
                         <div className="col-12 col-lg-9">
                             {questionLoading ?
@@ -448,11 +487,15 @@ export default function Test(props){
                                             </div>
                                             <div className="col-6 p-2">
                                                 Correct Marks: 
-                                                <input type="text" name="testname" className="form-control" value={questions[currentQuestion].correctMarks} onChange={handleCorrectMarks} />
+                                                <input type="text" name="correctMarks" className="form-control" value={questions[currentQuestion].correctMarks} onChange={handleCorrectMarks} />
                                             </div>
                                             <div className="col-6 p-2">
                                                 Incorrect Marks: 
-                                                <input type="text" name="testname" className="form-control" value={questions[currentQuestion].incorrectMarks} onChange={handleIncorrectMarks} />
+                                                <input type="text" name="incorrectMarks" className="form-control" value={questions[currentQuestion].incorrectMarks} onChange={handleIncorrectMarks} />
+                                            </div>
+                                            <div className="col-12 p-2">
+                                                Question Text <span className="text-muted">(Optional)</span>: 
+                                                <input type="text" name="questiontext" className="form-control" value={questions[currentQuestion].text} onChange={handleQuestionText} />
                                             </div>
                                         </div>
                                         <div className="p-1">
@@ -464,7 +507,7 @@ export default function Test(props){
                                                 handleMultipleCorrect={handleMultipleCorrect}
                                                 handleNumericalCorrect={handleNumericalCorrect}
                                                 handleMatrixCorrect={handleMatrixCorrect}
-                                                
+                                                handleOptionText={handleOptionText}
                                             />
                                         </div>
                                         <div className="d-flex align-items-center p-3">
@@ -475,19 +518,6 @@ export default function Test(props){
                                     </div>
                                 </>
                             }
-                        </div>
-                        <div className="p-2">
-                            <div className="btn btn-info" onClick={handleTestSave}>
-                                Create Test
-                            </div>
-                            <div>
-                                {error && typeof(error) === "string" && <span className="text-danger">{error}</span>}
-                                {error && typeof(error) === "object" && 
-                                    Object.keys(error).map((key, index) => 
-                                        <span key={index} className="text-danger">{key} : {error[key]}</span>
-                                    )
-                                }
-                            </div>
                         </div>
                     </div>
                     <style jsx>{`
