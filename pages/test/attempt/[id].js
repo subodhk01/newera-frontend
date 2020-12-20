@@ -398,7 +398,7 @@ export default function Test(props){
                                 <div className="d-flex flex-wrap justify-content-center mb-4">
                                     {test && test.sections && test.sections.length ? test.sections.map((section, index) =>
                                         <div className="d-flex" key={`section-${index}`}>
-                                            <div className={`font-09 mr-0 btn d-flex align-items-center ${test.questions[currentQuestion].section === section ? 'btn-warning' : 'btn-hollow text-muted'}`} key={`section-${index}`} onClick={() => setCurrentQuestion(localSections[section])}>
+                                            <div className={`font-09 mr-0 btn d-flex align-items-center ${test.questions[currentQuestion].section === section ? 'btn-warning' : 'btn-hollow text-muted'}`} key={`section-${index}`}>
                                                 {section}
                                             </div>
                                             {/* <div className="btn ml-0 btn-danger py-0 px-2 d-flex align-items-center btn-right" onClick={() => handleSectionRemove(section)} style={{right: "5px", top: "3px"}}><IoIosCloseCircle size="24" /></div> */}

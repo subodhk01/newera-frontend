@@ -111,6 +111,9 @@ export default function Test(props){
                                             {/* <div dangerouslySetInnerHTML={createMarkup(test.questions[currentQuestion].text)}></div> */}
                                             <img src={test.questions[currentQuestion].image} />
                                         </div>
+                                        <div>
+                                            Topic: {test.questions[currentQuestion].topic}
+                                        </div>
                                         <div className="font-12 mt-bold">
                                             {result.result.question_wise_marks[currentQuestion].status === 0 && <div className="text-muted">Unattempted</div>}
                                             {result.result.question_wise_marks[currentQuestion].status === 1 && <div className="text-danger">Incorrect</div>}

@@ -33,13 +33,14 @@ export default function Test(props){
     const [ dateTime, setDateTime ] = React.useState()
     const [ duration, setDuration ] = React.useState(180)
     const [ sections, setSections ] = React.useState([])
+    const [ topics, setTopics ] = React.useState()
     const [ newSection, setNewSection ] = React.useState("")
     const [ questions, setQuestions ] = React.useState([{
         section: "",
         image: "",
         type: 0,
         text: "",
-        topic: "topic1",
+        topic: "none",
         section: 0,
         correctMarks: 4,
         incorrectMarks: 0,
@@ -61,7 +62,15 @@ export default function Test(props){
 
     React.useEffect(() => {
         props.setHeader(false)
-        setLoading(false)
+        axiosInstance.get("/topics/list")
+            .then(response => {
+                console.log("topics: ", response.data)
+                setTopics(response.data)
+                setLoading(false)
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }, [])
     React.useEffect(() => {
         console.log(files)
@@ -199,7 +208,7 @@ export default function Test(props){
             image: "",
             type: 0,
             text: "",
-            topic: "topic1",
+            topic: "none",
             section: 0,
             correctMarks: 4,
             incorrectMarks: 0,
@@ -218,9 +227,21 @@ export default function Test(props){
         setQuestions(newQuestions)
         setRender((render + 1) % 100) // a pseudo update
     }
+    const handleSolutionImage = (url) => {
+        let newQuestions = questions
+        newQuestions[currentQuestion].solution = baseURL + 'media/' + url
+        setQuestions(newQuestions)
+        setRender((render + 1) % 100) // a pseudo update
+    }
     const removeQuestionImage = (url) => {
         let newQuestions = questions
         newQuestions[currentQuestion].image = ""
+        setQuestions(newQuestions)
+        setRender((render + 1) % 100) // a pseudo update
+    }
+    const removeSolutionImage = (url) => {
+        let newQuestions = questions
+        newQuestions[currentQuestion].solution = ""
         setQuestions(newQuestions)
         setRender((render + 1) % 100) // a pseudo update
     }
@@ -241,6 +262,13 @@ export default function Test(props){
         newAnswers[currentQuestion].answered = false
         setQuestions(newQuestions)
         setAnswers(answers)
+        setRender((render + 1) % 100) // a pseudo update
+    }
+
+    const handleTopicChange = (value) => {
+        let newQuestions = questions
+        newQuestions[currentQuestion].topic = value
+        setQuestions(newQuestions)
         setRender((render + 1) % 100) // a pseudo update
     }
 
@@ -397,14 +425,17 @@ export default function Test(props){
                                             Q. {currentQuestion + 1}
                                         </div>
                                     </div>
-                                    <div className="p-3">
+                                    <div className="p-3 text-center">
                                         {questions[currentQuestion].image && <img src={questions[currentQuestion].image} style={{maxWidth: "80%"}} />}
+                                    </div>
+                                    <div className="p-3 text-center">
+                                        {questions[currentQuestion].solution && <img src={questions[currentQuestion].solution} style={{maxWidth: "80%"}} />}
                                     </div>
                                     <div className="p-3">
                                         <FilePond
                                             files={""}
                                             allowMultiple={false}
-                                            name="filepond"
+                                            name="filepond-question"
                                             server={{
                                                 process: (fieldName, file, metadata, load, error, progress, abort) => {
                                                     const formData = new FormData()
@@ -462,7 +493,72 @@ export default function Test(props){
                                                 }
                                             }}
                                             
-                                            labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+                                            labelIdle='Drag & Drop your question image or <span class="filepond--label-action">Browse</span>'
+                                        />
+                                    </div>
+                                    <div className="p-3">
+                                    <FilePond
+                                            files={""}
+                                            allowMultiple={false}
+                                            name="filepond-solution"
+                                            server={{
+                                                process: (fieldName, file, metadata, load, error, progress, abort) => {
+                                                    const formData = new FormData()
+                                                    formData.append('image', file, file.name)
+
+                                                    // aborting the request
+                                                    const CancelToken = axios.CancelToken
+                                                    const source = CancelToken.source()
+
+                                                    axios({
+                                                        method: 'PUT',
+                                                        url: `${baseURL}question/create`,
+                                                        data: formData,
+                                                        cancelToken: source.token,
+                                                        onUploadProgress: (e) => {
+                                                            // updating progress indicator
+                                                            progress(e.lengthComputable, e.loaded, e.total)
+                                                        }
+                                                    }).then(response => {
+                                                        // passing the file id to FilePond
+                                                        load(response.file)
+                                                        console.log(response.data.url)
+                                                        handleSolutionImage(response.data.url)
+                                                    }).catch((thrown) => {
+                                                        if (axios.isCancel(thrown)) {
+                                                            console.log('Request canceled', thrown.message)
+                                                        } else {
+                                                            // handle error
+                                                        }
+                                                    })
+                                                    // Setup abort interface
+                                                    return {
+                                                        abort: () => {
+                                                            source.cancel('Operation canceled by the user.')
+                                                            abort()
+                                                        }
+                                                    }
+                                                },
+                                                revert: (uniqueFileId, load, error) => {
+                                                    removeSolutionImage()
+                                                    console.log("revert called")
+                                                },
+                                                load: (source, load, error, progress, abort, headers) => {
+                                                    console.log("load called")
+                                                },
+                                                fetch: (url, load, error, progress, abort, headers) => {
+                                                    console.log("fetch called")
+                                                },
+                                                restore: (uniqueFileId, load, error, progress, abort, headers) => {
+                                                    console.log("restore called")
+                                                },
+                                                remove: (source, load, error) => {
+                                                    removeSolutionImage()
+                                                    console.log("remove called")
+                                                }
+                                            }}
+                                            
+                                            labelIdle='Drag & Drop your solution image or <span class="filepond--label-action">Browse</span>'
                                         />
                                     </div>
                                     <div>
@@ -492,6 +588,27 @@ export default function Test(props){
                                             <div className="col-6 p-2">
                                                 Incorrect Marks: 
                                                 <input type="text" name="incorrectMarks" className="form-control" value={questions[currentQuestion].incorrectMarks} onChange={handleIncorrectMarks} />
+                                            </div>
+                                            <div className="col-12 p-2">
+                                                Topic: 
+                                                <Select
+                                                    showSearch
+                                                    style={{ width: "100%" }}
+                                                    placeholder="Choose Topic"
+                                                    optionFilterProp="children"
+                                                    filterOption={(input, option) =>
+                                                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                                    }
+                                                    filterSort={(optionA, optionB) =>
+                                                        optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())
+                                                    }
+                                                    value={questions[currentQuestion].topic}
+                                                    onChange={handleTopicChange}
+                                                >
+                                                    {topics && topics.map((topic, index) =>
+                                                        <Option value={topic.name}>{topic.name}</Option>
+                                                    )}
+                                                </Select>
                                             </div>
                                             <div className="col-12 p-2">
                                                 Question Text <span className="text-muted">(Optional)</span>: 
