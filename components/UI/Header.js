@@ -22,7 +22,7 @@ const HEADER_ITEMS = [
                 title: "Loading",
                 content: "",
                 image: "/static/header/about.png",
-                path: ""
+                disabled: true
             }
         ]
     },
@@ -185,16 +185,22 @@ export default function Header(props){
                                     </div>
                                     <div className="dropdown-container" style={{left: "-70px"}}>
                                         <div className="dropdown d-flex flex-column align-items-center justify-content-center">
-                                            {item.items && item.items.map((child, index2) => 
-                                                <a href={child.path} key={index2}>
-                                                    <div className="dropdown-item">
-                                                        <div className="d-flex align-items-center">
-                                                            <div className="heading-bold font-1">{child.title}</div>
-                                                        </div>
-                                                        <div className="content font-08">{child.content}</div>
-                                                    </div>
-                                                </a>
-                                            )}
+                                            {item.items && item.items.map((child, index2) => {
+                                                if(item.disabled){
+                                                    return "Loading..."
+                                                }else{
+                                                    return (
+                                                        <a href={child.path} key={index2}>
+                                                            <div className="dropdown-item">
+                                                                <div className="d-flex align-items-center">
+                                                                    <div className="heading-bold font-1">{child.title}</div>
+                                                                </div>
+                                                                <div className="content font-08">{child.content}</div>
+                                                            </div>
+                                                        </a>
+                                                    )
+                                                }
+                                            })}
                                         </div>
                                     </div>
                                 </div>

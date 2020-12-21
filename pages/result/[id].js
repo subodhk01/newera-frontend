@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import AuthHOC from '../../components/AuthHOC'
 import SideBarLayout from '../../components/UI/WithSideBar'
 
-import { Bar } from "react-chartjs-2";
+import { Bar, Pie } from "react-chartjs-2";
 import { Alert } from 'antd'
 
 // import dynamic from 'next/dynamic'
@@ -24,6 +24,7 @@ export default function Test(props){
     const [ test, setTest ] = React.useState()
     const [ data1, setData1 ] = React.useState()
     const [ data2, setData2 ] = React.useState()
+    const [ data3, setData3 ] = React.useState()
     
     React.useEffect(() => {
         if(id){
@@ -32,6 +33,17 @@ export default function Test(props){
                 console.log("result: ", response.data)
                 setResult(response.data)
                 setTest(response.data && response.data.test)
+                let topic_wise_keys = []
+                let topic_wise_marks = []
+                if(response.data.result && response.data.result.topic_wise_marks){
+                    response.data.result.topic_wise_marks.map(item => {
+                        Object.keys(item).map(topic => {
+                            topic_wise_keys.push(topic)
+                            topic_wise_marks.push(item[topic])
+                        })
+                    })
+                }
+                console.log(topic_wise_keys, topic_wise_marks)
                 const chartData1 = {
                     labels: ["You", "Average", "Highest"],
                     datasets: [
@@ -66,8 +78,25 @@ export default function Test(props){
                         }
                     ]
                 }
+                const chartData3 = {
+                    labels: topic_wise_keys,
+                    datasets: [{
+                        data: topic_wise_marks,
+                        backgroundColor: [
+                            '#FF6384',
+                            '#36A2EB',
+                            '#FFCE56'
+                        ],
+                        hoverBackgroundColor: [
+                            '#FF6384',
+                            '#36A2EB',
+                            '#FFCE56'
+                        ]
+                    }]
+                };
                 setData1(chartData1)
                 setData2(chartData2)
+                setData3(chartData3)
                 setLoading(false)
             }).catch((error) => {
                 console.log(error)
@@ -110,7 +139,7 @@ export default function Test(props){
                                     </div>
                                     <div className="d-flex flex-wrap align-items-center justify-content-center py-4">
                                         {result.ranks &&
-                                            <div className="">
+                                            <div className="col-12 col-lg-4 p-2 mb-4">
                                                 <h6>Ranks</h6>
                                                 <table className="table table-bordered">
                                                     <thead>
@@ -134,7 +163,8 @@ export default function Test(props){
                                                 </table>
                                             </div>
                                         }
-                                        <div className="col-12 col-lg-auto">
+                                        <div className="col-12 col-lg-4 p-2 mb-4">
+                                            <h6>Compair with others</h6>
                                             <Bar
                                                 data={data1}
                                                 options={{
@@ -146,21 +176,25 @@ export default function Test(props){
                                                             }
                                                         }]
                                                     },
-                                                    // maintainAspectRatio: false,
+                                                    maintainAspectRatio: true,
                                                     // aspectRatio: 0.5
+                                                }}
+                                                height="300px"
+                                            />
+                                        </div>
+                                        <div className="col-12 col-lg-4 p-2 mb-4">
+                                            <h6>Subject wise marks</h6>
+                                            <Bar
+                                                data={data2}
+                                                height="300px"
+                                                options={{
+                                                    maintainAspectRatio: true
                                                 }}
                                             />
                                         </div>
-                                        <div className="col-12 col-lg-auto">
-                                            <Bar
-                                                data={data2}
-                                            // height="100%"
-                                            // width="100%"
-                                            // options={{
-                                            //     maintainAspectRatio: false,
-                                            //     aspectRatio: 0.5
-                                            // }}
-                                            />
+                                        <div className="col-12 col-lg-4 p-2 mb-4">
+                                            <h6>Topic wise marks</h6>
+                                            <Pie data={data3} height="300px" options={{ maintainAspectRatio: true }}/>
                                         </div>
                                     </div>
                                     {/* <div className="pt-3">

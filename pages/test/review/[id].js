@@ -7,6 +7,7 @@ import { BsArrowLeft, BsArrowRight } from 'react-icons/bs'
 import Options from '../../../components/Test/Options'
 import { PRIMARY_DARK } from '../../../utils/Colors'
 import { customStyles, customStyles2 } from '../../../utils/constants'
+import { Alert } from 'antd'
 import Modal from 'react-modal';
 import { fancyTimeFormat, arrayRemove, fancyToNormalTimeFormat, numberToAlphabet, arrayToAlphabet } from '../../../utils/functions'
 import Link from 'next/link'
@@ -32,6 +33,7 @@ export default function Test(props){
     const [ questionLoading, setQuestionLoading ] = React.useState(false)
     const [ result, setResult ] = React.useState()
     const [ test, setTest ] = React.useState()
+    const [ localSections, setLocalSections ] = React.useState()
     const [ currentQuestion, setCurrentQuestion ] = React.useState(0)
     const [ response, setResponse ] = React.useState()
     const [ render, setRender ] = React.useState(0)
@@ -45,6 +47,16 @@ export default function Test(props){
             props.setHeader(false)
             axiosInstance.get(`results/${id}/`).then((response) => {
                 console.log("result response: ", response.data)
+                let test = response.data && response.data.test
+                let localSections = {}
+                for(let count in test.questions){
+                    console.log(count)
+                    if( !localSections[test.questions[count].section] && localSections[test.questions[count].section] != 0 ){
+                        localSections[test.questions[count].section] = parseInt(count)
+                    }
+                }
+                console.log(localSections)
+                setLocalSections(localSections)
                 setResult(response.data)
                 setTest(response.data && response.data.test)
                 setResponse(response.data && response.data.response)
@@ -159,6 +171,21 @@ export default function Test(props){
                             </div>
                         </div>
                         <div className="col-12 col-lg-3 position-relative border-left py-4 questions-container">
+                            <div>
+                                <div className="d-flex flex-wrap justify-content-center mb-4">
+                                    {test && test.sections && test.sections.length ? test.sections.map((section, index) =>
+                                        <div className="d-flex" key={`section-${index}`}>
+                                            <div className={`font-09 mr-0 btn d-flex align-items-center ${test.questions[currentQuestion].section === section ? 'btn-warning' : 'btn-hollow text-muted'}`} key={`section-${index}`} onClick={() => handleCurrentQuestion(localSections[section])}>
+                                                {section}
+                                            </div>
+                                            {/* <div className="btn ml-0 btn-danger py-0 px-2 d-flex align-items-center btn-right" onClick={() => handleSectionRemove(section)} style={{right: "5px", top: "3px"}}><IoIosCloseCircle size="24" /></div> */}
+                                        </div>
+                                    )
+                                    :
+                                        <Alert description="No sections" />
+                                    }
+                                </div>
+                            </div>
                             <div className="d-flex flex-wrap justify-content-center">
                                 {response.map((question, index) =>
                                     <div 
