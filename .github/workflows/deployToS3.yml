@@ -36,10 +36,10 @@ jobs:
           npm install
       - name: Production Build
         run: |
-          npm build
+          npm run-script build
       - name: Nextjs Export
         run: |
-          npm export
+          npm run-script export
       - name: Unit Tests
         run: |
           npm test
