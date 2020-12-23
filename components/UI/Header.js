@@ -150,11 +150,13 @@ export default function Header(props){
                                                 </>
                                                 :
                                                 <div className="text-center py-4 position-relative" style={{left: "-20px"}}>
-                                                    <a href={item.to}>
-                                                        <SingleArrowButton>
-                                                            {item.title}
-                                                        </SingleArrowButton>
-                                                    </a>
+                                                     <Link href={item.to}>
+                                                        <a>
+                                                            <SingleArrowButton>
+                                                                {item.title}
+                                                            </SingleArrowButton>
+                                                        </a>
+                                                    </Link>
                                                 </div>
                                             }
                                         </>
@@ -226,11 +228,13 @@ export default function Header(props){
                                         </div>
                                         :
                                         <div className="btn btn-arrow ml-3 d-flex" key={'auth-button'}>
-                                            <a href={item.to}>
-                                                <SingleArrowButton>
-                                                    {item.title}
-                                                </SingleArrowButton>
-                                            </a>
+                                            <Link href={item.to}>
+                                                <a>
+                                                    <SingleArrowButton>
+                                                        {item.title}
+                                                    </SingleArrowButton>
+                                                </a>
+                                            </Link>
                                         </div>
                                     }
                                 </>
