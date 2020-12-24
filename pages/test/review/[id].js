@@ -36,6 +36,7 @@ export default function Test(props){
     const [ localSections, setLocalSections ] = React.useState()
     const [ currentQuestion, setCurrentQuestion ] = React.useState(0)
     const [ response, setResponse ] = React.useState()
+    const [ solutionModal, setSolutionModal ] = React.useState(false)
     const [ render, setRender ] = React.useState(0)
 
     const handleCurrentQuestion = (index) => {
@@ -76,6 +77,31 @@ export default function Test(props){
                 :
                 <>
                     <div>
+                        <Modal
+                            isOpen={solutionModal}
+                            onRequestClose={() => setSolutionModal(false)}
+                            style={customStyles2}
+                            contentLabel="Example Modal"
+                            ariaHideApp={false}
+                            shouldCloseOnOverlayClick={false}
+                        >
+                            <div className="text-center">
+                                <h5 className="mb-3">
+                                    Solution
+                                </h5>
+                                <div>
+                                    <span>{test.questions[currentQuestion].solutionText}</span>
+                                </div>
+                                <div>
+                                    <img src={test.questions[currentQuestion].solution} />
+                                </div>
+                                <div className="text-right">
+                                    <div className="btn btn-warning" onClick={() => setSolutionModal(false)}>
+                                        Close
+                                    </div>
+                                </div>
+                            </div>
+                        </Modal>
                         <TestHeader testName={test.name} />
                         <div className="d-flex align-items-center p-2 border-bottom">
                             <div className="circle border-green m-2">
@@ -138,6 +164,9 @@ export default function Test(props){
                                                 {typeof(test.answers[currentQuestion].answer) === 'object' && test.answers[currentQuestion].answer.length > 1 && typeof(test.answers[currentQuestion].answer[0]) === 'number' &&  arrayToAlphabet(test.answers[currentQuestion].answer)}
                                                 {typeof(test.answers[currentQuestion].answer) != 'object' && test.answers[currentQuestion].answer}
                                                 {typeof(test.answers[currentQuestion].answer) === 'object' && typeof(test.answers[currentQuestion].answer[0]) === 'object' && `${arrayToAlphabet(test.answers[currentQuestion].answer[0])}, ${arrayToAlphabet(test.answers[currentQuestion].answer[1])}, ${arrayToAlphabet(test.answers[currentQuestion].answer[2])}, ${arrayToAlphabet(test.answers[currentQuestion].answer[3])}`}
+                                        </div>
+                                        <div>
+                                            <div className="btn btn-info" onClick={() => setSolutionModal(true)}>See Solution</div>
                                         </div>
                                         <div>
                                             <Options 
