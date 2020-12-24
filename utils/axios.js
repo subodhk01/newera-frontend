@@ -4,7 +4,7 @@ import cookie from 'react-cookies'
 const debug = 0
 const prod = 1
 export const baseURL = debug ? "http://localhost:8000/" : 'https://newera-backend.herokuapp.com/'
-export const prodURL = "http://ec2-52-66-94-101.ap-south-1.compute.amazonaws.com:8000/"
+export const prodURL = "http://api.neweraonlinecoaching.com/"
 //const baseURL = debug ? "http://localhost:8000/" : 'http://materate-math-a-hack-results.ap-south-1.elasticbeanstalk.com/'
 
 const axiosInstance = axios.create({
