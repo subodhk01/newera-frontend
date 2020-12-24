@@ -39,7 +39,7 @@ export default function Home(props) {
                     <div className="d-flex align-items-strech justify-content-center flex-wrap py-5">
                         <div className="feature">
                             <div>
-                                <img src="https://neweraonlinecoaching.com/static/images/teacher.png" />
+                                <img className="border-circle" src="/static/images/teacher.png" />
                             </div>
                             <div>
                                 <h3 className="mt-bold mt-3 mb-0">Expert Faculty</h3>
@@ -48,7 +48,7 @@ export default function Home(props) {
                         </div>
                         <div className="feature">
                             <div>
-                                <img src="https://neweraonlinecoaching.com/static/images/test.png" />
+                                <img className="border-circle" src="/static/images/test.png" />
                             </div>
                             <div>
                                 <h3 className="mt-bold mt-3 mb-0">Our Test Series</h3>
@@ -57,7 +57,7 @@ export default function Home(props) {
                         </div>
                         <div className="feature">
                             <div>
-                                <img src="https://neweraonlinecoaching.com/static/images/lecture.png" />
+                                <img className="border-circle" src="/static/images/lecture.png" />
                             </div>
                             <div>
                                 <h3 className="mt-bold mt-3 mb-0">Online Video Lectures</h3>
@@ -66,7 +66,7 @@ export default function Home(props) {
                         </div>
                         <div className="feature">
                             <div>
-                                <img src="https://neweraonlinecoaching.com/static/images/star.png" />
+                                <img className="border-circle" src="/static/images/star.png" />
                             </div>
                             <div>
                                 <h3 className="mt-bold mt-3 mb-0">Awards</h3>
@@ -82,7 +82,7 @@ export default function Home(props) {
                             <Link href={`/aits/?exam=${exam.slug}&name=${exam.name}`}>
                                 <a className="feature feature-small item-shadow p-0">
                                     <div>
-                                        <img src="https://neweraonlinecoaching.com/static/images/exams/IIT-JEE-Main-Advanced-Test-Series_jNDVHxC.jpg" />
+                                        <img src="/static/images/jeeadvance.jpg" />
                                     </div>
                                     <div className="p-3">
                                         {exam.name}
@@ -117,6 +117,9 @@ export default function Home(props) {
                 }
                 .feature h3 {
                     color: rgba(0,0,0,0.8);
+                }
+                .border-circle {
+                    border-radius: 50px !important;
                 }
                 .feature img {
                     border-radius: 10px 10px 0px 00px;
