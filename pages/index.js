@@ -82,7 +82,7 @@ export default function Home(props) {
                             <Link href={`/aits/?exam=${exam.slug}&name=${exam.name}`}>
                                 <a className="feature feature-small item-shadow p-0">
                                     <div>
-                                        <img src="/static/images/jeeadvance.jpg" />
+                                        <img src={exam.image} />
                                     </div>
                                     <div className="p-3">
                                         {exam.name}
