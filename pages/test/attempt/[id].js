@@ -350,9 +350,9 @@ export default function Test(props){
                                         </div>
                                     </div>
                                     <div>
-                                        <div>
+                                        <div className="text-center">
                                             {/* <div dangerouslySetInnerHTML={createMarkup(test.questions[currentQuestion].text)}></div> */}
-                                            <img src={test.questions[currentQuestion].image} />
+                                            <img src={test.questions[currentQuestion].image} className="mx-auto" style={{maxWidth: "80%"}} />
                                         </div>
                                         <div>
                                             {test.questions[currentQuestion].text && 
@@ -395,7 +395,7 @@ export default function Test(props){
                         </div>
                         <div className="col-12 col-lg-3 position-relative border-left pt-4 pb-10 questions-container">
                             <div>
-                                <div className="d-flex flex-wrap justify-content-center mb-4">
+                                <div className="d-flex flex-wrap justify-content-center mb-1">
                                     {test && test.sections && test.sections.length ? test.sections.map((section, index) =>
                                         <div className="d-flex" key={`section-${index}`}>
                                             <div className={`font-09 mr-0 btn d-flex align-items-center ${test.questions[currentQuestion].section === section ? 'btn-warning' : 'btn-hollow text-muted'}`} key={`section-${index}`} onClick={() => handleCurrentQuestion(localSections[section])}>
@@ -407,6 +407,20 @@ export default function Test(props){
                                     :
                                         <Alert description="No sections" />
                                     }
+                                </div>
+                            </div>
+                            <div className="np-container w-100 p-3">
+                                <div className="row no-gutters text-center">
+                                    <div className="col-6 p-2">
+                                        <button className="btn btn-warning w-75" onClick={() => handleCurrentQuestion(currentQuestion - 1)} disabled={currentQuestion === 0}>
+                                            <BsArrowLeft color="white" size="30" />
+                                        </button>
+                                    </div>
+                                    <div className="col-6 p-2">
+                                        <button className="btn btn-warning w-75" onClick={() => handleCurrentQuestion(currentQuestion + 1)} disabled={currentQuestion === response.length - 1}>
+                                            <BsArrowRight color="white" size="30" />
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             <div className="d-flex flex-wrap justify-content-center">
@@ -429,20 +443,6 @@ export default function Test(props){
                                         } 
                                     </div>
                                 )}
-                            </div>
-                            <div className="np-container position-absolute w-100 p-3">
-                                <div className="row no-gutters text-center">
-                                    <div className="col-6 p-2">
-                                        <button className="btn btn-warning w-75" onClick={() => handleCurrentQuestion(currentQuestion - 1)} disabled={currentQuestion === 0}>
-                                            <BsArrowLeft color="white" size="30" />
-                                        </button>
-                                    </div>
-                                    <div className="col-6 p-2">
-                                        <button className="btn btn-warning w-75" onClick={() => handleCurrentQuestion(currentQuestion + 1)} disabled={currentQuestion === response.length - 1}>
-                                            <BsArrowRight color="white" size="30" />
-                                        </button>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>

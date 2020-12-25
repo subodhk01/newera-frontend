@@ -16,11 +16,13 @@ export default function ConfirmEmail(props) {
 
     const [ code, setCode ] = React.useState("")
     const [ again, setAgain ] = React.useState(false)
+    const [ loading, setLoading ] = React.useState(false)
     const [ error, setError ] = React.useState("")
     const { setProfile } = useAuth()
 
     const handleSubmit = async (event) => {
         setError("")
+        setLoading(true)
         event.preventDefault();
         axiosInstance
             .post("email/confirm/", {
@@ -30,6 +32,7 @@ export default function ConfirmEmail(props) {
                 console.log("Key set Response :", response.data)
                 if(response.data.error){
                     setError(response.data.error)
+                    setLoading(false)
                     return
                 }
                 axiosInstance
@@ -38,11 +41,13 @@ export default function ConfirmEmail(props) {
                         console.log("Profile Response :", response.data)
                         setProfile(response.data)
                         router.push("/dashboard")
-                    }).then((error) => {
+                    }).catch((error) => {
+                        setLoading(false)
                         console.log(error)
                     })
             })
             .catch((error) => {
+                setLoading(false)
                 if ( error.response && error.response.status === 401){
                     console.log(error.response.data.detail)
                     setError("Invalid Credentials")
@@ -55,12 +60,14 @@ export default function ConfirmEmail(props) {
     }
     const handleReSend = () => {
         setError("")
+        setLoading(true)
         axiosInstance
             .get("sendEmail/")
             .then((response) => {
-                console.log("email Response :", response)
+                console.log("email Response :", response.data)
                 setAgain(true)
-            }).then((error) => {
+            }).catch((error) => {
+                setLoading(false)
                 console.log(error)
             })
     }
@@ -77,7 +84,7 @@ export default function ConfirmEmail(props) {
                         <div>
                             <form onSubmit={handleSubmit}>
                                 <div className="form-group">
-                                    <input className="form-control" type="text" value={code} onChange={(event) => setCode(event.target.value)} name="key" placeholder="Code" />
+                                    <input className="form-control" type="text" value={code} onChange={(event) => setCode(event.target.value)} name="key" placeholder="Code" required />
                                 </div>
                                 <div>
                                     {error &&
@@ -94,7 +101,7 @@ export default function ConfirmEmail(props) {
                                         {again ?
                                             <div className="text-info">Code successfully sent, check your email</div>
                                             :
-                                            <>Didn't recieve any code? <a onClick={handleReSend}>Click here to send again</a></>
+                                            <>Didn't recieve any code? {loading ? <span className="text-muted">Click here to send again</span> : <a onClick={handleReSend}>Click here to send again</a>}</>
                                         }
                                     </div>
                                 </div>

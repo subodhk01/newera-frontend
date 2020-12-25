@@ -14,11 +14,13 @@ export default function Login(props) {
     const [ phone, setPhone ] = React.useState("")
     const [ password, setPassword ] = React.useState("")
     const [ password2, setPassword2 ] = React.useState("")
+    const [ loading, setLoading ] = React.useState(false)
     const [ error, setError ] = React.useState("")
     const { setAccessToken, setRefreshToken, setProfile } = useAuth()
 
     const handleSubmit = async (event) => {
         setError("")
+        setLoading(true)
         event.preventDefault();
         delete axiosInstance.defaults.headers["Authorization"]
         setAccessToken("")
@@ -29,14 +31,14 @@ export default function Login(props) {
                 password: password,
             })
             .then((response) => {
-                console.log("Login Response :", response)
+                console.log("Login Response :", response.data)
                 axiosInstance.defaults.headers["Authorization"] = "Bearer " + response.data.access
                 setAccessToken(response.data.access)
                 setRefreshToken(response.data.refresh)
                 axiosInstance
                     .get("profile/")
                     .then((response) => {
-                        console.log("Profile Response :", response)
+                        console.log("Profile Response :", response.data)
                         setProfile(response.data)
                         axiosInstance
                             .get("sendEmail/")
@@ -44,14 +46,17 @@ export default function Login(props) {
                                 console.log("email send response: ", response.data)
                                 setLoggedIn(true)
                                 router.push("/dashboard")
-                            }).then((error) => {
+                            }).catch((error) => {
+                                setLoading(false)
                                 console.log(error)
                             })
-                    }).then((error) => {
+                    }).catch((error) => {
+                        setLoading(false)
                         console.log(error)
                     })
             })
             .catch((error) => {
+                setLoading(false)
                 if ( error.response && error.response.status === 401){
                     console.log(error.response.data.detail)
                     setError("Invalid Credentials")
@@ -65,6 +70,7 @@ export default function Login(props) {
 
     const handleSignupSubmit = async (event) => {
         setError("")
+        setLoading(true)
         event.preventDefault();
         delete axiosInstance.defaults.headers["Authorization"]
         setAccessToken("")
@@ -82,7 +88,7 @@ export default function Login(props) {
                 is_student: true
             })
             .then((response) => {
-                console.log("Register Response :", response)
+                console.log("Register Response :", response.data)
                 setProfile(response.data)
                 axiosInstance
                     .post("token/", {
@@ -90,7 +96,7 @@ export default function Login(props) {
                         password: password
                     })
                     .then((response) => {
-                        console.log("Token Response :", response)
+                        console.log("Token Response :", response.data)
                         axiosInstance.defaults.headers["Authorization"] = "Bearer " + response.data.access
                         setAccessToken(response.data.access)
                         setRefreshToken(response.data.refresh)
@@ -100,14 +106,17 @@ export default function Login(props) {
                                 console.log("email send response: ", response.data)
                                 setLoggedIn(true)
                                 router.push("/dashboard")
-                            }).then((error) => {
+                            }).catch((error) => {
+                                setLoading(false)
                                 console.log(error)
                             })
-                    }).then((error) => {
+                    }).catch((error) => {
+                        setLoading(false)
                         console.log(error)
                     })
             })
             .catch((error) => {
+                setLoading(false)
                 if ( error.response && error.response.status === 401){
                     console.log(error.response.data.detail)
                     setError("Invalid Credentials")
@@ -142,19 +151,19 @@ export default function Login(props) {
                         <div>
                             <form onSubmit={handleSignupSubmit}>
                                 <div className="form-group">
-                                    <input className="form-control" type="text" value={name} onChange={(event) => setName(event.target.value)} name="name" placeholder="Full Name" />
+                                    <input className="form-control" type="text" value={name} onChange={(event) => setName(event.target.value)} name="name" placeholder="Full Name" required />
                                 </div>
                                 <div className="form-group">
-                                    <input className="form-control" type="email" value={email} onChange={(event) => setEmail(event.target.value)} name="email" placeholder="Email" />
+                                    <input className="form-control" type="email" value={email} onChange={(event) => setEmail(event.target.value)} name="email" placeholder="Email" required />
                                 </div>
                                 <div className="form-group">
-                                    <input className="form-control" type="text" value={phone} onChange={(event) => setPhone(event.target.value)} name="phone" placeholder="Phone No" />
+                                    <input className="form-control" type="text" value={phone} onChange={(event) => setPhone(event.target.value)} name="phone" placeholder="Phone No" required />
                                 </div>
                                 <div className="form-group">
-                                    <input className="form-control" type="password" value={password} onChange={(event) => setPassword(event.target.value)} name="password" placeholder="Enter Password" />
+                                    <input className="form-control" type="password" value={password} onChange={(event) => setPassword(event.target.value)} name="password" placeholder="Enter Password" required />
                                 </div>
                                 <div className="form-group">
-                                    <input className="form-control" type="password" value={password2} onChange={(event) => setPassword2(event.target.value)} name="password2" placeholder="Confirm Password" />
+                                    <input className="form-control" type="password" value={password2} onChange={(event) => setPassword2(event.target.value)} name="password2" placeholder="Confirm Password" required />
                                 </div>
                                 <div>
                                     {error &&
@@ -164,7 +173,7 @@ export default function Login(props) {
                                     }
                                 </div>
                                 <div>
-                                    <button type="submit" className="btn btn-success form-control">
+                                    <button type="submit" className="btn btn-success form-control" disabled={loading}>
                                         Signup
                                     </button>
                                     <div className="text-right mt-2">
@@ -177,10 +186,10 @@ export default function Login(props) {
                         <div>
                             <form onSubmit={handleSubmit}>
                                 <div className="form-group">
-                                    <input className="form-control" type="email" value={email} onChange={(event) => setEmail(event.target.value)} name="email" placeholder="Email" />
+                                    <input className="form-control" type="email" value={email} onChange={(event) => setEmail(event.target.value)} name="email" placeholder="Email" required />
                                 </div>
                                 <div className="form-group">
-                                    <input className="form-control" type="password" value={password} onChange={(event) => setPassword(event.target.value)} name="password" placeholder="password" />
+                                    <input className="form-control" type="password" value={password} onChange={(event) => setPassword(event.target.value)} name="password" placeholder="password" required />
                                 </div>
                                 <div>
                                     {error &&
@@ -190,7 +199,7 @@ export default function Login(props) {
                                     }
                                 </div>
                                 <div>
-                                    <button type="submit" className="btn btn-success form-control">
+                                    <button type="submit" className="btn btn-success form-control" disabled={loading}>
                                         Login
                                     </button>
                                     <div className="text-right mt-2">
