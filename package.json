@@ -29,6 +29,7 @@
     "react-modal": "^3.11.2",
     "react-no-ssr": "^1.1.0",
     "react-player": "^2.7.0",
+    "serverless": "^2.16.1",
     "styled-components": "^5.2.0",
     "video-react": "^0.14.1",
     "video.js": "^7.10.2",
