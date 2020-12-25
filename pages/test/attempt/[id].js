@@ -373,7 +373,7 @@ export default function Test(props){
                                                 handleMatrixCorrect={handleMatrixCorrect}
                                             />
                                         </div>
-                                        <div className="d-flex align-items-center p-3">
+                                        <div className="d-flex align-items-center flex-wrap p-3">
                                             <div className="btn btn-success" onClick={() => handleCurrentQuestion(currentQuestion + 1)}>
                                                 Save and Next
                                             </div>

@@ -38,8 +38,15 @@ export default function Login(props) {
                     .then((response) => {
                         console.log("Profile Response :", response)
                         setProfile(response.data)
-                        setLoggedIn(true)
-                        router.push("/dashboard")
+                        axiosInstance
+                            .get("sendEmail/")
+                            .then((response) => {
+                                console.log("email send response: ", response.data)
+                                setLoggedIn(true)
+                                router.push("/dashboard")
+                            }).then((error) => {
+                                console.log(error)
+                            })
                     }).then((error) => {
                         console.log(error)
                     })
@@ -87,9 +94,15 @@ export default function Login(props) {
                         axiosInstance.defaults.headers["Authorization"] = "Bearer " + response.data.access
                         setAccessToken(response.data.access)
                         setRefreshToken(response.data.refresh)
-                        setLoggedIn(true)
-                        //console.log("logged in")
-                        router.push("/dashboard")
+                        axiosInstance
+                            .get("sendEmail/")
+                            .then((response) => {
+                                console.log("email send response: ", response.data)
+                                setLoggedIn(true)
+                                router.push("/dashboard")
+                            }).then((error) => {
+                                console.log(error)
+                            })
                     }).then((error) => {
                         console.log(error)
                     })

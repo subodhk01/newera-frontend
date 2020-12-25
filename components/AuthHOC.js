@@ -5,14 +5,18 @@ import { useAuth } from '../utils/auth'
 export default function AuthHOC(props){
     const router = useRouter()
     const { accessToken, profile } = useAuth()
-    const { teacher, student } = props
+    const { teacher, student, confirmEmail } = props
 
     React.useEffect(() => {
         // console.log("accessToken at useEffect: ", accessToken)
-        console.log("Auth check")
+        console.log("Auth check, accesstoken: ", accessToken)
         console.log("profile: ", profile)
         if(!accessToken){
             router.push("/login")
+        }else if(!profile.is_confirmed){
+            router.push("/confirm_email")
+        }else if(confirmEmail) {
+            router.push("/dashboard")
         }
     }, [accessToken])
     

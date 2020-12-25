@@ -81,7 +81,7 @@ export default function Header(props){
     return (
         <div className="outer-container item-shadow">
             <div className={`position-relative d-flex align-items-center ${props.full ? "full" : "container justify-content-between"}`}>
-                <div>
+                <div className="px-3">
                     <Link href="/">
                         <a>
                             New Era
