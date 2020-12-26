@@ -80,7 +80,7 @@ export default function TestSeries(props){
     async function makePayment(totalAmount, notes) {
         setError("")
         var options = {
-            key: "rzp_test_zhhsJUxL30bSZl",
+            key: "rzp_live_VMy6LTFP3FIQmO",
             amount: totalAmount * 100,
             name: "Newera Coaching",
             currency: "INR",

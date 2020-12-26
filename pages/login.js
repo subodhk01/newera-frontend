@@ -45,7 +45,7 @@ export default function Login(props) {
                             .then((response) => {
                                 console.log("email send response: ", response.data)
                                 setLoggedIn(true)
-                                router.push("/dashboard")
+                                router.push("/")
                             }).catch((error) => {
                                 setLoading(false)
                                 console.log(error)
@@ -113,7 +113,7 @@ export default function Login(props) {
                             .then((response) => {
                                 console.log("email send response: ", response.data)
                                 setLoggedIn(true)
-                                router.push("/dashboard")
+                                router.push("/")
                             }).catch((error) => {
                                 setLoading(false)
                                 console.log(error)

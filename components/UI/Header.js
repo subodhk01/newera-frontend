@@ -15,6 +15,10 @@ const logoBlack = '/static/logoBlack.png'
 
 const HEADER_ITEMS = [
     {
+        title: "Home",
+        path: "/"
+    },
+    {
         title: "AITS",
         dropdown: true,
         items: [
@@ -26,18 +30,18 @@ const HEADER_ITEMS = [
             }
         ]
     },
-    {
-        title: "Video Lectures",
-        path: "/"
-    },
-    {
-        title: "Study Material",
-        path: "/"
-    },
-    {
-        title: "Forum",
-        path: "/"
-    },
+    // {
+    //     title: "Video Lectures",
+    //     path: "/"
+    // },
+    // {
+    //     title: "Study Material",
+    //     path: "/"
+    // },
+    // {
+    //     title: "Forum",
+    //     path: "/"
+    // },
     {
         title: "Login/Signup",
         to: "/login",
@@ -83,8 +87,9 @@ export default function Header(props){
             <div className={`position-relative d-flex align-items-center ${props.full ? "full" : "container justify-content-between"}`}>
                 <div className="px-3">
                     <Link href="/">
-                        <a>
-                            New Era
+                        <a className="d-flex align-items-center py-2">
+                            <img src="/images/logo_compressed.jpg" style={{height: "55px", borderRadius: "5px"}} />
+                            <h5 className="ml-3 my-0 mt-light" style={{color: "#05a0e8"}}>New Era<br />Coaching Classes</h5>
                         </a>
                     </Link>
                 </div>

@@ -12,7 +12,7 @@ export default function Layout(props){
             </div>
             <style jsx>{`
                 .outer-container {
-                    padding-top: 89px;
+                    padding-top: 99px;
                 }
                 @media(max-width: 992px){
                     .outer-container {

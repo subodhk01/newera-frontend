@@ -81,7 +81,7 @@ export default function TestSeries(props){
                                 })
                                 :
                                 <div>
-                                    <Empty description="No test series" />
+                                    <Empty description="Coming soon..." />
                                 </div>
                                 }
                             </>

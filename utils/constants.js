@@ -32,21 +32,21 @@ export const SIDEBAR_ITEMS = [
         title: "My Test Series",
         path: "/testseries"
     },
-    {
-        image: "",
-        title: "Lecture Series",
-        path: "/lectureseries"
-    },
-    {
-        image: "",
-        title: "Online Classes",
-        path: "/onlineclasses"
-    },
-    {
-        image: "",
-        title: "Profile",
-        path: "/profile"
-    },
+    // {
+    //     image: "",
+    //     title: "Lecture Series",
+    //     path: "/lectureseries"
+    // },
+    // {
+    //     image: "",
+    //     title: "Online Classes",
+    //     path: "/onlineclasses"
+    // },
+    // {
+    //     image: "",
+    //     title: "Profile",
+    //     path: "/profile"
+    // },
 ]
 
 export const customStyles = {

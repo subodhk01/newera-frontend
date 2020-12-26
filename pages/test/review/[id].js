@@ -103,7 +103,7 @@ export default function Test(props){
                             </div>
                         </Modal>
                         <TestHeader testName={test.name} />
-                        <div className="d-flex align-items-center p-2 border-bottom">
+                        <div className="d-flex align-items-center flex-wrap p-2 border-bottom">
                             <div className="circle border-green m-2">
                                 {test.questions[currentQuestion].correctMarks}
                             </div>
