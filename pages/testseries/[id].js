@@ -31,7 +31,9 @@ export default function TestSeries(props){
             props.setHeader(true)
             axiosInstance.get(`testseries/${id}/`).then((response) => {
                 console.log("series: ", response.data)
-                setSeries(response.data)
+                let rawSeries = response.data
+                rawSeries.tests = rawSeries.tests.sort((a,b) => (new Date(a.activation_time) - new Date(b.activation_time)))
+                setSeries(rawSeries)
                 if(response.data.registered_students.includes(profile.id) || response.data.price === 0 || response.data.free){
                     console.log("student is registered")
                     setRegistered(true)
