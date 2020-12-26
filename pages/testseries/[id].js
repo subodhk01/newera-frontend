@@ -188,14 +188,20 @@ export default function TestSeries(props){
                                                                 </div> */}
                                                             </>
                                                             :
-                                                            <Link href={`/test/attempt/${test.id}`}>
-                                                                <a>
-                                                                    <div className="btn btn-success">
-                                                                        Attempt Test
-                                                                    </div>
-                                                                </a>
-                                                            </Link>
-                                                            }
+                                                            <>
+                                                                {test.status < 1 ?
+                                                                    <div className="text-info">Test not yet started</div>
+                                                                    :
+                                                                    <Link href={`/test/attempt/${test.id}`}>
+                                                                        <a>
+                                                                            <div className="btn btn-success">
+                                                                                Attempt Test
+                                                                            </div>
+                                                                        </a>
+                                                                    </Link> 
+                                                                }
+                                                            </>
+                                                        }
                                                     </div>
                                                 </div>
                                             :
