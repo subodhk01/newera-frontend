@@ -13,7 +13,7 @@ export default function AuthHOC(props){
         console.log("profile: ", profile)
         if(!accessToken){
             router.push("/login")
-        }else if(!profile.is_confirmed){
+        }else if(!profile.is_phone_verified){
             router.push("/confirm_email")
         }else if(confirmEmail) {
             router.push("/dashboard")

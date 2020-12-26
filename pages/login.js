@@ -41,7 +41,7 @@ export default function Login(props) {
                         console.log("Profile Response :", response.data)
                         setProfile(response.data)
                         axiosInstance
-                            .get("sendEmail/")
+                            .get("sendOTP/")
                             .then((response) => {
                                 console.log("email send response: ", response.data)
                                 setLoggedIn(true)
@@ -53,6 +53,8 @@ export default function Login(props) {
                     }).catch((error) => {
                         setLoading(false)
                         console.log(error)
+                        if( error.message ) setError(error.message)
+                        else setError(error.toString())
                     })
             })
             .catch((error) => {
@@ -77,6 +79,12 @@ export default function Login(props) {
         setRefreshToken("")
         if(password != password2){
             setError("Passwords do not match")
+            setLoading(false)
+            return
+        }
+        if(phone.length != 10){
+            setError("Phone number should be 10 digits")
+            setLoading(false)
             return
         }
         axiosInstance
@@ -101,7 +109,7 @@ export default function Login(props) {
                         setAccessToken(response.data.access)
                         setRefreshToken(response.data.refresh)
                         axiosInstance
-                            .get("sendEmail/")
+                            .get("sendOTP/")
                             .then((response) => {
                                 console.log("email send response: ", response.data)
                                 setLoggedIn(true)
@@ -113,6 +121,8 @@ export default function Login(props) {
                     }).catch((error) => {
                         setLoading(false)
                         console.log(error)
+                        if( error.message ) setError(error.message)
+                        else setError(error.toString())
                     })
             })
             .catch((error) => {

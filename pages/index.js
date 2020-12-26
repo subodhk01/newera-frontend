@@ -37,7 +37,7 @@ export default function Home(props) {
                             </div>
                         </div>
                     </div> */}
-                    <div className="d-flex align-items-strech justify-content-center flex-wrap py-5">
+                    {/* <div className="d-flex align-items-strech justify-content-center flex-wrap py-5">
                         <div className="feature">
                             <div>
                                 <img className="border-circle" src="/images/teacher.png" />
@@ -74,7 +74,7 @@ export default function Home(props) {
                                 <p>Rewards for outstanding performers of our online tests</p>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
                 <div className="bg-grey py-4 py-md-5 px-2 text-center">
                     <h2 className="mt-bold">Popular Test Series</h2>

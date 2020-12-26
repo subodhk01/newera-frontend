@@ -18,6 +18,11 @@ export default function ConfirmEmail(props) {
     const [ again, setAgain ] = React.useState(false)
     const [ loading, setLoading ] = React.useState(false)
     const [ error, setError ] = React.useState("")
+
+    const [ phone, setPhone ] = React.useState("")
+    const [ success, setSuccess ] = React.useState("")
+    const [ changeScreen, setChange ] = React.useState(false)
+
     const { setProfile } = useAuth()
 
     const handleSubmit = async (event) => {
@@ -25,8 +30,8 @@ export default function ConfirmEmail(props) {
         setLoading(true)
         event.preventDefault();
         axiosInstance
-            .post("email/confirm/", {
-                code: code
+            .post("phone/confirm/", {
+                otp: code
             }, config)
             .then((response) => {
                 console.log("Key set Response :", response.data)
@@ -44,6 +49,8 @@ export default function ConfirmEmail(props) {
                     }).catch((error) => {
                         setLoading(false)
                         console.log(error)
+                        if( error.message ) setError(error.message)
+                        else setError(error.toString())
                     })
             })
             .catch((error) => {
@@ -62,13 +69,68 @@ export default function ConfirmEmail(props) {
         setError("")
         setLoading(true)
         axiosInstance
-            .get("sendEmail/")
+            .get("sendOTP/")
             .then((response) => {
-                console.log("email Response :", response.data)
+                console.log("otp Response :", response.data)
+                if(response.data.error){
+                    setError(response.data.error)
+                    setLoading(false)
+                    return
+                }
                 setAgain(true)
             }).catch((error) => {
                 setLoading(false)
                 console.log(error)
+                if( error.message ) setError(error.message)
+                else setError(error.toString())
+            })
+    }
+    const handlePhoneChange = () => {
+        event.preventDefault();
+        setError("")
+        setLoading(true)
+        if(phone.length != 10){
+            setError("Phone number should be 10 digits")
+            setLoading(false)
+            return
+        }
+        axiosInstance
+            .patch("profile/", {
+                phone: phone
+            })
+            .then((response) => {
+                console.log("profile patch Response :", response.data)
+                if(response.data.error){
+                    setError(response.data.error)
+                    setLoading(false)
+                    return
+                }
+                axiosInstance
+                    .get("sendOTP/")
+                    .then((response) => {
+                        console.log("otp Response :", response.data)
+                        setLoading(false)
+                        if(response.data.error){
+                            setError(response.data.error)
+                            return
+                        }
+                        setSuccess("Phone Number updated successfully, check for new OTP")
+                        setChange(false)
+                    }).catch((error) => {
+                        setLoading(false)
+                        console.log(error)
+                        if( error.message ) setError(error.message)
+                        else setError(error.toString())
+                    })
+            }).catch((error) => {
+                setLoading(false)
+                console.log(error)
+                if( error.response && error.response.status === 400 && error.response.data.phone && error.response.data.phone.length ){
+                    setError(error.response.data.phone[0])
+                    return
+                }
+                if( error.message ) setError(error.message)
+                else setError(error.toString())
             })
     }
     React.useEffect(() => {
@@ -79,34 +141,70 @@ export default function ConfirmEmail(props) {
             <AuthHOC confirmEmail>
                 <div className="d-flex align-items-center justify-content-center">
                     <div className="form-box item-shadow mx-auto">
-                        <h2 className="mt-bold mb-4">Confirm Email</h2>
-                        <p>Check your email for the verification code</p>
-                        <div>
-                            <form onSubmit={handleSubmit}>
-                                <div className="form-group">
-                                    <input className="form-control" type="text" value={code} onChange={(event) => setCode(event.target.value)} name="key" placeholder="Code" required />
-                                </div>
+                        {!changeScreen ?
+                            <>
+                                <h2 className="mt-bold mb-4">Confirm phone</h2>
+                                <p>Check your phone for OTP</p>
                                 <div>
-                                    {error &&
-                                        <div className="py-2 text-danger">
-                                            {error}
+                                    <form onSubmit={handleSubmit}>
+                                        <div className="form-group">
+                                            <input className="form-control" type="text" value={code} onChange={(event) => setCode(event.target.value)} name="key" placeholder="Code" required />
                                         </div>
-                                    }
+                                        <div>
+                                            {error ?
+                                                <div className="py-2 text-danger">
+                                                    {error} - <a onClick={() => {setError("");setChange(true)}}>Click here to change Phone Number</a>
+                                                </div>
+                                                :
+                                                <div className="text-right text-muted cursor-pointer" onClick={() => {setError("");setChange(true)}}>Click here to change Phone Number</div>
+                                            }
+                                        </div>
+                                        <div>
+                                            <button type="submit" className="btn btn-success form-control" disabled={loading}>
+                                                Comfirm Phone
+                                            </button>
+                                            <div className="text-right mt-2">
+                                                {again ?
+                                                    <div className="text-info">Code successfully sent, check your phone</div>
+                                                    :
+                                                    <>Didn't recieve any code? {loading ? <span className="text-muted">Click here to send again</span> : <a onClick={handleReSend}>Click here to send again</a>}</>
+                                                }
+                                            </div>
+                                            <div className="text-right mt-2">
+                                                {success &&
+                                                    <div className="text-success">{success}</div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
+                            </>
+                            :
+                            <>
+                                <h2 className="mt-bold mb-4">Change Phone Number</h2>
+                                <a onClick={() => setChange(false)}>Back</a>
+                                <p>You phone number should be 10 digits</p>
                                 <div>
-                                    <button type="submit" className="btn btn-success form-control">
-                                        Comfirm Email
-                                    </button>
-                                    <div className="text-right mt-2">
-                                        {again ?
-                                            <div className="text-info">Code successfully sent, check your email</div>
-                                            :
-                                            <>Didn't recieve any code? {loading ? <span className="text-muted">Click here to send again</span> : <a onClick={handleReSend}>Click here to send again</a>}</>
-                                        }
-                                    </div>
+                                    <form onSubmit={handlePhoneChange}>
+                                        <div className="form-group">
+                                            <input className="form-control" type="text" value={phone} onChange={(event) => setPhone(event.target.value)} name="phone" placeholder="Phone Number" required />
+                                        </div>
+                                        <div>
+                                            {error &&
+                                                <div className="py-2 text-danger">
+                                                    {error}
+                                                </div>
+                                            }
+                                        </div>
+                                        <div>
+                                            <button type="submit" className="btn btn-success form-control" disabled={loading}>
+                                                Change Phone Number
+                                            </button>
+                                        </div>
+                                    </form>
                                 </div>
-                            </form>
-                        </div>
+                            </>
+                        }
                     </div>
                 </div>
                 <style jsx>{`
