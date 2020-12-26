@@ -114,6 +114,11 @@ export default function TestSeries(props){
                                 <h1>{series.name}</h1>
                             </div>
                             <div className="p-3 text-right">
+                                {series.syllabus &&
+                                    <a className="btn btn-success font-11 px-5" target="blank" href={series.syllabus}>
+                                        Download Syllabus
+                                    </a> 
+                                }
                                 {isRegistered ?
                                     <div className="text-left">
                                         <Alert description="Go to Tests section to see all your tests and attempts" />
