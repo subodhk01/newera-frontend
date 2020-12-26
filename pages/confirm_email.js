@@ -72,9 +72,9 @@ export default function ConfirmEmail(props) {
             .get("sendOTP/")
             .then((response) => {
                 console.log("otp Response :", response.data)
+                setLoading(false)
                 if(response.data.error){
                     setError(response.data.error)
-                    setLoading(false)
                     return
                 }
                 setAgain(true)
@@ -151,13 +151,12 @@ export default function ConfirmEmail(props) {
                                             <input className="form-control" type="text" value={code} onChange={(event) => setCode(event.target.value)} name="key" placeholder="Code" required />
                                         </div>
                                         <div>
-                                            {error ?
+                                            {error &&
                                                 <div className="py-2 text-danger">
-                                                    {error} - <a onClick={() => {setError("");setChange(true)}}>Click here to change Phone Number</a>
+                                                    {error}
                                                 </div>
-                                                :
-                                                <div className="text-right text-muted cursor-pointer" onClick={() => {setError("");setChange(true)}}>Click here to change Phone Number</div>
                                             }
+                                            <div className="text-right text-muted cursor-pointer" onClick={() => {setError("");setChange(true)}}>Click here to change Phone Number</div>
                                         </div>
                                         <div>
                                             <button type="submit" className="btn btn-success form-control" disabled={loading}>
