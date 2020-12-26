@@ -74,7 +74,7 @@ export default function Header(props){
                         path: `/aits/?exam=${exam.slug}&name=${exam.name}`
                     })
                 })
-                temp_header[0].items = exams
+                temp_header[1].items = exams
                 console.log("item headers: ", temp_header)
                 setHeaderItems(temp_header)
             })
@@ -89,7 +89,7 @@ export default function Header(props){
                     <Link href="/">
                         <a className="d-flex align-items-center py-2">
                             <img src="/images/logo_compressed.jpg" style={{height: "55px", borderRadius: "5px"}} />
-                            <h5 className="ml-3 my-0 mt-light" style={{color: "#05a0e8"}}>New Era<br />Coaching Classes</h5>
+                            <h6 className="ml-3 my-0 mt-light" style={{color: "#05a0e8"}}>New Era<br />The Learning Platform</h6>
                         </a>
                     </Link>
                 </div>

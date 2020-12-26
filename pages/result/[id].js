@@ -192,9 +192,9 @@ export default function Test(props){
                                                 }}
                                             />
                                         </div>
-                                        <div className="col-12 col-lg-4 p-2 mb-4">
+                                        <div className="col-12 col-lg-8 p-2 mb-4">
                                             <h6>Topic wise marks</h6>
-                                            <Pie data={data3} options={{ maintainAspectRatio: true }}/>
+                                            <Pie data={data3} height="auto" />
                                         </div>
                                     </div>
                                     {/* <div className="pt-3">

@@ -83,7 +83,6 @@ export default function Test(props){
                             style={customStyles2}
                             contentLabel="Example Modal"
                             ariaHideApp={false}
-                            shouldCloseOnOverlayClick={false}
                         >
                             <div className="text-center">
                                 <h5 className="mb-3">
@@ -93,7 +92,7 @@ export default function Test(props){
                                     <span>{test.questions[currentQuestion].solutionText}</span>
                                 </div>
                                 <div>
-                                    <img src={test.questions[currentQuestion].solution} style={{maxWidth: "800px"}} />
+                                    <img src={test.questions[currentQuestion].solution} style={{maxWidth: "90vw"}} />
                                 </div>
                                 <div className="text-right">
                                     <div className="btn btn-warning" onClick={() => setSolutionModal(false)}>
