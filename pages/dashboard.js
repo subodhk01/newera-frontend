@@ -18,8 +18,8 @@ export default function Dashboard(props){
                                 <div className="px-4 py-3 text-center" key={index}>
                                     <Link href={item.path} key={index}>
                                         <a className="item-container">
-                                            <div className="icon-container item-shadow">
-
+                                            <div className="icon-container item-shadow d-flex align-items-center justify-content-center">
+                                                <div className="mt-light">{item.title}</div>
                                             </div>
                                             <div className="py-3 font-13 mt-bold text-muted">
                                                 {item.title}
@@ -33,14 +33,16 @@ export default function Dashboard(props){
                 </div>
                 <style jsx>{`
                     .item-container:hover > .icon-container {
-                        background-color: rgba(100,100,255,0.2);
-                        box-shadow: 0px 0px 1px 1px white;
+                        background-color: rgb(45 113 183 / 70%);
+                        box-shadow: 0px 6px 14px 18px #6a69c51c;
+                        color: white;
                     }
                     .icon-container {
                         height: 180px;
                         width: 180px;
                         border-radius: 10px;
-                        transition: 0.7s;
+                        transition: 0.25s;
+                        color: grey;
                     }
                 `}</style>
             </Layout>
