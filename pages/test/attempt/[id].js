@@ -42,6 +42,44 @@ export default function Test(props){
     const [ response, setResponse ] = React.useState([{answer: "", marked: false, visited: true, time: 0},])
     const [ render, setRender ] = React.useState(0)
 
+    const beforeunload = (e) => {
+        e.preventDefault();
+            e.returnValue = true;
+    }
+
+    // React.useEffect(() => {
+    //     window.addEventListener('beforeunload', beforeunload);
+    //     return () => window.removeEventListener('beforeunload', beforeunload);
+    // }, [])
+
+    // React.useEffect(() => {
+    //     const warningText = 'You have unsaved changes - are you sure you wish to leave this page?';
+    //     const handleWindowClose = (e) => {
+    //         if (testStartModal) return;
+    //         e.preventDefault();
+    //         return (e.returnValue = warningText);
+    //     };
+    //     const handleBrowseAway = () => {
+    //         if (testStartModal) return;
+    //         if (window.confirm(warningText)) return;
+    //         router.events.emit('routeChangeError');
+    //         throw 'routeChange aborted.';
+    //     };
+    //     window.addEventListener('beforeunload', handleWindowClose);
+    //     router.events.on('routeChangeStart', handleBrowseAway);
+    //     return () => {
+    //         window.removeEventListener('beforeunload', handleWindowClose);
+    //         router.events.off('routeChangeStart', handleBrowseAway);
+    //     };
+    // }, [testStartModal]);
+
+    React.useEffect(() => {
+        if(session){
+            console.log("saving responses to localstorage")
+            localStorage.setItem(`response${session.id}`, JSON.stringify(response))
+        }
+    }, [response, currentQuestion])
+
     const handleCurrentQuestion = (index) => {
         let newResponse = response
         newResponse[index].visited = true
@@ -190,6 +228,10 @@ export default function Test(props){
                 console.log("session create response: ", response.data)
                 setSession(response.data)
                 let session = response.data
+                if(localStorage.getItem(`response${session.id}`)){
+                    console.log("Found saved responses: ", JSON.parse(localStorage.getItem(`response${session.id}`)))
+                    setResponse(JSON.parse(localStorage.getItem(`response${session.id}`)))
+                }
                 var seconds = session.duration.split(":")[0]*3600 + session.duration.split(":")[1]*60 + session.duration.split(":")[2]*1
                 var session_start = new Date(session.checkin_time)
                 var time_remaining = Math.floor(((new Date()).getTime() - session_start.getTime())/1000)
@@ -218,6 +260,7 @@ export default function Test(props){
             completed: true
         }).then((response) => {
             console.log("session end response: ", response.data)
+            localStorage.removeItem(`response${session.id}`)
             Router.push(`/result/${session.id}`)
         }).catch((error) => {
             console.log(error)
