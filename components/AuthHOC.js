@@ -12,10 +12,13 @@ export default function AuthHOC(props){
         console.log("Auth check, accesstoken: ", accessToken)
         console.log("profile: ", profile)
         if(!accessToken){
+            console.log("No access token found, redirecting to login page")
             router.push("/login")
         }else if(!profile.is_phone_verified){
+            console.log("Phone not verified, redirecting to confirm phone page page")
             router.push("/confirm_email")
         }else if(confirmEmail) {
+            console.log("phone already confirmed, redirecting to dashboard")
             router.push("/dashboard")
         }
     }, [accessToken])

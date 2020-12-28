@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import Layout from '../components/UI/Layout'
 import { axiosInstance } from '../utils/axios'
 import { useAuth } from '../utils/auth'
+import Link from 'next/link'
 
 export default function Login(props) {
     const router = useRouter()
@@ -113,7 +114,7 @@ export default function Login(props) {
                             .then((response) => {
                                 console.log("email send response: ", response.data)
                                 setLoggedIn(true)
-                                router.push("/")
+                                router.push("/confirm_email")
                             }).catch((error) => {
                                 setLoading(false)
                                 console.log(error)
@@ -208,11 +209,18 @@ export default function Login(props) {
                                         </div>
                                     }
                                 </div>
+                                <div className="text-right mb-2">
+                                    <Link href="forgot_password">
+                                        <a className="text-muted">
+                                            Forgot Password?
+                                        </a>
+                                    </Link>
+                                </div>
                                 <div>
                                     <button type="submit" className="btn btn-success form-control" disabled={loading}>
                                         Login
                                     </button>
-                                    <div className="text-right mt-2">
+                                    <div className="text-center mt-3">
                                         New here? <a onClick={() => setSignup(true)}>Click here to create account</a>
                                     </div>
                                 </div>

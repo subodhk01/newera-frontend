@@ -80,7 +80,7 @@ export default function Home(props) {
                     <h2 className="mt-bold">Popular Test Series</h2>
                     <div className="d-flex align-items-strech justify-content-center flex-wrap">
                         {exams && exams.map((exam, index) =>
-                            <Link href={`/aits/?exam=${exam.slug}&name=${exam.name}`}>
+                            <Link href={`/aits/?exam=${exam.slug}&name=${exam.name}`} key={index}>
                                 <a className="feature feature-small item-shadow p-0">
                                     <div>
                                         <img src={exam.image} />
