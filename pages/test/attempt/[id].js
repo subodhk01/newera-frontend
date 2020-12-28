@@ -11,6 +11,7 @@ import { fancyTimeFormat, arrayRemove } from '../../../utils/functions'
 import { customStyles, customStyles2 } from '../../../utils/constants'
 import { load } from 'react-cookies'
 import { Alert } from 'antd'
+import Instructions from '../../../components/Tables/Test/Instructions'
 //Modal.setAppElement('#app');
 // import dynamic from 'next/dynamic'
 
@@ -235,12 +236,12 @@ export default function Test(props){
                 ariaHideApp={false}
                 shouldCloseOnOverlayClick={false}
             >
-                <div className="text-center">
-                    <div className="mb-3">
-                        Instructions of testName
-                    </div>
-                    <div className="btn btn-info" onClick={startTest}>
-                        Start Test
+                <div>
+                    <Instructions />
+                    <div className="text-center">
+                        <div className="btn btn-warning" onClick={startTest}>
+                            Start Test
+                        </div>
                     </div>
                     {error && 
                         <Alert

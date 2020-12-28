@@ -145,8 +145,6 @@ export default function StudentTestTable(props) {
 		})
 	})
 
-	data.sort((x,y) =>  y.id - x.id)
-
 	return (
 		<>
 			{!loading &&
