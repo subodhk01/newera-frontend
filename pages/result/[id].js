@@ -113,7 +113,7 @@ export default function Test(props){
                             <div>
                                 <h2>Result Analysis {result.practice && <span className="text-warning">Practice Attempt</span>}</h2>
                             </div>
-                            {test.status > 1 ?
+                            {test.status > 1 || test.instant_result ?
                                 <>
                                     <div className="py-3 d-flex align-items-center justify-content-end">
                                         <Link href={`/test/review/${id}`}>

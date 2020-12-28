@@ -52,18 +52,18 @@ export default function StudentTestTable(props) {
 				key: 'operation',
 				render: (attempt) => (
 					<Space direction="vertical">
-						{TEST_STATUS[row.status] === "LIVE" && <Alert className="py-2" description="Results will be available after test ends" />}
+						{TEST_STATUS[row.status] === "LIVE" && !row.instant_result && <Alert className="py-2" description="Results will be available after test ends" />}
 						<div>
 							<Link href={`/test/review/${attempt.key}`}>
 								<a>
-									<button className="btn btn-warning font-08" disabled={TEST_STATUS[row.status] === "LIVE"}>
+									<button className="btn btn-warning font-08" disabled={TEST_STATUS[row.status] === "LIVE" && !row.instant_result}>
 										Review Test
 									</button>
 								</a>
 							</Link>
 							<Link href={`/result/${attempt.key}`}>
 								<a>
-									<button className="btn btn-warning font-08" disabled={TEST_STATUS[row.status] === "LIVE"}>
+									<button className="btn btn-warning font-08" disabled={TEST_STATUS[row.status] === "LIVE" && !row.instant_result}>
 										View Result
 									</button>
 								</a>
@@ -140,7 +140,8 @@ export default function StudentTestTable(props) {
 			id: item.id,
 			name: item.name,
 			duration: item.time_alotted,
-			status: item.status
+			status: item.status,
+			instant_result: item.instant_result
 		})
 	})
 
