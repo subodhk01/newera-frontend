@@ -19,6 +19,7 @@
     "moment": "^2.29.1",
     "next": "9.5.5",
     "qier-player": "^1.2.10",
+    "randomcolor": "^0.6.2",
     "react": "17.0.1",
     "react-bootstrap": "^1.4.0",
     "react-chartjs-2": "^2.11.1",
