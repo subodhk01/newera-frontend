@@ -23,7 +23,6 @@ export default function StudentTestTable(props) {
 	}, [props.tests])
 
 	const expandedRowRender = (row) => {
-		console.log(row)
 		let data = [];
 		const columns = [
 			{

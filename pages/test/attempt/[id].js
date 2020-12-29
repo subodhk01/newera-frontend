@@ -31,6 +31,7 @@ export default function Test(props){
     const [ error, setError ] = React.useState("")
     const [ testStartModal,setTestStartModal ] = React.useState(false)
     const [ testEndModal, setTestEndModal ] = React.useState(false)
+    const [ unsavedChanges, setUnsavedChanges ] = React.useState(false)
     const [ session, setSession ] = React.useState()
     const [ loading, setLoading ] = React.useState(true)
     const [ ending, setEnding ] = React.useState(false)
@@ -42,36 +43,26 @@ export default function Test(props){
     const [ response, setResponse ] = React.useState([{answer: "", marked: false, visited: true, time: 0},])
     const [ render, setRender ] = React.useState(0)
 
-    const beforeunload = (e) => {
-        e.preventDefault();
-            e.returnValue = true;
-    }
-
-    // React.useEffect(() => {
-    //     window.addEventListener('beforeunload', beforeunload);
-    //     return () => window.removeEventListener('beforeunload', beforeunload);
-    // }, [])
-
-    // React.useEffect(() => {
-    //     const warningText = 'You have unsaved changes - are you sure you wish to leave this page?';
-    //     const handleWindowClose = (e) => {
-    //         if (testStartModal) return;
-    //         e.preventDefault();
-    //         return (e.returnValue = warningText);
-    //     };
-    //     const handleBrowseAway = () => {
-    //         if (testStartModal) return;
-    //         if (window.confirm(warningText)) return;
-    //         router.events.emit('routeChangeError');
-    //         throw 'routeChange aborted.';
-    //     };
-    //     window.addEventListener('beforeunload', handleWindowClose);
-    //     router.events.on('routeChangeStart', handleBrowseAway);
-    //     return () => {
-    //         window.removeEventListener('beforeunload', handleWindowClose);
-    //         router.events.off('routeChangeStart', handleBrowseAway);
-    //     };
-    // }, [testStartModal]);
+    React.useEffect(() => {
+        const warningText = 'You have unsaved changes - are you sure you wish to leave this page?';
+        const handleWindowClose = (e) => {
+            if (!unsavedChanges) return;
+            e.preventDefault();
+            return (e.returnValue = warningText);
+        };
+        const handleBrowseAway = () => {
+            if (!unsavedChanges) return;
+            if (window.confirm(warningText)) return;
+            router.events.emit('routeChangeError');
+            throw 'routeChange aborted.';
+        };
+        window.addEventListener('beforeunload', handleWindowClose);
+        router.events.on('routeChangeStart', handleBrowseAway);
+        return () => {
+            window.removeEventListener('beforeunload', handleWindowClose);
+            router.events.off('routeChangeStart', handleBrowseAway);
+        };
+    }, [unsavedChanges]);
 
     React.useEffect(() => {
         if(session){
@@ -239,6 +230,7 @@ export default function Test(props){
                 console.log("time remaining: ", seconds - time_remaining)
                 setTimeRemaining(seconds - time_remaining)
                 setTestStartModal(false)
+                setUnsavedChanges(true)
                 setLoading(false)
             }).catch((error) => {
                 console.log(error)

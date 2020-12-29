@@ -51,7 +51,6 @@ export default function Test(props){
                 let test = response.data && response.data.test
                 let localSections = {}
                 for(let count in test.questions){
-                    console.log(count)
                     if( !localSections[test.questions[count].section] && localSections[test.questions[count].section] != 0 ){
                         localSections[test.questions[count].section] = parseInt(count)
                     }
