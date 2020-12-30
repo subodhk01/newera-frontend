@@ -213,6 +213,18 @@ export default function Test(props){
                                                 }}
                                             />
                                         </div>
+                                        {sectionWise && sectionWise.map((item, index) =>
+                                            <div className="col-12 col-lg-4 p-2 mb-4" key={index}>
+                                                <h6>{item.section}</h6>
+                                                <Bar
+                                                    data={item.data}
+                                                    height={300}
+                                                    options={{
+                                                        maintainAspectRatio: true
+                                                    }}
+                                                />
+                                            </div>
+                                        )}
                                         <div className="col-12 col-lg-8 p-2 mb-4">
                                             <h6>Topic wise marks</h6>
                                             <Pie 
@@ -232,18 +244,6 @@ export default function Test(props){
                                                 }} 
                                             />
                                         </div>
-                                        {sectionWise && sectionWise.map((item, index) =>
-                                            <div className="col-12 col-lg-4 p-2 mb-4" key={index}>
-                                                <h6>{item.section}</h6>
-                                                <Bar
-                                                    data={item.data}
-                                                    height={300}
-                                                    options={{
-                                                        maintainAspectRatio: true
-                                                    }}
-                                                />
-                                            </div>
-                                        )}
                                     </div>
                                     {/* <div className="pt-3">
                                         <div className="row no-gutters">

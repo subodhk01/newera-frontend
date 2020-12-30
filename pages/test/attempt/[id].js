@@ -52,14 +52,16 @@ export default function Test(props){
         };
         const handleBrowseAway = () => {
             if (!unsavedChanges) return;
-            if (window.confirm(warningText)) return;
-            router.events.emit('routeChangeError');
-            throw 'routeChange aborted.';
+            else {
+                router.events.emit('routeChangeError');
+                setTestEndModal(true)
+                throw 'routeChange aborted.';
+            }
         };
-        window.addEventListener('beforeunload', handleWindowClose);
+       // window.addEventListener('beforeunload', handleWindowClose);
         router.events.on('routeChangeStart', handleBrowseAway);
         return () => {
-            window.removeEventListener('beforeunload', handleWindowClose);
+            // window.removeEventListener('beforeunload', handleWindowClose);
             router.events.off('routeChangeStart', handleBrowseAway);
         };
     }, [unsavedChanges]);
@@ -170,7 +172,11 @@ export default function Test(props){
                 newResponse[currentQuestion].visited = true
                 setResponse(newResponse)
                 setLocalSections(localSections)
-                setTestStartModal(true)
+                if(localStorage.getItem(`test${id}`)){
+                    startTest()
+                }else {
+                    setTestStartModal(true)
+                }     
             }).catch((error) => {
                 console.log(error)
                 setError("Unable to fetch test, try refreshing the page or try again later.")
@@ -205,7 +211,7 @@ export default function Test(props){
 
     React.useEffect(() => {
         if(!loading){
-            if(timeRemaining && timeRemaining <= 0){
+            if(timeRemaining && timeRemaining <= 0 && !ending){
                 setTestEndModal(true)
                 endTest()
             }
@@ -223,6 +229,7 @@ export default function Test(props){
                     console.log("Found saved responses: ", JSON.parse(localStorage.getItem(`response${session.id}`)))
                     setResponse(JSON.parse(localStorage.getItem(`response${session.id}`)))
                 }
+                localStorage.setItem(`test${id}`, true)
                 var seconds = session.duration.split(":")[0]*3600 + session.duration.split(":")[1]*60 + session.duration.split(":")[2]*1
                 var session_start = new Date(session.checkin_time)
                 var time_remaining = Math.floor(((new Date()).getTime() - session_start.getTime())/1000)
@@ -242,6 +249,7 @@ export default function Test(props){
     const endTest = () => {
         console.log("endTest")
         setEnding(true)
+        setUnsavedChanges(false)
         let finalResponse = response
         finalResponse.map((response, index) => {
             response.time = fancyTimeFormat(response.time)
@@ -253,6 +261,7 @@ export default function Test(props){
         }).then((response) => {
             console.log("session end response: ", response.data)
             localStorage.removeItem(`response${session.id}`)
+            localStorage.removeItem(`test${test.id}`)
             Router.push(`/result/${session.id}`)
         }).catch((error) => {
             console.log(error)
@@ -347,7 +356,7 @@ export default function Test(props){
                 :
                 <React.StrictMode>
                     <div>
-                        <TestHeader testName="Custom Test 1" />
+                        <TestHeader testName={test.name} />
                         <div className="d-flex flex-wrap align-items-center p-2 border-bottom">
                             <div className="circle border-green m-2">
                                 {test.questions[currentQuestion].correctMarks}
