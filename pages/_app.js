@@ -3,8 +3,9 @@ import 'antd/dist/antd.css'
 import 'video.js/dist/video-js.min.css'
 import "video-react/dist/video-react.css"
 import '../styles/font.css'
-import '../styles/misc.css'
+import '../styles/flickity.css'
 import '../styles/globals.css'
+import '../styles/misc.css'
 import 'filepond/dist/filepond.min.css'
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 

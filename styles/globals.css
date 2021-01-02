@@ -143,3 +143,10 @@ body {
 .border-red {
 	border: 3px solid rgba(255, 0, 0, 0.486);
 }
+
+.carousel-cell {
+	max-height: 60vh;
+}
+.carousel-cell img {
+	max-height: 60vh;
+}

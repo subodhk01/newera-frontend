@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import React from 'react'
+import HomeBanners from '../components/UI/HomeCarousel'
 import Layout from '../components/UI/Layout'
 import { axiosInstance } from '../utils/axios'
 
@@ -18,6 +19,7 @@ export default function Home(props) {
     }, [])
     return (
         <Layout>
+            <HomeBanners />
             <div className="py-5">
                 <div className="text-center py-5 px-2">
                     <h1 className="mt-bold">
