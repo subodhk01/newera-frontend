@@ -128,8 +128,8 @@ export default function TestResultTable(props) {
 					dataSource={data}
 					locale={{
 						emptyText: 
-							<Empty description={<span>Not enrolled in any tests yet</span>}>
-								<div className="btn btn-info font-08 mb-4" onClick={() => Router.push('/testseries')}>View all Test Series</div>
+							<Empty description={<span>No Attempts yet</span>}>
+								
 							</Empty>
 					}}
 				/>

@@ -27,12 +27,18 @@ export default function Login(props) {
         setAccessToken("")
         setRefreshToken("")
         axiosInstance
-            .post("token/", {
-                email: email,
+            .post("login/", {
+                key: email,
                 password: password,
             })
             .then((response) => {
                 console.log("Login Response :", response.data)
+                if(response.data.error){
+                    setLoading(false)
+                    console.log()
+                    setError(response.data.error)
+                    return
+                }
                 axiosInstance.defaults.headers["Authorization"] = "Bearer " + response.data.access
                 setAccessToken(response.data.access)
                 setRefreshToken(response.data.refresh)
@@ -100,12 +106,18 @@ export default function Login(props) {
                 console.log("Register Response :", response.data)
                 setProfile(response.data)
                 axiosInstance
-                    .post("token/", {
-                        email: email,
+                    .post("login/", {
+                        key: email,
                         password: password
                     })
                     .then((response) => {
                         console.log("Token Response :", response.data)
+                        if(response.data.error){
+                            setLoading(false)
+                            console.log()
+                            setError(response.data.error)
+                            return
+                        }
                         axiosInstance.defaults.headers["Authorization"] = "Bearer " + response.data.access
                         setAccessToken(response.data.access)
                         setRefreshToken(response.data.refresh)
@@ -197,10 +209,12 @@ export default function Login(props) {
                         <div>
                             <form onSubmit={handleSubmit}>
                                 <div className="form-group">
-                                    <input className="form-control" type="email" value={email} onChange={(event) => setEmail(event.target.value)} name="email" placeholder="Email" required />
+                                    <label>Phone Number or Email</label>
+                                    <input className="form-control" type="text" value={email} onChange={(event) => setEmail(event.target.value)} name="email" placeholder="Phone Number or Email" required />
                                 </div>
                                 <div className="form-group">
-                                    <input className="form-control" type="password" value={password} onChange={(event) => setPassword(event.target.value)} name="password" placeholder="password" required />
+                                    <label>Password</label>
+                                    <input className="form-control" type="password" value={password} onChange={(event) => setPassword(event.target.value)} name="password" placeholder="Password" required />
                                 </div>
                                 <div>
                                     {error &&

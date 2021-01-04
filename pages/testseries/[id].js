@@ -176,6 +176,15 @@ export default function TestSeries(props){
                                                     <div>
                                                         {profile.is_teacher ?
                                                             <>
+                                                                <Link href={`/test/results/${test.id}`}>
+                                                                    <a>
+                                                                        <div className="btn btn-info">
+                                                                            <div className="d-flex align-items-center justify-content-center">
+                                                                                See Results
+                                                                            </div>
+                                                                        </div>
+                                                                    </a>
+                                                                </Link>
                                                                 <Link href={`/test/edit/${test.id}`}>
                                                                     <a>
                                                                         <div className="btn btn-warning">
