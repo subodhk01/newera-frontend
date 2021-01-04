@@ -211,7 +211,7 @@ export default function Test(props){
 
     React.useEffect(() => {
         if(!loading){
-            if(timeRemaining && timeRemaining <= 0 && !ending){
+            if(timeRemaining && timeRemaining <= 0 && timeRemaining >= -5 && !ending){
                 setTestEndModal(true)
                 endTest()
             }
