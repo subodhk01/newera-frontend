@@ -31,7 +31,9 @@ export default function TestSeries(props){
             props.setHeader(true)
             axiosInstance.get(`testseries/${id}/`).then((response) => {
                 console.log("series: ", response.data)
-                setSeries(response.data)
+                let rawSeries = response.data
+                rawSeries.tests = rawSeries.tests.sort((a,b) => (new Date(a.activation_time) - new Date(b.activation_time)))
+                setSeries(rawSeries)
                 if(response.data.registered_students.includes(profile.id) || response.data.price === 0 || response.data.free){
                     console.log("student is registered")
                     setRegistered(true)
@@ -80,7 +82,7 @@ export default function TestSeries(props){
     async function makePayment(totalAmount, notes) {
         setError("")
         var options = {
-            key: "rzp_test_zhhsJUxL30bSZl",
+            key: "rzp_live_VMy6LTFP3FIQmO",
             amount: totalAmount * 100,
             name: "Newera Coaching",
             currency: "INR",
@@ -112,6 +114,11 @@ export default function TestSeries(props){
                                 <h1>{series.name}</h1>
                             </div>
                             <div className="p-3 text-right">
+                                {series.syllabus &&
+                                    <a className="btn btn-success font-11 px-5" target="blank" href={series.syllabus}>
+                                        Download Syllabus
+                                    </a> 
+                                }
                                 {isRegistered ?
                                     <div className="text-left">
                                         <Alert description="Go to Tests section to see all your tests and attempts" />
@@ -169,6 +176,15 @@ export default function TestSeries(props){
                                                     <div>
                                                         {profile.is_teacher ?
                                                             <>
+                                                                <Link href={`/test/results/${test.id}`}>
+                                                                    <a>
+                                                                        <div className="btn btn-info">
+                                                                            <div className="d-flex align-items-center justify-content-center">
+                                                                                See Results
+                                                                            </div>
+                                                                        </div>
+                                                                    </a>
+                                                                </Link>
                                                                 <Link href={`/test/edit/${test.id}`}>
                                                                     <a>
                                                                         <div className="btn btn-warning">
@@ -181,14 +197,20 @@ export default function TestSeries(props){
                                                                 </div> */}
                                                             </>
                                                             :
-                                                            <Link href={`/test/attempt/${test.id}`}>
-                                                                <a>
-                                                                    <div className="btn btn-success">
-                                                                        Attempt Test
-                                                                    </div>
-                                                                </a>
-                                                            </Link>
-                                                            }
+                                                            <>
+                                                                {test.status < 1 ?
+                                                                    <div className="text-info">Test not yet started</div>
+                                                                    :
+                                                                    <Link href={`/test/attempt/${test.id}`}>
+                                                                        <a>
+                                                                            <div className="btn btn-success">
+                                                                                Attempt Test
+                                                                            </div>
+                                                                        </a>
+                                                                    </Link> 
+                                                                }
+                                                            </>
+                                                        }
                                                     </div>
                                                 </div>
                                             :

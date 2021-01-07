@@ -4,6 +4,7 @@ import { axiosInstance } from '../../utils/axios'
 import { useRouter } from 'next/router'
 import AuthHOC from '../../components/AuthHOC'
 import SideBarLayout from '../../components/UI/WithSideBar'
+import randomColor from 'randomcolor'
 
 import { Bar, Pie } from "react-chartjs-2";
 import { Alert } from 'antd'
@@ -25,6 +26,7 @@ export default function Test(props){
     const [ data1, setData1 ] = React.useState()
     const [ data2, setData2 ] = React.useState()
     const [ data3, setData3 ] = React.useState()
+    const [ sectionWise, setSectionWise ] = React.useState()
     
     React.useEffect(() => {
         if(id){
@@ -78,25 +80,44 @@ export default function Test(props){
                         }
                     ]
                 }
+                const colorArray = randomColor({
+                    count: topic_wise_keys.length
+                })
                 const chartData3 = {
                     labels: topic_wise_keys,
                     datasets: [{
                         data: topic_wise_marks,
-                        backgroundColor: [
-                            '#FF6384',
-                            '#36A2EB',
-                            '#FFCE56'
-                        ],
-                        hoverBackgroundColor: [
-                            '#FF6384',
-                            '#36A2EB',
-                            '#FFCE56'
-                        ]
+                        backgroundColor: colorArray,
+                        hoverBackgroundColor: colorArray
                     }]
                 };
+                let newSectionWise = []
+                for(var i=0; i<response.data.marks.section_wise.length; i++){
+                    newSectionWise.push({
+                        section: response.data.test.sections[i],
+                        data: {
+                            labels: ["Your Marks", "Average", "Highest"],
+                            datasets: [
+                                {
+                                    label: "Marks",
+                                    fill: false,
+                                    lineTension: 0.1,
+                                    backgroundColor: "rgba(75,192,192,0.4)",
+                                    borderColor: "rgba(75,192,192,1)",
+                                    borderCapStyle: "butt",
+                                    borderDash: [],
+                                    borderDashOffset: 0.0,
+                                    borderJoinStyle: "miter",
+                                    data: [response.data.marks.section_wise[i], response.data.test.stats.average.section_wise[i], response.data.test.stats.highest.section_wise[i]]
+                                }
+                            ]
+                        }
+                    })
+                }
                 setData1(chartData1)
                 setData2(chartData2)
                 setData3(chartData3)
+                setSectionWise(newSectionWise)
                 setLoading(false)
             }).catch((error) => {
                 console.log(error)
@@ -113,7 +134,7 @@ export default function Test(props){
                             <div>
                                 <h2>Result Analysis {result.practice && <span className="text-warning">Practice Attempt</span>}</h2>
                             </div>
-                            {test.status > 1 ?
+                            {test.status > 1 || test.instant_result ?
                                 <>
                                     <div className="py-3 d-flex align-items-center justify-content-end">
                                         <Link href={`/test/review/${id}`}>
@@ -179,22 +200,49 @@ export default function Test(props){
                                                     maintainAspectRatio: true,
                                                     // aspectRatio: 0.5
                                                 }}
-                                                height="300px"
+                                                height={300}
                                             />
                                         </div>
                                         <div className="col-12 col-lg-4 p-2 mb-4">
                                             <h6>Subject wise marks</h6>
                                             <Bar
                                                 data={data2}
-                                                height="300px"
+                                                height={300}
                                                 options={{
                                                     maintainAspectRatio: true
                                                 }}
                                             />
                                         </div>
-                                        <div className="col-12 col-lg-4 p-2 mb-4">
+                                        {sectionWise && sectionWise.map((item, index) =>
+                                            <div className="col-12 col-lg-4 p-2 mb-4" key={index}>
+                                                <h6>{item.section}</h6>
+                                                <Bar
+                                                    data={item.data}
+                                                    height={300}
+                                                    options={{
+                                                        maintainAspectRatio: true
+                                                    }}
+                                                />
+                                            </div>
+                                        )}
+                                        <div className="col-12 col-lg-8 p-2 mb-4">
                                             <h6>Topic wise marks</h6>
-                                            <Pie data={data3} height="300px" options={{ maintainAspectRatio: true }}/>
+                                            <Pie 
+                                                data={data3} 
+                                                options={{
+                                                    legend: {
+                                                        display: false
+                                                    },
+                                                    // tooltips: {
+                                                    //     callbacks: {
+                                                    //         label: function (tooltipItem) {
+                                                    //             console.log(tooltipItem)
+                                                    //             return tooltipItem.yLabel;
+                                                    //         }
+                                                    //     }
+                                                    // }
+                                                }} 
+                                            />
                                         </div>
                                     </div>
                                     {/* <div className="pt-3">

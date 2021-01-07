@@ -1,0 +1,6 @@
+myNextApplication:
+  component: "@sls-next/serverless-component"
+  inputs:
+    domain: "neweraonlinecoaching.com"
+    cloudfront:
+      distributionId: E3NG3W25141CNU

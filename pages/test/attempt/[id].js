@@ -11,6 +11,7 @@ import { fancyTimeFormat, arrayRemove } from '../../../utils/functions'
 import { customStyles, customStyles2 } from '../../../utils/constants'
 import { load } from 'react-cookies'
 import { Alert } from 'antd'
+import Instructions from '../../../components/Tables/Test/Instructions'
 //Modal.setAppElement('#app');
 // import dynamic from 'next/dynamic'
 
@@ -30,6 +31,7 @@ export default function Test(props){
     const [ error, setError ] = React.useState("")
     const [ testStartModal,setTestStartModal ] = React.useState(false)
     const [ testEndModal, setTestEndModal ] = React.useState(false)
+    const [ unsavedChanges, setUnsavedChanges ] = React.useState(false)
     const [ session, setSession ] = React.useState()
     const [ loading, setLoading ] = React.useState(true)
     const [ ending, setEnding ] = React.useState(false)
@@ -40,6 +42,36 @@ export default function Test(props){
     const [ currentQuestion, setCurrentQuestion ] = React.useState(0)
     const [ response, setResponse ] = React.useState([{answer: "", marked: false, visited: true, time: 0},])
     const [ render, setRender ] = React.useState(0)
+
+    React.useEffect(() => {
+        const warningText = 'You have unsaved changes - are you sure you wish to leave this page?';
+        const handleWindowClose = (e) => {
+            if (!unsavedChanges) return;
+            e.preventDefault();
+            return (e.returnValue = warningText);
+        };
+        const handleBrowseAway = () => {
+            if (!unsavedChanges) return;
+            else {
+                router.events.emit('routeChangeError');
+                setTestEndModal(true)
+                throw 'routeChange aborted.';
+            }
+        };
+       // window.addEventListener('beforeunload', handleWindowClose);
+        router.events.on('routeChangeStart', handleBrowseAway);
+        return () => {
+            // window.removeEventListener('beforeunload', handleWindowClose);
+            router.events.off('routeChangeStart', handleBrowseAway);
+        };
+    }, [unsavedChanges]);
+
+    React.useEffect(() => {
+        if(session){
+            console.log("saving responses to localstorage")
+            localStorage.setItem(`response${session.id}`, JSON.stringify(response))
+        }
+    }, [response, currentQuestion])
 
     const handleCurrentQuestion = (index) => {
         let newResponse = response
@@ -140,7 +172,11 @@ export default function Test(props){
                 newResponse[currentQuestion].visited = true
                 setResponse(newResponse)
                 setLocalSections(localSections)
-                setTestStartModal(true)
+                if(localStorage.getItem(`test${id}`)){
+                    startTest()
+                }else {
+                    setTestStartModal(true)
+                }     
             }).catch((error) => {
                 console.log(error)
                 setError("Unable to fetch test, try refreshing the page or try again later.")
@@ -175,7 +211,7 @@ export default function Test(props){
 
     React.useEffect(() => {
         if(!loading){
-            if(timeRemaining && timeRemaining <= 0){
+            if(timeRemaining && timeRemaining <= 0 && timeRemaining >= -5 && !ending){
                 setTestEndModal(true)
                 endTest()
             }
@@ -189,6 +225,11 @@ export default function Test(props){
                 console.log("session create response: ", response.data)
                 setSession(response.data)
                 let session = response.data
+                if(localStorage.getItem(`response${session.id}`)){
+                    console.log("Found saved responses: ", JSON.parse(localStorage.getItem(`response${session.id}`)))
+                    setResponse(JSON.parse(localStorage.getItem(`response${session.id}`)))
+                }
+                localStorage.setItem(`test${id}`, true)
                 var seconds = session.duration.split(":")[0]*3600 + session.duration.split(":")[1]*60 + session.duration.split(":")[2]*1
                 var session_start = new Date(session.checkin_time)
                 var time_remaining = Math.floor(((new Date()).getTime() - session_start.getTime())/1000)
@@ -196,6 +237,7 @@ export default function Test(props){
                 console.log("time remaining: ", seconds - time_remaining)
                 setTimeRemaining(seconds - time_remaining)
                 setTestStartModal(false)
+                setUnsavedChanges(true)
                 setLoading(false)
             }).catch((error) => {
                 console.log(error)
@@ -207,6 +249,7 @@ export default function Test(props){
     const endTest = () => {
         console.log("endTest")
         setEnding(true)
+        setUnsavedChanges(false)
         let finalResponse = response
         finalResponse.map((response, index) => {
             response.time = fancyTimeFormat(response.time)
@@ -217,6 +260,8 @@ export default function Test(props){
             completed: true
         }).then((response) => {
             console.log("session end response: ", response.data)
+            localStorage.removeItem(`response${session.id}`)
+            localStorage.removeItem(`test${test.id}`)
             Router.push(`/result/${session.id}`)
         }).catch((error) => {
             console.log(error)
@@ -235,12 +280,12 @@ export default function Test(props){
                 ariaHideApp={false}
                 shouldCloseOnOverlayClick={false}
             >
-                <div className="text-center">
-                    <div className="mb-3">
-                        Instructions of testName
-                    </div>
-                    <div className="btn btn-info" onClick={startTest}>
-                        Start Test
+                <div>
+                    <Instructions />
+                    <div className="text-center">
+                        <div className="btn btn-warning" onClick={startTest}>
+                            Start Test
+                        </div>
                     </div>
                     {error && 
                         <Alert
@@ -311,7 +356,7 @@ export default function Test(props){
                 :
                 <React.StrictMode>
                     <div>
-                        <TestHeader testName="Custom Test 1" />
+                        <TestHeader testName={test.name} />
                         <div className="d-flex flex-wrap align-items-center p-2 border-bottom">
                             <div className="circle border-green m-2">
                                 {test.questions[currentQuestion].correctMarks}
@@ -350,9 +395,9 @@ export default function Test(props){
                                         </div>
                                     </div>
                                     <div>
-                                        <div>
+                                        <div className="text-center">
                                             {/* <div dangerouslySetInnerHTML={createMarkup(test.questions[currentQuestion].text)}></div> */}
-                                            <img src={test.questions[currentQuestion].image} />
+                                            <img src={test.questions[currentQuestion].image} className="mx-auto" style={{maxWidth: "80%"}} />
                                         </div>
                                         <div>
                                             {test.questions[currentQuestion].text && 
@@ -373,7 +418,7 @@ export default function Test(props){
                                                 handleMatrixCorrect={handleMatrixCorrect}
                                             />
                                         </div>
-                                        <div className="d-flex align-items-center p-3">
+                                        <div className="d-flex align-items-center flex-wrap p-3">
                                             <div className="btn btn-success" onClick={() => handleCurrentQuestion(currentQuestion + 1)}>
                                                 Save and Next
                                             </div>
@@ -395,7 +440,7 @@ export default function Test(props){
                         </div>
                         <div className="col-12 col-lg-3 position-relative border-left pt-4 pb-10 questions-container">
                             <div>
-                                <div className="d-flex flex-wrap justify-content-center mb-4">
+                                <div className="d-flex flex-wrap justify-content-center mb-1">
                                     {test && test.sections && test.sections.length ? test.sections.map((section, index) =>
                                         <div className="d-flex" key={`section-${index}`}>
                                             <div className={`font-09 mr-0 btn d-flex align-items-center ${test.questions[currentQuestion].section === section ? 'btn-warning' : 'btn-hollow text-muted'}`} key={`section-${index}`} onClick={() => handleCurrentQuestion(localSections[section])}>
@@ -407,6 +452,20 @@ export default function Test(props){
                                     :
                                         <Alert description="No sections" />
                                     }
+                                </div>
+                            </div>
+                            <div className="np-container w-100 p-3">
+                                <div className="row no-gutters text-center">
+                                    <div className="col-6 p-2">
+                                        <button className="btn btn-warning w-75" onClick={() => handleCurrentQuestion(currentQuestion - 1)} disabled={currentQuestion === 0}>
+                                            <BsArrowLeft color="white" size="30" />
+                                        </button>
+                                    </div>
+                                    <div className="col-6 p-2">
+                                        <button className="btn btn-warning w-75" onClick={() => handleCurrentQuestion(currentQuestion + 1)} disabled={currentQuestion === response.length - 1}>
+                                            <BsArrowRight color="white" size="30" />
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             <div className="d-flex flex-wrap justify-content-center">
@@ -429,20 +488,6 @@ export default function Test(props){
                                         } 
                                     </div>
                                 )}
-                            </div>
-                            <div className="np-container position-absolute w-100 p-3">
-                                <div className="row no-gutters text-center">
-                                    <div className="col-6 p-2">
-                                        <button className="btn btn-warning w-75" onClick={() => handleCurrentQuestion(currentQuestion - 1)} disabled={currentQuestion === 0}>
-                                            <BsArrowLeft color="white" size="30" />
-                                        </button>
-                                    </div>
-                                    <div className="col-6 p-2">
-                                        <button className="btn btn-warning w-75" onClick={() => handleCurrentQuestion(currentQuestion + 1)} disabled={currentQuestion === response.length - 1}>
-                                            <BsArrowRight color="white" size="30" />
-                                        </button>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>

@@ -15,6 +15,10 @@ const logoBlack = '/static/logoBlack.png'
 
 const HEADER_ITEMS = [
     {
+        title: "Home",
+        path: "/"
+    },
+    {
         title: "AITS",
         dropdown: true,
         items: [
@@ -26,18 +30,18 @@ const HEADER_ITEMS = [
             }
         ]
     },
-    {
-        title: "Video Lectures",
-        path: "/"
-    },
-    {
-        title: "Study Material",
-        path: "/"
-    },
-    {
-        title: "Forum",
-        path: "/"
-    },
+    // {
+    //     title: "Video Lectures",
+    //     path: "/"
+    // },
+    // {
+    //     title: "Study Material",
+    //     path: "/"
+    // },
+    // {
+    //     title: "Forum",
+    //     path: "/"
+    // },
     {
         title: "Login/Signup",
         to: "/login",
@@ -70,7 +74,7 @@ export default function Header(props){
                         path: `/aits/?exam=${exam.slug}&name=${exam.name}`
                     })
                 })
-                temp_header[0].items = exams
+                temp_header[1].items = exams
                 console.log("item headers: ", temp_header)
                 setHeaderItems(temp_header)
             })
@@ -81,10 +85,11 @@ export default function Header(props){
     return (
         <div className="outer-container item-shadow">
             <div className={`position-relative d-flex align-items-center ${props.full ? "full" : "container justify-content-between"}`}>
-                <div>
+                <div className="px-3">
                     <Link href="/">
-                        <a>
-                            New Era
+                        <a className="d-flex align-items-center py-2">
+                            <img src="/images/logo_compressed.jpg" style={{height: "55px", borderRadius: "5px"}} />
+                            <h6 className="ml-3 my-0 mt-light" style={{color: "#05a0e8"}}>New Era<br />The Learning Platform</h6>
                         </a>
                     </Link>
                 </div>
@@ -100,7 +105,7 @@ export default function Header(props){
                             { headerItems && headerItems.map((item, index1) => 
                                 <React.Fragment key={index1}>
                                     {item.path && 
-                                        <div className="py-2">
+                                        <div className="py-2" onClick={() => setMobileNav(false)}>
                                             <Link href={item.path}>
                                                 <a>
                                                     <div className={`position-relative`}>
@@ -133,7 +138,7 @@ export default function Header(props){
                                         <>
                                             {accessToken ?
                                                 <>
-                                                    <div className="py-2">
+                                                    <div className="py-2" onClick={() => setMobileNav(false)}>
                                                         <Link href="/dashboard">
                                                             <a className={`position-relative`}>
                                                                 Dashboard
@@ -141,7 +146,7 @@ export default function Header(props){
                                                             </a>
                                                         </Link>
                                                     </div>
-                                                    <div onClick={() => handleLogout()} className="py-2">
+                                                    <div onClick={() => {handleLogout(); setMobileNav(false)}} className="py-2">
                                                         <a className={`position-relative`}>
                                                             Logout
                                                             <div className="menu-item-underline"></div>
@@ -149,7 +154,7 @@ export default function Header(props){
                                                     </div>
                                                 </>
                                                 :
-                                                <div className="text-center py-4 position-relative" style={{left: "-20px"}}>
+                                                <div className="text-center py-4 position-relative" style={{left: "-20px"}} onClick={() => setMobileNav(false)}>
                                                      <Link href={item.to}>
                                                         <a>
                                                             <SingleArrowButton>

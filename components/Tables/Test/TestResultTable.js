@@ -5,14 +5,7 @@ import { TEST_STATUS } from '../../../utils/constants';
 import Router from 'next/router';
 
 
-const menu = (
-	<Menu>
-		<Menu.Item>Action 1</Menu.Item>
-		<Menu.Item>Action 2</Menu.Item>
-	</Menu>
-);
-
-export default function StudentTestTable(props) {
+export default function TestResultTable(props) {
 	const [ loading, setLoading ] = React.useState(false)
 	// const [ insideLoading, setInsideLoading ] = React.useState(true)
 	// const [ insideError, setInsideError ] = React.useState(false)
@@ -29,6 +22,7 @@ export default function StudentTestTable(props) {
 				title: 'Attempt',
 				key: 'attempt',
 				render: (attempt) => {
+                    //console.log("attempt", attempt)
 					return (
 						<span>
 							{attempt.practice ? <Badge status="warning" /> : <Badge status="success" />}
@@ -38,13 +32,21 @@ export default function StudentTestTable(props) {
 				},
 			},
 			{ 
-				title: 'Start Time', 
-				dataIndex: 'time', 
-				key: 'time',
-				render: (time) => (
-					<span>{(new Date(time)).toLocaleString()}</span>
+				title: 'Marks', 
+				dataIndex: 'marks', 
+				key: 'marks',
+				render: (marks) => (
+					<span>{marks && marks.total}</span>
 				)
-			},
+            },
+            { 
+				title: 'Rank', 
+				dataIndex: 'ranks', 
+				key: 'ranks',
+				render: (ranks) => (
+					<span>{ranks && ranks.overall}</span>
+				)
+            },
 			{
 				title: 'Action',
 				//dataIndex: 'operation',
@@ -72,14 +74,13 @@ export default function StudentTestTable(props) {
 				),
 			},
 		];
-		props.sessions.map((session, index) => {
-			if(session.test === row.id || (session.test && session.test.id) === row.id){
-				data.push({
-					key: session.id,
-					practice: session.practice,
-					time: session.checkin_time,
-				})
-			}
+        row.sessions.map((session, index) => { 
+			data.push({
+                key: session.id,
+                practice: session.practice,
+                marks: session.marks,
+                ranks: session.ranks
+            })
 		})
 		return(
 			<>
@@ -90,24 +91,6 @@ export default function StudentTestTable(props) {
 					:
 					<div className="text-center">
 						<p>No Attempts yet</p>
-						{TEST_STATUS[row.status] === "LIVE" &&
-							<div>
-								<Link href={`/test/attempt/${row.id}`}>
-									<a>
-										<div className="btn btn-primary">
-											Attempt Test
-										</div>
-									</a>
-								</Link>
-								<Link href={`/test/attempt/${row.id}`}>
-									<a>
-										<div className="btn btn-warning">
-											Practise Attempt
-										</div>
-									</a>
-								</Link>
-							</div>
-						}
 					</div>
 				}
 			</>	
@@ -115,36 +98,25 @@ export default function StudentTestTable(props) {
 	};
 
 	const columns = [
-		{ title: 'TestId', dataIndex: 'id', key: 'id' },
-		{ title: 'Name', dataIndex: 'name', key: 'name' },
-		{ title: 'Status', key: 'status', render: (test) => TEST_STATUS[test.status] },
-		{ title: 'Duration', dataIndex: 'duration', key: 'duration' },
-		{ title: 'Action', key: 'operation', render: (test) => 
-			<Link href={`/test/attempt/${test.id}`}>
-				<a>
-					{test.status < 1 ? 
-						<div>Test not yet started</div> 
-						: 
-						<button className="btn btn-info">
-							Start Test
-						</button>
-					}
-				</a>
-			</Link>
-		},
+        { title: 'Student Name', dataIndex: 'name', key: 'name' },
+        { title: 'Rank', dataIndex: 'rank', key: 'rank' },
+		// { title: 'Action', key: 'operation', render: (student) => 
+		// 	<div>
+        //         {student.name}
+        //     </div>
+		// },
 	];
 
 	const data = [];
-	props.tests && props.tests.map((item, index) => {
+	Object.keys(props.students).map((item, index) => {
 		data.push({
-			key: item.id,
-			id: item.id,
-			name: item.name,
-			duration: item.time_alotted,
-			status: item.status,
-			instant_result: item.instant_result
+			key: item,
+            name: item,
+            rank: props.students[item].rank,
+            sessions: props.students[item].sessions
 		})
-	})
+    })
+    data.sort((x,y) => x.rank - y.rank)
 
 	return (
 		<>
@@ -156,8 +128,8 @@ export default function StudentTestTable(props) {
 					dataSource={data}
 					locale={{
 						emptyText: 
-							<Empty description={<span>Not enrolled in any tests yet</span>}>
-								<div className="btn btn-info font-08 mb-4" onClick={() => Router.push('/testseries')}>View all Test Series</div>
+							<Empty description={<span>No Attempts yet</span>}>
+								
 							</Empty>
 					}}
 				/>

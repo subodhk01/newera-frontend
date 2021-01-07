@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import React from 'react'
+import HomeBanners from '../components/UI/HomeCarousel'
 import Layout from '../components/UI/Layout'
 import { axiosInstance } from '../utils/axios'
 
@@ -7,16 +8,18 @@ export default function Home(props) {
     const [ exams, setExams ] = React.useState()
     React.useEffect(() => {
         props.setHeader(true)
-        axiosInstance.get("/exams")
+        axiosInstance.get("/exams/")
             .then((response) => {
                 setExams(response.data)
             })
             .catch((error) => {
                 console.log(error)
+                console.log(error.response)
             })
     }, [])
     return (
         <Layout>
+            <HomeBanners />
             <div className="py-5">
                 <div className="text-center py-5 px-2">
                     <h1 className="mt-bold">
@@ -26,7 +29,7 @@ export default function Home(props) {
                     <p className="text-muted py-3">
                         We provide free online education to student for JEE , NEET-UG, BIT-SAT. Join our Test Series for the best results.
                     </p>
-                    <div className="d-flex flex-column">
+                    {/* <div className="d-flex flex-column">
                         <div className="mx-auto" style={{maxWidth: "400px"}}>
                             <div className="btn btn-success mt-bold font-13 w-100 m-3 py-2">
                                 Payment Form
@@ -35,11 +38,11 @@ export default function Home(props) {
                                 Super 40 Entrance
                             </div>
                         </div>
-                    </div>
-                    <div className="d-flex align-items-strech justify-content-center flex-wrap py-5">
+                    </div> */}
+                    {/* <div className="d-flex align-items-strech justify-content-center flex-wrap py-5">
                         <div className="feature">
                             <div>
-                                <img className="border-circle" src="/static/images/teacher.png" />
+                                <img className="border-circle" src="/images/teacher.png" />
                             </div>
                             <div>
                                 <h3 className="mt-bold mt-3 mb-0">Expert Faculty</h3>
@@ -48,7 +51,7 @@ export default function Home(props) {
                         </div>
                         <div className="feature">
                             <div>
-                                <img className="border-circle" src="/static/images/test.png" />
+                                <img className="border-circle" src="/images/test.png" />
                             </div>
                             <div>
                                 <h3 className="mt-bold mt-3 mb-0">Our Test Series</h3>
@@ -57,7 +60,7 @@ export default function Home(props) {
                         </div>
                         <div className="feature">
                             <div>
-                                <img className="border-circle" src="/static/images/lecture.png" />
+                                <img className="border-circle" src="/images/lecture.png" />
                             </div>
                             <div>
                                 <h3 className="mt-bold mt-3 mb-0">Online Video Lectures</h3>
@@ -66,23 +69,23 @@ export default function Home(props) {
                         </div>
                         <div className="feature">
                             <div>
-                                <img className="border-circle" src="/static/images/star.png" />
+                                <img className="border-circle" src="/images/star.png" />
                             </div>
                             <div>
                                 <h3 className="mt-bold mt-3 mb-0">Awards</h3>
                                 <p>Rewards for outstanding performers of our online tests</p>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
                 <div className="bg-grey py-4 py-md-5 px-2 text-center">
                     <h2 className="mt-bold">Popular Test Series</h2>
                     <div className="d-flex align-items-strech justify-content-center flex-wrap">
                         {exams && exams.map((exam, index) =>
-                            <Link href={`/aits/?exam=${exam.slug}&name=${exam.name}`}>
+                            <Link href={`/aits/?exam=${exam.slug}&name=${exam.name}`} key={index}>
                                 <a className="feature feature-small item-shadow p-0">
                                     <div>
-                                        <img src="/static/images/jeeadvance.jpg" />
+                                        <img src={exam.image} />
                                     </div>
                                     <div className="p-3">
                                         {exam.name}
