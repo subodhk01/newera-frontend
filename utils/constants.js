@@ -37,16 +37,16 @@ export const SIDEBAR_ITEMS = [
         title: "Lecture Series",
         path: "/lectureseries"
     },
-    {
-        image: "",
-        title: "Online Classes",
-        path: "/onlineclasses"
-    },
-    {
-        image: "",
-        title: "Profile",
-        path: "/profile"
-    },
+    // {
+    //     image: "",
+    //     title: "Online Classes",
+    //     path: "/onlineclasses"
+    // },
+    // {
+    //     image: "",
+    //     title: "Profile",
+    //     path: "/profile"
+    // },
 ]
 
 export const customStyles = {
