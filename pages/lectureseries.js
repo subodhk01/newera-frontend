@@ -6,6 +6,7 @@ import { useAuth } from '../utils/auth'
 import { axiosInstance } from '../utils/axios'
 import AuthHOC from '../components/AuthHOC'
 import { FaHockeyPuck } from 'react-icons/fa'
+import { Empty } from 'antd'
 
 export default function LectureSeries(props){
     const { profile, accessToken } = useAuth()
@@ -15,7 +16,7 @@ export default function LectureSeries(props){
     React.useEffect(() => {
         props.setHeader(true)
         axiosInstance
-            .get("/lectureseries")
+            .get("/lectureseries/user")
             .then((response) => {
                 console.log("lecture series: ", response.data)
                 setSeries(response.data)
