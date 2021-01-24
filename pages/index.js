@@ -96,6 +96,24 @@ export default function Home(props) {
                         
                     </div>
                 </div>
+                <div className="bg-grey py-4 py-md-5 px-2 text-center">
+                    <h2 className="mt-bold">Popular Lecture Series</h2>
+                    <div className="d-flex align-items-strech justify-content-center flex-wrap">
+                        {exams && exams.map((exam, index) =>
+                            <Link href={`/lectureseriesfilter/?exam=${exam.slug}&name=${exam.name}`} key={index}>
+                                <a className="feature feature-small item-shadow p-0">
+                                    <div>
+                                        <img src={exam.image} />
+                                    </div>
+                                    <div className="p-3">
+                                        {exam.name}
+                                    </div>
+                                </a>
+                            </Link>
+                        )}
+                        
+                    </div>
+                </div>
             </div>
             <style jsx>{`
                 .bg-grey {
