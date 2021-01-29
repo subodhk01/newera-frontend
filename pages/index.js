@@ -6,11 +6,20 @@ import { axiosInstance } from '../utils/axios'
 
 export default function Home(props) {
     const [ exams, setExams ] = React.useState()
+    const [ lectures, setLectures ] = React.useState()
     React.useEffect(() => {
         props.setHeader(true)
         axiosInstance.get("/exams/")
             .then((response) => {
                 setExams(response.data)
+            })
+            .catch((error) => {
+                console.log(error)
+                console.log(error.response)
+            })
+        axiosInstance.get("/videosections/")
+            .then((response) => {
+                setLectures(response.data)
             })
             .catch((error) => {
                 console.log(error)
@@ -99,8 +108,8 @@ export default function Home(props) {
                 <div className="bg-grey py-4 py-md-5 px-2 text-center">
                     <h2 className="mt-bold">Popular Lecture Series</h2>
                     <div className="d-flex align-items-strech justify-content-center flex-wrap">
-                        {exams && exams.map((exam, index) =>
-                            <Link href={`/lectureseriesfilter/?exam=${exam.slug}&name=${exam.name}`} key={index}>
+                        {lectures && lectures.map((exam, index) =>
+                            <Link href={`/lectureseriesfilter/?section=${exam.slug}&name=${exam.name}`} key={index}>
                                 <a className="feature feature-small item-shadow p-0">
                                     <div>
                                         <img src={exam.image} />

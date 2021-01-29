@@ -39,7 +39,7 @@ export const SIDEBAR_ITEMS = [
     },
     {
         image: "",
-        title: "Lecture Series",
+        title: "My Lecture Series",
         path: "/lectureseries"
     },
     // {
