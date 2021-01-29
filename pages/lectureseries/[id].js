@@ -232,6 +232,9 @@ export default function Lectureseries(props){
                     .lock-icon-box img {
                         width: 40px;
                     }
+                    img {
+                        max-width: 230px;
+                    }
                 `}</style>
             </SideBarLayout>
         </AuthHOC>
