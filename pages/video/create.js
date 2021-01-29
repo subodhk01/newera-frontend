@@ -53,11 +53,15 @@ export default function VideoCreate(props){
     const handleTestSave = () => {
         setError("")
         console.log("free: ", free)
-        if(!videoTitle || !startTime || !section){
-            setError("Please fill all details and mark answers to all the questions")
+        console.log("videoTitle: ", videoTitle)
+        console.log("startTime: ", startTime)
+        console.log("section: ", section)
+        if(!videoTitle || !startTime){
+            setError("Please fill all details")
             return
         }
         axiosInstance.post("/videos/", {
+            created_by: profile.id,
             title: videoTitle,
             url: url,
             start_time: startTime.toDate(),
@@ -67,8 +71,8 @@ export default function VideoCreate(props){
             
         })
         .then((response) => {
-            console.log("test save response: ", response.data)
-            setError("Test successfully created!")
+            console.log("video save response: ", response.data)
+            setError("Video successfully created!")
             Router.push("/videos")
         }).catch((error) => {
             console.log(error)
@@ -102,7 +106,7 @@ export default function VideoCreate(props){
                                     }
                                 </div>
                                 <div className="btn btn-success" onClick={handleTestSave}>
-                                    Create Test
+                                    Create Video
                                 </div>
                             </div>
                         </div>
@@ -146,7 +150,7 @@ export default function VideoCreate(props){
                                                     <Checkbox checked={free} onChange={(event) => setFree(event.target.checked)}>Free</Checkbox>
                                                 </label>
                                             </div>
-                                            <div className="col-12 p-2">
+                                            {/* <div className="col-12 p-2">
                                                 Topic: 
                                                 <Select
                                                     showSearch
@@ -166,7 +170,7 @@ export default function VideoCreate(props){
                                                         <Option value={topic.name}>{topic.name}</Option>
                                                     )}
                                                 </Select>
-                                            </div>
+                                            </div> */}
                                             <div className="col-12 p-2">
                                                 Description: 
                                                 <textarea rows="3" type="text" name="description" className="form-control" value={description} onChange={(event) => setDescription(event.target.value)} />

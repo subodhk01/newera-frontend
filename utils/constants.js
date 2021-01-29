@@ -34,6 +34,11 @@ export const SIDEBAR_ITEMS = [
     },
     {
         image: "",
+        title: "My Videos",
+        path: "/videos"
+    },
+    {
+        image: "",
         title: "Lecture Series",
         path: "/lectureseries"
     },
