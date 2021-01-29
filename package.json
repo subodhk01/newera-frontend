@@ -34,6 +34,7 @@
     "react-player": "^2.7.0",
     "serverless": "^2.16.1",
     "styled-components": "^5.2.0",
+    "styled-jsx": "^3.4.1",
     "video-react": "^0.14.1",
     "video.js": "^7.10.2",
     "videojs-youtube": "^2.6.1"
