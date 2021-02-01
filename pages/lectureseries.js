@@ -1,18 +1,15 @@
 import React from 'react'
 import Link from 'next/link'
 import SideBarLayout from '../components/UI/WithSideBar'
-import LectureSeriesTable from '../components/Tables/LectureSeries/LectureSeriesTable'
 import { useAuth } from '../utils/auth'
 import { axiosInstance } from '../utils/axios'
 import AuthHOC from '../components/AuthHOC'
-import { FaHockeyPuck } from 'react-icons/fa'
 import { Empty } from 'antd'
 
 export default function LectureSeries(props){
     const { profile, accessToken } = useAuth()
     const [ loading, setLoading ] = React.useState(true)
     const [ series, setSeries ] = React.useState()
-    const [ sessions, setSessions ] = React.useState()
     React.useEffect(() => {
         props.setHeader(true)
         axiosInstance
