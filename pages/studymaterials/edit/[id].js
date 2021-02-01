@@ -1,13 +1,12 @@
 import React from 'react'
 import axios from 'axios'
-import { axiosInstance, baseURL } from '../../utils/axios'
+import { axiosInstance, baseURL } from '../../../utils/axios'
 import Router, { useRouter } from 'next/router'
-import TestHeader from '../../components/UI/TestHeader'
+import TestHeader from '../../../components/UI/TestHeader'
 
 import { Select, DatePicker, Space, Checkbox } from 'antd';
 import moment from 'moment';
 
-const { RangePicker } = DatePicker;
 const { Option } = Select;
 
 import { FilePond, registerPlugin } from 'react-filepond'
@@ -16,16 +15,18 @@ import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 // Register the plugin
 registerPlugin(FilePondPluginImagePreview);
 
-import { arrayRemove } from '../../utils/functions'
-import AuthHOC from '../../components/AuthHOC'
-import { useAuth } from '../../utils/auth'
+import { arrayRemove } from '../../../utils/functions'
+import AuthHOC from '../../../components/AuthHOC'
+import { useAuth } from '../../../utils/auth'
 
 
 function createMarkup(data) {
     return {__html: data};
 }
 
-export default function StudyMaterialCreate(props){  
+export default function Test(props){  
+    const router = useRouter()
+    const { id } = router.query
     const { profile, accessToken } = useAuth()
 
     const [ loading, setLoading ] = React.useState(true)
@@ -45,47 +46,65 @@ export default function StudyMaterialCreate(props){
     const [ success, setSuccess ] = React.useState("")
 
     React.useEffect(() => {
-        props.setHeader(false)
-        axiosInstance.get("/materials/")
-            .then((response) => {
-                console.log("material list: ", response.data)
-                setMaterials(response.data)
-                axiosInstance.get("/materialsections/")
-                    .then((response) => {
-                        console.log("sections list: ", response.data)
-                        setSections(response.data)
-                        setLoading(false)
-                    }).catch((error) => {
-                        console.log(error)
-                        setError(error && error.response && error.response.data || "Unexpected error, please try again")
-                    })
-            }).catch((error) => {
-                console.log(error)
-                setError(error && error.response && error.response.data || "Unexpected error, please try again")
-            })
-    }, [])
+        if(id){
+            props.setHeader(false)
+            axiosInstance.get(`/materials/`)
+                .then((response) => {
+                    console.log("material list: ", response.data)
+                    setMaterials(response.data)
+                }).catch((error) => {
+                    console.log(error)
+                    setError(error && error.response && error.response.data || "Unexpected error, please try again")
+                })
+            axiosInstance.get("/materialsections/")
+                .then((response) => {
+                    console.log("sections list: ", response.data)
+                    setSections(response.data)
+                    let sections = response.data
+                    axiosInstance.get(`/studymaterials/${id}`)
+                        .then((response) => {
+                            console.log("study material get: ", response.data)
+                            let studymaterial = response.data, temptests = [], tempexam = 0
+                            setStudyMaterialName(studymaterial.name)
+                            setPrice(studymaterial.price)
+                            setSelectedSection(studymaterial.sections && studymaterial.sections.length && studymaterial.sections[0].id)
+                            studymaterial.materials.map((test) => {temptests.push(test.id)})
+                            setSelectedMaterials(temptests)
+                            setLoading(false)
+                        }).catch((error) => {
+                            console.log(error)
+                            setError(error && error.response && error.response.data || "Unexpected error, please try again")
+                        })
+                        }).catch((error) => {
+                            console.log(error)
+                            setError(error && error.response && error.response.data || "Unexpected error, please try again")
+                        })
+        }
+    }, [id])
 
 
-    const handleStudyMaterialSave = () => {
+    const handleStudyMatrialSave = () => {
         setError("")
         setSuccess("")
         if(!studyMaterialName || (!free && !price)){
-            setError("Please fill all details")
+            setError("Please fill all details and mark answers to all the questions")
             return
         }
-        axiosInstance.post("/studymaterials/user/", {
+        console.log(selectedSection, selectedMaterials)
+        axiosInstance.patch(`/studymaterials/${id}/`, {
             name: studyMaterialName,
             price: free ? 0 : price,
             materials: selectedMaterials,
-            sections: [selectedSection,],
+            sections: [selectedSection, ],
             visible: true
         })
         .then((response) => {
-            console.log("studymaterial save response: ", response.data)
+            console.log("study material update response: ", response.data)
             setSuccess("Study Material successfully created!")
-            Router.push("/studymaterials")
         }).catch((error) => {
             console.log(error)
+            console.log(error.response && error.response.data)
+            setError(error && error.response && typeof(error.response.data) === "object" && "sddff" )
             setError(error && error.response && error.response.data || "Unexpected error, please try again")
         })
     }
@@ -113,7 +132,7 @@ export default function StudyMaterialCreate(props){
                         <TestHeader testName={studyMaterialName} />
                         <div className="d-flex flex-wrap align-items-center p-2 border-bottom">
                             <div className="px-2">
-                                <input type="text" name="matrialname" className="form-control" placeholder="Study Material Name" value={studyMaterialName} onChange={(event) => setStudyMaterialName(event.target.value)} />
+                                <input type="text" name="materialname" className="form-control" placeholder="Study Material Name" value={studyMaterialName} onChange={(event) => setStudyMaterialName(event.target.value)} />
                             </div>
                             {/* <div className="p-2">
                                 <RangePicker
@@ -214,6 +233,7 @@ export default function StudyMaterialCreate(props){
                                         <hr />
                                         <div>
                                             Free: {material.free ? "YES" : "NO"}<br />
+
                                         </div>
                                     </div>
                                 )}
@@ -222,15 +242,15 @@ export default function StudyMaterialCreate(props){
                                 <div className="col-12 p-2">
                                     <Select defaultValue={0} style={{ width: "100%" }} onChange={(value) => setSelectedSection(value)} value={selectedSection}>
                                         {sections && sections.map((exam, index) =>
-                                            <Option value={exam.id} key={index}>{exam.name}</Option>
+                                            <Option value={exam.id}>{exam.name}</Option>
                                         )}
                                     </Select>
                                 </div>
                             </div>
                         </div>
                         <div className="p-2">
-                            <div className="btn btn-info" onClick={handleStudyMaterialSave}>
-                                Create Study Material
+                            <div className="btn btn-info" onClick={handleStudyMatrialSave}>
+                                Update Study Material
                             </div>
                             <div>
                                 {success && <span className="text-success">{success}</span>}

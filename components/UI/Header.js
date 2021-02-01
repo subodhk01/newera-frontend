@@ -42,6 +42,18 @@ const HEADER_ITEMS = [
             }
         ]
     },
+    {
+        title: "Study Materials",
+        dropdown: true,
+        items: [
+            {
+                title: "Loading",
+                content: "",
+                image: "/static/header/about.png",
+                disabled: true
+            }
+        ]
+    },
     // {
     //     title: "Video Lectures",
     //     path: "/"
@@ -90,7 +102,7 @@ export default function Header(props){
                 console.log("item headers: ", temp_header)
                 axiosInstance.get("/videosections")
                     .then((response) => {
-                        console.log("exams resp: ", response.data)
+                        console.log("videosections resp: ", response.data)
                         let exams = []
                         response.data.map((exam) => {
                             exams.push({
@@ -102,8 +114,26 @@ export default function Header(props){
                         })
                         temp_header[2].items = exams
                         console.log("item headers: ", temp_header)
-                        setHeaderItems(temp_header)
-                        
+                        axiosInstance.get("/materialsections")
+                            .then((response) => {
+                                console.log("materialsections resp: ", response.data)
+                                let exams = []
+                                response.data.map((exam) => {
+                                    exams.push({
+                                        title: exam.name,
+                                        content: "",
+                                        image: "",
+                                        path: `/studymaterialsfilter/?section=${exam.slug}&name=${exam.name}`
+                                    })
+                                })
+                                temp_header[3].items = exams
+                                console.log("item headers: ", temp_header)
+                                setHeaderItems(temp_header)
+                                
+                            })
+                            .catch((error) => {
+                                console.log(error)
+                            })
                     })
                     .catch((error) => {
                         console.log(error)
