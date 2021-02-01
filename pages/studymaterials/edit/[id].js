@@ -3,12 +3,10 @@ import axios from 'axios'
 import { axiosInstance, baseURL } from '../../../utils/axios'
 import Router, { useRouter } from 'next/router'
 import TestHeader from '../../../components/UI/TestHeader'
-import Options from '../../../components/Test/Options'
 
 import { Select, DatePicker, Space, Checkbox } from 'antd';
 import moment from 'moment';
 
-const { RangePicker } = DatePicker;
 const { Option } = Select;
 
 import { FilePond, registerPlugin } from 'react-filepond'
@@ -33,16 +31,16 @@ export default function Test(props){
 
     const [ loading, setLoading ] = React.useState(true)
     const [ questionLoading, setQuestionLoading ] = React.useState(false)
-    const [ testSeriesName, setTestSeriesName ] = React.useState("")
+    const [ studyMaterialName, setStudyMaterialName ] = React.useState("")
     const [ image, setImage ] = React.useState()
     const [ free, setFree ] = React.useState(false)
     const [ price, setPrice ] = React.useState()
     const [ dateTime, setDateTime ] = React.useState()
     const [ duration, setDuration ] = React.useState(180)
-    const [ tests, setTests ] = React.useState()
-    const [ exams, setExams ] = React.useState()
-    const [ selectedTests, setSelectedTests ] = React.useState([])
-    const [ selectedExam, setSelectedExam ] = React.useState([])
+    const [ materials, setMaterials ] = React.useState()
+    const [ sections, setSections ] = React.useState()
+    const [ selectedMaterials, setSelectedMaterials ] = React.useState([])
+    const [ selectedSection, setSelectedSection ] = React.useState([])
     const [ render, setRender ] = React.useState(0)
     const [ error, setError ] = React.useState("")
     const [ success, setSuccess ] = React.useState("")
@@ -50,28 +48,28 @@ export default function Test(props){
     React.useEffect(() => {
         if(id){
             props.setHeader(false)
-            axiosInstance.get(`/tests/`)
+            axiosInstance.get(`/materials/`)
                 .then((response) => {
-                    console.log("tests list: ", response.data)
-                    setTests(response.data)
+                    console.log("material list: ", response.data)
+                    setMaterials(response.data)
                 }).catch((error) => {
                     console.log(error)
                     setError(error && error.response && error.response.data || "Unexpected error, please try again")
                 })
-            axiosInstance.get("/exams/")
+            axiosInstance.get("/materialsections/")
                 .then((response) => {
-                    console.log("exams list: ", response.data)
-                    setExams(response.data)
-                    let exams = response.data
-                    axiosInstance.get(`/testseries/${id}`)
+                    console.log("sections list: ", response.data)
+                    setSections(response.data)
+                    let sections = response.data
+                    axiosInstance.get(`/studymaterials/${id}`)
                         .then((response) => {
-                            console.log("testseries get: ", response.data)
-                            let testseries = response.data, temptests = [], tempexam = 0
-                            setTestSeriesName(testseries.name)
-                            setPrice(testseries.price)
-                            setSelectedExam(testseries.exams && testseries.exams.length && testseries.exams[0].id)
-                            testseries.tests.map((test) => {temptests.push(test.id)})
-                            setSelectedTests(temptests)
+                            console.log("study material get: ", response.data)
+                            let studymaterial = response.data, temptests = [], tempexam = 0
+                            setStudyMaterialName(studymaterial.name)
+                            setPrice(studymaterial.price)
+                            setSelectedSection(studymaterial.sections && studymaterial.sections.length && studymaterial.sections[0].id)
+                            studymaterial.materials.map((test) => {temptests.push(test.id)})
+                            setSelectedMaterials(temptests)
                             setLoading(false)
                         }).catch((error) => {
                             console.log(error)
@@ -85,24 +83,24 @@ export default function Test(props){
     }, [id])
 
 
-    const handleTestSeriesSave = () => {
+    const handleStudyMatrialSave = () => {
         setError("")
         setSuccess("")
-        if(!testSeriesName || (!free && !price)){
+        if(!studyMaterialName || (!free && !price)){
             setError("Please fill all details and mark answers to all the questions")
             return
         }
-        console.log(selectedExam, selectedTests)
-        axiosInstance.patch(`/testseries/${id}/`, {
-            name: testSeriesName,
+        console.log(selectedSection, selectedMaterials)
+        axiosInstance.patch(`/studymaterials/${id}/`, {
+            name: studyMaterialName,
             price: free ? 0 : price,
-            tests: selectedTests,
-            exams: [selectedExam, ],
+            materials: selectedMaterials,
+            sections: [selectedSection, ],
             visible: true
         })
         .then((response) => {
-            console.log("test series update response: ", response.data)
-            setSuccess("Test Series successfully created!")
+            console.log("study material update response: ", response.data)
+            setSuccess("Study Material successfully created!")
         }).catch((error) => {
             console.log(error)
             console.log(error.response && error.response.data)
@@ -111,14 +109,14 @@ export default function Test(props){
         })
     }
 
-    const handleTestSelect = (testid) => {
-        let newTests = selectedTests
-        if(newTests.includes(testid)){
-            newTests = arrayRemove(newTests, testid)
+    const handleMaterialSelect = (materialid) => {
+        let newMaterials = selectedMaterials
+        if(newMaterials.includes(materialid)){
+            newMaterials = arrayRemove(newMaterials, materialid)
         }else{
-            newTests.push(testid)
+            newMaterials.push(materialid)
         }
-        setSelectedTests(newTests)
+        setSelectedMaterials(newMaterials)
         setRender((render + 1) % 100) // a pseudo update
     }
 
@@ -131,10 +129,10 @@ export default function Test(props){
                 :
                 <>
                     <div>
-                        <TestHeader testName={testSeriesName} />
+                        <TestHeader testName={studyMaterialName} />
                         <div className="d-flex flex-wrap align-items-center p-2 border-bottom">
                             <div className="px-2">
-                                <input type="text" name="testname" className="form-control" placeholder="Test Series Name" value={testSeriesName} onChange={(event) => setTestSeriesName(event.target.value)} />
+                                <input type="text" name="materialname" className="form-control" placeholder="Study Material Name" value={studyMaterialName} onChange={(event) => setStudyMaterialName(event.target.value)} />
                             </div>
                             {/* <div className="p-2">
                                 <RangePicker
@@ -153,7 +151,7 @@ export default function Test(props){
                             </label>
                             {!free && 
                                 <div className="px-2">
-                                    <input type="number" name="price" className="form-control" placeholder="Test Series Price" value={price} onChange={(event) => setPrice(event.target.value)} />
+                                    <input type="number" name="price" className="form-control" placeholder="Study Material Price" value={price} onChange={(event) => setPrice(event.target.value)} />
                                 </div>
                             }
                         </div>
@@ -161,7 +159,7 @@ export default function Test(props){
                     <div className="row no-gutters">
                         <div className="col-12 col-lg-12">
                             <div className="p-3">
-                                <div className="font-weight-bold mb-2">Test series banner:</div>
+                                <div className="font-weight-bold mb-2">Study Material banner:</div>
                                 <FilePond
                                     //files={image}
                                     allowMultiple={false}
@@ -227,12 +225,14 @@ export default function Test(props){
                                 />
                             </div>
                             <div className="d-flex flex-wrap align-items-center justify-content-center">
-                                {tests && tests.map((test, index) =>
-                                    <div className={`item-shadow p-3 py-4 m-3 cursor-pointer border text-center ${selectedTests.includes(test.id) && "selected"}`} key={index} onClick={() => handleTestSelect(test.id)}>
-                                        <h5>{test.name}</h5>
+                                {materials && materials.map((material, index) =>
+                                    <div className={`item-shadow p-3 py-4 m-3 cursor-pointer border text-center ${selectedMaterials.includes(material.id) && "selected"}`} key={index} onClick={() => handleMaterialSelect(material.id)}>
+                                        <h5>{material.title}</h5>
+                                        <hr />
+                                        Material Link: {material.material}
                                         <hr />
                                         <div>
-                                            Free: {test.free ? "YES" : "NO"}<br />
+                                            Free: {material.free ? "YES" : "NO"}<br />
 
                                         </div>
                                     </div>
@@ -240,8 +240,8 @@ export default function Test(props){
                             </div>
                             <div className="w-75 mx-auto p-1 row no-gutters">
                                 <div className="col-12 p-2">
-                                    <Select defaultValue={0} style={{ width: "100%" }} onChange={(value) => setSelectedExam(value)} value={selectedExam}>
-                                        {exams && exams.map((exam, index) =>
+                                    <Select defaultValue={0} style={{ width: "100%" }} onChange={(value) => setSelectedSection(value)} value={selectedSection}>
+                                        {sections && sections.map((exam, index) =>
                                             <Option value={exam.id}>{exam.name}</Option>
                                         )}
                                     </Select>
@@ -249,8 +249,8 @@ export default function Test(props){
                             </div>
                         </div>
                         <div className="p-2">
-                            <div className="btn btn-info" onClick={handleTestSeriesSave}>
-                                Update Test Series
+                            <div className="btn btn-info" onClick={handleStudyMatrialSave}>
+                                Update Study Material
                             </div>
                             <div>
                                 {success && <span className="text-success">{success}</span>}
@@ -288,9 +288,11 @@ export default function Test(props){
                         }
                         .selected {
                             box-shadow: 0px 0px 10px 7px green;
-                            transform: scale(1.1);
+                            transform: scale(1.02);
                         }
-                        
+                        img {
+                            max-width: 230px;
+                        }
                     `}</style>
                 </>
             }

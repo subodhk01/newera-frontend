@@ -6,14 +6,9 @@ import { useRouter } from 'next/router'
 import AuthHOC from '../../components/AuthHOC'
 import SideBarLayout from '../../components/UI/WithSideBar'
 import Modal from 'react-modal'
-import VideoThumbnail from 'react-video-thumbnail'
-import ReactPlayer from 'react-player'
-//import QierPlayer from 'qier-player'
-import { Player } from 'video-react'
 import { useAuth } from '../../utils/auth'
-import { Alert } from 'antd'
 
-export default function Lectureseries(props){  
+export default function StudyMaterial(props){  
     const router = useRouter()
     const { id } = router.query
 
@@ -23,17 +18,16 @@ export default function Lectureseries(props){
     const [ paymentModal, setPaymentModal ] = React.useState(false)
     const [ paymentLoading, setPaymentLoading ] = React.useState(false)
     const [ error, setError ] = React.useState("")
-    const [ series, setSeries ] = React.useState()
+    const [ material, setMaterial ] = React.useState()
     const [ isRegistered, setRegistered ] = React.useState(false)
     
     React.useEffect(() => {
         if(id){
             props.setHeader(true)
-            axiosInstance.get(`lectureseries/${id}/`).then((response) => {
-                console.log("series: ", response.data)
+            axiosInstance.get(`studymaterials/${id}/`).then((response) => {
+                console.log("material: ", response.data)
                 let rawSeries = response.data
-                rawSeries.videos = rawSeries.videos.sort((a,b) => (new Date(a.activation_time) - new Date(b.activation_time)))
-                setSeries(rawSeries)
+                setMaterial(rawSeries)
                 if(response.data.registered_students.includes(profile.id) || response.data.price === 0 || response.data.free){
                     console.log("student is registered")
                     setRegistered(true)
@@ -53,7 +47,7 @@ export default function Lectureseries(props){
                 transaction_id: response.razorpay_payment_id,
                 amount: amount,
                 student: profile.id,
-                lecture_series: id,
+                study_materials: id,
             })
             .then((res) => {
                 console.log("PAYMENT RESPONSE", res)
@@ -71,7 +65,7 @@ export default function Lectureseries(props){
             .catch((error) => {
                 console.log("error: ", error)
                 setPaymentLoading(false)
-                if(error.response && error.response.status === 400 && error.response.data.lecture_series && error.response.data.lecture_series.length && error.response.data.lecture_series[0] === "You have already made a payment"){
+                if(error.response && error.response.status === 400 && error.response.data.study_materials && error.response.data.study_materials.length && error.response.data.study_materials[0] === "You have already made a payment"){
                     setError("You have already made a payment")
                     return
                 }
@@ -86,7 +80,7 @@ export default function Lectureseries(props){
             amount: totalAmount * 100,
             name: "Newera Coaching",
             currency: "INR",
-            description: "Lecture Purchase",
+            description: "Study Material Purchase",
             //image: "/images/logos/icon.png",
             handler: (response) => {
                 verifySignature(response, totalAmount);
@@ -106,16 +100,16 @@ export default function Lectureseries(props){
 
     return(
         <AuthHOC>
-            <SideBarLayout title="Videos">
+            <SideBarLayout title="Materials">
                 <div className="p-2 p-md-5">
                     {!loading &&
                         <>
                             <div>
-                                <h1>{series.name}</h1>
+                                <h1>{material.title}</h1>
                             </div>
                             <div className="p-3 text-right">
-                                {series.syllabus &&
-                                    <a className="btn btn-success font-11 px-5" target="blank" href={series.syllabus}>
+                                {material.syllabus &&
+                                    <a className="btn btn-success font-11 px-5" target="blank" href={material.syllabus}>
                                         Download Syllabus
                                     </a> 
                                 }
@@ -123,14 +117,14 @@ export default function Lectureseries(props){
                                     <div></div>
                                     :
                                     <div className="btn btn-info font-11 px-5" onClick={() => setPaymentModal(true)}>
-                                        Buy Now &#8377;{series.price}
+                                        Buy Now &#8377;{material.price}
                                     </div>    
                                 }
                                 {profile.is_teacher && 
-                                    <Link href={`/lectureseries/edit/${series.id}`}>
+                                    <Link href={`/studymaterials/edit/${material.id}`}>
                                         <a>
                                             <div className="btn btn-warning font-11 px-5">
-                                                Edit Lecture Series
+                                                Edit Study Material
                                             </div>
                                         </a>
                                     </Link>
@@ -149,8 +143,8 @@ export default function Lectureseries(props){
                                         <div>Processing your payment, please wait...</div>
                                         :
                                         <>
-                                            <p>Confirm payment of &#8377;{series.price}</p>
-                                            <div className="btn btn-success" onClick={() => makePayment(series.price)}>
+                                            <p>Confirm payment of &#8377;{material.price}</p>
+                                            <div className="btn btn-success" onClick={() => makePayment(material.price)}>
                                                 Confirm
                                             </div>
                                             <div className="btn btn-danger" onClick={() => setPaymentModal(false)}>
@@ -165,20 +159,19 @@ export default function Lectureseries(props){
                             </Modal>
                             <div className="pt-3">
                                 <div className="d-flex flex-wrap align-items-center justify-content-center">
-                                    {series && series.videos && series.videos.map((video, index) =>
+                                    {material && material.materials && material.materials.map((material, index) =>
                                         <>
-                                            {isRegistered || video.free || profile.is_teacher ?
+                                            {isRegistered || material.free || profile.is_teacher ?
                                                 <div className="item-shadow p-3 py-4 m-3 cursor-pointer border text-center" key={index}>
-                                                    <h5>{video.title}</h5>
+                                                    <h5>{material.title}</h5>
                                                     <hr />
-                                                    <img src={`https://img.youtube.com/vi/${video.url.split('v=')[1]}/hqdefault.jpg`} />
                                                     <div>
                                                         {profile.is_teacher ?
                                                             <>
-                                                                <Link href={`/video/edit/${video.id}`}>
+                                                                <Link href={`/material/edit/${material.id}`}>
                                                                     <a>
                                                                         <div className="btn btn-warning">
-                                                                            Edit Video
+                                                                            Edit Material
                                                                         </div>
                                                                     </a>
                                                                 </Link>
@@ -193,10 +186,9 @@ export default function Lectureseries(props){
                                                 </div>
                                             :
                                                 <div className="item-shadow dark p-3 py-4 m-3 cursor-pointer border text-center position-relative" key={index}>
-                                                    <h5 className="text-white">{video.title}</h5>
+                                                    <h5 className="text-white">{material.title}</h5>
                                                     <hr />
-                                                    <img src={`https://img.youtube.com/vi/${video.url.split('v=')[1]}/default.jpg`} />
-                                                    <br/>
+                                                    <br />
                                                     <div>
                                                         <div className="btn btn-warning" onClick={() => setPaymentModal(true)}>
                                                             BUY
@@ -239,25 +231,4 @@ export default function Lectureseries(props){
             </SideBarLayout>
         </AuthHOC>
     )
-}
-
-function VideoPlayer(props) {
-    const { videoSrc } = props;
-    const playerRef = React.useRef();
-
-    React.useEffect(() => {
-        const player = videojs(playerRef.current, { autoplay: true, muted: true }, () => {
-            player.src(videoSrc);
-        });
-
-        return () => {
-            player.dispose();
-        };
-    }, []);
-
-    return (
-        <div data-vjs-player>
-            <video ref={playerRef} className="video-js vjs-16-9" playsInline />
-        </div>
-    );
 }

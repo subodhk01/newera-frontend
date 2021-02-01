@@ -32,11 +32,21 @@ export const SIDEBAR_ITEMS = [
         title: "My Test Series",
         path: "/testseries"
     },
-    // {
-    //     image: "",
-    //     title: "Lecture Series",
-    //     path: "/lectureseries"
-    // },
+    {
+        image: "",
+        title: "My Videos",
+        path: "/videos"
+    },
+    {
+        image: "",
+        title: "My Lecture Series",
+        path: "/lectureseries"
+    },
+    {
+        image: "",
+        title: "My Study Materials",
+        path: "/studymaterials"
+    },
     // {
     //     image: "",
     //     title: "Online Classes",

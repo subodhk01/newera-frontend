@@ -26,6 +26,7 @@ export default function SideBarLayout(props){
         '/tests': <UploadOutlined />,
         '/testseries': <BookOutlined />,
         '/report': <BookOutlined />,
+        '/videos': <VideoCameraOutlined />,
         '/lectureseries': <VideoCameraOutlined />,
         '/onlineclasses': <CloudOutlined />,
         '/profile': <UserOutlined />

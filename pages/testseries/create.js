@@ -70,7 +70,7 @@ export default function Test(props){
     const handleTestSeriesSave = () => {
         setError("")
         setSuccess("")
-        if(!testSeriesName || !price){
+        if(!testSeriesName || (!free && !price)){
             setError("Please fill all details and mark answers to all the questions")
             return
         }

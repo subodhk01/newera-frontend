@@ -1,7 +1,7 @@
 import axios from 'axios'
 import cookie from 'react-cookies'
 
-const debug = 0
+const debug = 1
 const prod = 1
 export const prodURL = "https://api.neweraonlinecoaching.com/"
 export const baseURL = prod ? prodURL : (debug ? "http://localhost:8000/" : 'https://newera-backend.herokuapp.com/')

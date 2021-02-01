@@ -1,9 +1,9 @@
 import React from 'react'
 import axios from 'axios'
-import { axiosInstance, baseURL } from '../../../utils/axios'
+import { axiosInstance, baseURL } from '../../utils/axios'
 import Router, { useRouter } from 'next/router'
-import TestHeader from '../../../components/UI/TestHeader'
-import Options from '../../../components/Test/Options'
+import TestHeader from '../../components/UI/TestHeader'
+import Options from '../../components/Test/Options'
 
 import { Select, DatePicker, Space, Checkbox } from 'antd';
 import moment from 'moment';
@@ -17,9 +17,9 @@ import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 // Register the plugin
 registerPlugin(FilePondPluginImagePreview);
 
-import { arrayRemove } from '../../../utils/functions'
-import AuthHOC from '../../../components/AuthHOC'
-import { useAuth } from '../../../utils/auth'
+import { arrayRemove } from '../../utils/functions'
+import AuthHOC from '../../components/AuthHOC'
+import { useAuth } from '../../utils/auth'
 
 
 function createMarkup(data) {
@@ -27,98 +27,78 @@ function createMarkup(data) {
 }
 
 export default function Test(props){  
-    const router = useRouter()
-    const { id } = router.query
     const { profile, accessToken } = useAuth()
 
     const [ loading, setLoading ] = React.useState(true)
     const [ questionLoading, setQuestionLoading ] = React.useState(false)
-    const [ testSeriesName, setTestSeriesName ] = React.useState("")
+    const [ lectureSeriesName, setLectureSeriesName ] = React.useState("")
     const [ image, setImage ] = React.useState()
     const [ free, setFree ] = React.useState(false)
     const [ price, setPrice ] = React.useState()
     const [ dateTime, setDateTime ] = React.useState()
     const [ duration, setDuration ] = React.useState(180)
-    const [ tests, setTests ] = React.useState()
-    const [ exams, setExams ] = React.useState()
-    const [ selectedTests, setSelectedTests ] = React.useState([])
-    const [ selectedExam, setSelectedExam ] = React.useState([])
+    const [ videos, setVideos ] = React.useState()
+    const [ sections, setSections ] = React.useState()
+    const [ selectedVideos, setSelectedVideos ] = React.useState([])
+    const [ selectedSection, setSelectedSection ] = React.useState([])
     const [ render, setRender ] = React.useState(0)
     const [ error, setError ] = React.useState("")
     const [ success, setSuccess ] = React.useState("")
 
     React.useEffect(() => {
-        if(id){
-            props.setHeader(false)
-            axiosInstance.get(`/tests/`)
-                .then((response) => {
-                    console.log("tests list: ", response.data)
-                    setTests(response.data)
-                }).catch((error) => {
-                    console.log(error)
-                    setError(error && error.response && error.response.data || "Unexpected error, please try again")
-                })
-            axiosInstance.get("/exams/")
-                .then((response) => {
-                    console.log("exams list: ", response.data)
-                    setExams(response.data)
-                    let exams = response.data
-                    axiosInstance.get(`/testseries/${id}`)
-                        .then((response) => {
-                            console.log("testseries get: ", response.data)
-                            let testseries = response.data, temptests = [], tempexam = 0
-                            setTestSeriesName(testseries.name)
-                            setPrice(testseries.price)
-                            setSelectedExam(testseries.exams && testseries.exams.length && testseries.exams[0].id)
-                            testseries.tests.map((test) => {temptests.push(test.id)})
-                            setSelectedTests(temptests)
-                            setLoading(false)
-                        }).catch((error) => {
-                            console.log(error)
-                            setError(error && error.response && error.response.data || "Unexpected error, please try again")
-                        })
-                        }).catch((error) => {
-                            console.log(error)
-                            setError(error && error.response && error.response.data || "Unexpected error, please try again")
-                        })
-        }
-    }, [id])
+        props.setHeader(false)
+        axiosInstance.get("/videos/")
+            .then((response) => {
+                console.log("video list: ", response.data)
+                setVideos(response.data)
+                axiosInstance.get("/videosections/")
+                    .then((response) => {
+                        console.log("sections list: ", response.data)
+                        setSections(response.data)
+                        setLoading(false)
+                    }).catch((error) => {
+                        console.log(error)
+                        setError(error && error.response && error.response.data || "Unexpected error, please try again")
+                    })
+            }).catch((error) => {
+                console.log(error)
+                setError(error && error.response && error.response.data || "Unexpected error, please try again")
+            })
+    }, [])
 
 
-    const handleTestSeriesSave = () => {
+    const handleLectureSeriesSave = () => {
         setError("")
         setSuccess("")
-        if(!testSeriesName || (!free && !price)){
-            setError("Please fill all details and mark answers to all the questions")
+        if(!lectureSeriesName || (!free && !price)){
+            setError("Please fill all details")
             return
         }
-        console.log(selectedExam, selectedTests)
-        axiosInstance.patch(`/testseries/${id}/`, {
-            name: testSeriesName,
+        axiosInstance.post("/lectureseries/user/", {
+            name: lectureSeriesName,
             price: free ? 0 : price,
-            tests: selectedTests,
-            exams: [selectedExam, ],
+            videos: selectedVideos,
+            sections: [selectedSection,],
             visible: true
         })
         .then((response) => {
-            console.log("test series update response: ", response.data)
-            setSuccess("Test Series successfully created!")
+            console.log("lecture series save response: ", response.data)
+            setSuccess("Lecture Series successfully created!")
+            Router.push("/lectureseries")
         }).catch((error) => {
             console.log(error)
-            console.log(error.response && error.response.data)
-            setError(error && error.response && typeof(error.response.data) === "object" && "sddff" )
             setError(error && error.response && error.response.data || "Unexpected error, please try again")
         })
     }
 
-    const handleTestSelect = (testid) => {
-        let newTests = selectedTests
+    const handleVideoSelect = (testid) => {
+        let newTests = selectedVideos
         if(newTests.includes(testid)){
             newTests = arrayRemove(newTests, testid)
         }else{
             newTests.push(testid)
         }
-        setSelectedTests(newTests)
+        setSelectedVideos(newTests)
         setRender((render + 1) % 100) // a pseudo update
     }
 
@@ -131,10 +111,10 @@ export default function Test(props){
                 :
                 <>
                     <div>
-                        <TestHeader testName={testSeriesName} />
+                        <TestHeader testName={lectureSeriesName} />
                         <div className="d-flex flex-wrap align-items-center p-2 border-bottom">
                             <div className="px-2">
-                                <input type="text" name="testname" className="form-control" placeholder="Test Series Name" value={testSeriesName} onChange={(event) => setTestSeriesName(event.target.value)} />
+                                <input type="text" name="lecturename" className="form-control" placeholder="Lecture Series Name" value={lectureSeriesName} onChange={(event) => setLectureSeriesName(event.target.value)} />
                             </div>
                             {/* <div className="p-2">
                                 <RangePicker
@@ -153,7 +133,7 @@ export default function Test(props){
                             </label>
                             {!free && 
                                 <div className="px-2">
-                                    <input type="number" name="price" className="form-control" placeholder="Test Series Price" value={price} onChange={(event) => setPrice(event.target.value)} />
+                                    <input type="number" name="price" className="form-control" placeholder="Lecture Series Price" value={price} onChange={(event) => setPrice(event.target.value)} />
                                 </div>
                             }
                         </div>
@@ -161,7 +141,7 @@ export default function Test(props){
                     <div className="row no-gutters">
                         <div className="col-12 col-lg-12">
                             <div className="p-3">
-                                <div className="font-weight-bold mb-2">Test series banner:</div>
+                                <div className="font-weight-bold mb-2">Lecture series banner:</div>
                                 <FilePond
                                     //files={image}
                                     allowMultiple={false}
@@ -227,12 +207,14 @@ export default function Test(props){
                                 />
                             </div>
                             <div className="d-flex flex-wrap align-items-center justify-content-center">
-                                {tests && tests.map((test, index) =>
-                                    <div className={`item-shadow p-3 py-4 m-3 cursor-pointer border text-center ${selectedTests.includes(test.id) && "selected"}`} key={index} onClick={() => handleTestSelect(test.id)}>
-                                        <h5>{test.name}</h5>
+                                {videos && videos.map((video, index) =>
+                                    <div className={`item-shadow p-3 py-4 m-3 cursor-pointer border text-center ${selectedVideos.includes(video.id) && "selected"}`} key={index} onClick={() => handleVideoSelect(video.id)}>
+                                        <h5>{video.title}</h5>
+                                        <hr />
+                                        <img src={`https://img.youtube.com/vi/${video.url.split('v=')[1]}/hqdefault.jpg`} />
                                         <hr />
                                         <div>
-                                            Free: {test.free ? "YES" : "NO"}<br />
+                                            Free: {video.free ? "YES" : "NO"}<br />
 
                                         </div>
                                     </div>
@@ -240,8 +222,8 @@ export default function Test(props){
                             </div>
                             <div className="w-75 mx-auto p-1 row no-gutters">
                                 <div className="col-12 p-2">
-                                    <Select defaultValue={0} style={{ width: "100%" }} onChange={(value) => setSelectedExam(value)} value={selectedExam}>
-                                        {exams && exams.map((exam, index) =>
+                                    <Select defaultValue={0} style={{ width: "100%" }} onChange={(value) => setSelectedSection(value)} value={selectedSection}>
+                                        {sections && sections.map((exam, index) =>
                                             <Option value={exam.id}>{exam.name}</Option>
                                         )}
                                     </Select>
@@ -249,8 +231,8 @@ export default function Test(props){
                             </div>
                         </div>
                         <div className="p-2">
-                            <div className="btn btn-info" onClick={handleTestSeriesSave}>
-                                Update Test Series
+                            <div className="btn btn-info" onClick={handleLectureSeriesSave}>
+                                Create Lecture Series
                             </div>
                             <div>
                                 {success && <span className="text-success">{success}</span>}
@@ -288,9 +270,11 @@ export default function Test(props){
                         }
                         .selected {
                             box-shadow: 0px 0px 10px 7px green;
-                            transform: scale(1.1);
+                            transform: scale(1.02);
                         }
-                        
+                        img {
+                            max-width: 230px;
+                        }
                     `}</style>
                 </>
             }
