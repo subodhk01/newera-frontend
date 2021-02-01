@@ -40,6 +40,13 @@ export default function StudyMaterials(props){
                                         </div>
                                     </a>
                                 </Link>
+                                <Link href="/material/create">
+                                    <a>
+                                        <div className="btn btn-info">
+                                            Create New Material
+                                        </div>
+                                    </a>
+                                </Link>
                             </div>
                         }
                         <div className="d-flex flex-wrap align-items-center justify-content-center text-center">
