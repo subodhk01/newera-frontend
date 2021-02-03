@@ -113,6 +113,9 @@ export default function Lectureseries(props){
                             <div>
                                 <h1>{series.name}</h1>
                             </div>
+                            <div className="py-4">
+                                <Alert description="You can watch all our videos and streams only on our Mobile Application. You can download our application from Play Store." />
+                            </div>
                             <div className="p-3 text-right">
                                 {series.syllabus &&
                                     <a className="btn btn-success font-11 px-5" target="blank" href={series.syllabus}>

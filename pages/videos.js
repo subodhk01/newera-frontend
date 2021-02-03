@@ -9,6 +9,7 @@ import Modal from 'react-modal'
 import AuthHOC from '../components/AuthHOC'
 import { FaHockeyPuck, FaWindowRestore } from 'react-icons/fa'
 import Link from 'next/link'
+import { Alert } from 'antd'
 
 
 
@@ -66,6 +67,9 @@ export default function Tests(props){
                                 <div>
                                     {profile.is_student &&
                                         <>
+                                            <div className="py-4">
+                                                <Alert description="You can watch all our videos and streams only on our Mobile Application. You can download our application from Play Store." />
+                                            </div>
                                             <StudentVideoTable tests={videos} sessions={sessions} />
                                         </>
                                     }

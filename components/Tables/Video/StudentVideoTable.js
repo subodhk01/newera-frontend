@@ -1,7 +1,5 @@
 import React from 'react'
-import Link from 'next/link'
-import { Table, Badge, Menu, Dropdown, Space, Empty, Alert } from 'antd';
-import { TEST_STATUS } from '../../../utils/constants';
+import { Table, Empty } from 'antd';
 import Router from 'next/router';
 
 
@@ -19,21 +17,6 @@ export default function StudentTestTable(props) {
 		{ title: 'VideoId', dataIndex: 'id', key: 'id' },
 		{ title: 'Title', dataIndex: 'title', key: 'tilte' },
 		{ title: 'Start Date', key: 'start_time', render: (video) => (new Date(video.start_time)).toLocaleDateString() },
-		{ title: 'Action', key: 'operation', render: (video) => 
-			<>
-				{video.status < 1 ? 
-					<div>Video not yet started</div> 
-					: 
-					<Link href={`/video/watch/${video.id}`}>
-						<a>
-							<button className="btn btn-info">
-								Watch Now
-							</button>
-						</a>
-					</Link>
-				}
-			</>
-		},
 	];
 
 	const data = [];
