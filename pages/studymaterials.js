@@ -83,7 +83,7 @@ export default function StudyMaterials(props){
                                         }
                                     })
                                     :
-                                    <Empty description={<span>Not Registered for any Test Series yet</span>} />
+                                    <Empty description={<span>Not Purchased any Study Material yet</span>} />
                                 }
                                 </>
                             }
