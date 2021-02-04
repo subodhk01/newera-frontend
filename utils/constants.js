@@ -95,6 +95,7 @@ export const customStyles2 = {
         borderRadius: "10px",
         background: "white",
         boxShadow: "0px 0px 30px 6px #ecf0f7",
-        border: "none"
+        border: "none",
+        maxWidth: "90vw"
     }
 };

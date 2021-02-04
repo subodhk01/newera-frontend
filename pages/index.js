@@ -12,6 +12,7 @@ export default function Home(props) {
     const [ lectures, setLectures ] = React.useState()
     const [ open, setOpen ] = React.useState(false)
     const [ modalImage, setModalImage ] = React.useState()
+    const [ url, setURL ] = React.useState()
     React.useEffect(() => {
         props.setHeader(true)
         axiosInstance.get("/exams/")
@@ -32,8 +33,10 @@ export default function Home(props) {
             })
         axiosInstance.get("/homemodal/list")
             .then((response) => {
+                console.log(response.data)
                 if(response.data && response.data.length && response.data[0].visible){
                     setModalImage(response.data[0].image)
+                    setURL(response.data[0].clickURL)
                     setOpen(true)
                 }
             })
@@ -52,9 +55,10 @@ export default function Home(props) {
                 contentLabel="Example Modal"
                 ariaHideApp={false}
                 shouldCloseOnOverlayClick={true}
+                className="modal-container"
             >
                 <div className="text-center">
-                    {modalImage && <img src={modalImage} className="modalImage" />}
+                    {modalImage && <a href={url} target="_blank"><img src={modalImage} className="modalImage" /></a>}
                 </div>
                 <div className="position-absolute d-flex align-items-center justify-content-center image-modal cursor-pointer" onClick={() => setOpen(false)}>
                     <CgCloseO size="25" />
@@ -196,7 +200,7 @@ export default function Home(props) {
                     border-radius: 50px;
                 }
                 .modalImage {
-                    max-width: 800px;
+                    max-width: 90vw;
                 }
             `}</style>
         </Layout>
