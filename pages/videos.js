@@ -89,10 +89,10 @@ export default function Tests(props){
                                                     {!deleting ?
                                                         <div>
                                                             <div className="mb-3">
-                                                                Confirm Delete Test
+                                                                Confirm Delete Video
                                                             </div>
                                                             <div className="btn btn-danger" onClick={confirmDelete}>
-                                                                Delete Test
+                                                                Delete Video
                                                             </div>
                                                             <div className="btn btn-warning" onClick={() => setOpen(false)}>
                                                                 Cancel
@@ -100,7 +100,7 @@ export default function Tests(props){
                                                         </div>
                                                         :
                                                         <div>
-                                                            Deleting Test...
+                                                            Deleting Video...
                                                         </div>
                                                     }
                                                 </div>
