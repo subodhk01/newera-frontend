@@ -233,13 +233,13 @@ export default function Test(props){
 
     const handleQuestionImage = (url) => {
         let newQuestions = questions
-        newQuestions[currentQuestion].image = baseURL + 'media/' + url
+        newQuestions[currentQuestion].image = url
         setQuestions(newQuestions)
         setRender((render + 1) % 100) // a pseudo update
     }
     const handleSolutionImage = (url) => {
         let newQuestions = questions
-        newQuestions[currentQuestion].solution = baseURL + 'media/' + url
+        newQuestions[currentQuestion].solution = url
         setQuestions(newQuestions)
         setRender((render + 1) % 100) // a pseudo update
     }

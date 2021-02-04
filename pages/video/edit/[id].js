@@ -139,15 +139,15 @@ export default function VideoCreate(props){
                                                 </label>
                                                 <div>
                                                     <DatePicker
-                                                        //size={"large"}
+                                                        size={"large"}
                                                         value={startTime}
                                                         onChange={handleStartTime}
-                                                        // showTime={{
-                                                        //     hideDisabledOptions: true,
-                                                        //     defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('11:59:59', 'HH:mm:ss')],
-                                                        // }}
+                                                        showTime={{
+                                                            hideDisabledOptions: true,
+                                                            defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                                                        }}
                                                         className="form-control"
-                                                        format="YYYY-MM-DD"
+                                                        format="YYYY-MM-DD HH:mm:ss"
                                                     />
                                                 </div>
                                             </div>

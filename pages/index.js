@@ -3,10 +3,15 @@ import React from 'react'
 import HomeBanners from '../components/UI/HomeCarousel'
 import Layout from '../components/UI/Layout'
 import { axiosInstance } from '../utils/axios'
+import Modal from 'react-modal'
+import { customStyles2 } from '../utils/constants'
+import { CgCloseO } from 'react-icons/cg'
 
 export default function Home(props) {
     const [ exams, setExams ] = React.useState()
     const [ lectures, setLectures ] = React.useState()
+    const [ open, setOpen ] = React.useState(false)
+    const [ modalImage, setModalImage ] = React.useState()
     React.useEffect(() => {
         props.setHeader(true)
         axiosInstance.get("/exams/")
@@ -25,10 +30,36 @@ export default function Home(props) {
                 console.log(error)
                 console.log(error.response)
             })
+        axiosInstance.get("/homemodal/list")
+            .then((response) => {
+                if(response.data && response.data.length && response.data[0].visible){
+                    setModalImage(response.data[0].image)
+                    setOpen(true)
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+                console.log(error.response)
+            })
     }, [])
     return (
         <Layout>
             <HomeBanners />
+            <Modal
+                isOpen={open}
+                onRequestClose={() => setOpen(false)}
+                style={customStyles2}
+                contentLabel="Example Modal"
+                ariaHideApp={false}
+                shouldCloseOnOverlayClick={true}
+            >
+                <div className="text-center">
+                    {modalImage && <img src={modalImage} className="modalImage" />}
+                </div>
+                <div className="position-absolute d-flex align-items-center justify-content-center image-modal cursor-pointer" onClick={() => setOpen(false)}>
+                    <CgCloseO size="25" />
+                </div>
+            </Modal>
             <div className="py-5">
                 <div className="text-center py-5 px-2">
                     <h1 className="mt-bold">
@@ -154,6 +185,18 @@ export default function Home(props) {
                 .feature img {
                     border-radius: 10px 10px 0px 00px;
                     max-width: 100%;
+                }
+                .image-modal {
+                    top: 20px;
+                    right: 20px;
+                    background: white;
+                    box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.2);
+                    height: 30px;
+                    width: 30px;
+                    border-radius: 50px;
+                }
+                .modalImage {
+                    max-width: 800px;
                 }
             `}</style>
         </Layout>
