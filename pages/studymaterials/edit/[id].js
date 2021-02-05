@@ -39,8 +39,10 @@ export default function Test(props){
     const [ duration, setDuration ] = React.useState(180)
     const [ materials, setMaterials ] = React.useState()
     const [ sections, setSections ] = React.useState()
+    const [ batches, setBatches ] = React.useState()
     const [ selectedMaterials, setSelectedMaterials ] = React.useState([])
     const [ selectedSection, setSelectedSection ] = React.useState([])
+    const [ selectedBatches, setSelectedBatches ] = React.useState([])
     const [ render, setRender ] = React.useState(0)
     const [ error, setError ] = React.useState("")
     const [ success, setSuccess ] = React.useState("")
@@ -56,6 +58,14 @@ export default function Test(props){
                     console.log(error)
                     setError(error && error.response && error.response.data || "Unexpected error, please try again")
                 })
+            axiosInstance.get(`/batch/list`)
+                .then((response) => {
+                    console.log("batches list: ", response.data)
+                    setBatches(response.data)
+                }).catch((error) => {
+                    console.log(error)
+                    setError(error && error.response && error.response.data || "Unexpected error, please try again")
+                })
             axiosInstance.get("/materialsections/")
                 .then((response) => {
                     console.log("sections list: ", response.data)
@@ -64,12 +74,14 @@ export default function Test(props){
                     axiosInstance.get(`/studymaterials/${id}`)
                         .then((response) => {
                             console.log("study material get: ", response.data)
-                            let studymaterial = response.data, temptests = [], tempexam = 0
+                            let studymaterial = response.data, temptests = [], tempbatches = []
                             setStudyMaterialName(studymaterial.name)
                             setPrice(studymaterial.price)
                             setSelectedSection(studymaterial.sections && studymaterial.sections.length && studymaterial.sections[0].id)
                             studymaterial.materials.map((test) => {temptests.push(test.id)})
+                            studymaterial.registered_batches.map((batch) => {tempbatches.push(batch.id)})
                             setSelectedMaterials(temptests)
+                            setSelectedBatches(tempbatches)
                             setLoading(false)
                         }).catch((error) => {
                             console.log(error)
@@ -86,16 +98,17 @@ export default function Test(props){
     const handleStudyMatrialSave = () => {
         setError("")
         setSuccess("")
-        if(!studyMaterialName || (!free && !price)){
+        if(!studyMaterialName){
             setError("Please fill all details and mark answers to all the questions")
             return
         }
-        console.log(selectedSection, selectedMaterials)
+        console.log(selectedSection, selectedMaterials, selectedBatches)
         axiosInstance.patch(`/studymaterials/${id}/`, {
             name: studyMaterialName,
             price: free ? 0 : price,
             materials: selectedMaterials,
             sections: [selectedSection, ],
+            registered_batches: selectedBatches,
             visible: true
         })
         .then((response) => {
@@ -117,6 +130,16 @@ export default function Test(props){
             newMaterials.push(materialid)
         }
         setSelectedMaterials(newMaterials)
+        setRender((render + 1) % 100) // a pseudo update
+    }
+    const handleBatchSelect = (batchid) => {
+        let newBatches = selectedBatches
+        if(newBatches.includes(batchid)){
+            newBatches = arrayRemove(newBatches, batchid)
+        }else{
+            newBatches.push(batchid)
+        }
+        setSelectedBatches(newBatches)
         setRender((render + 1) % 100) // a pseudo update
     }
 
@@ -186,7 +209,7 @@ export default function Test(props){
                                                 // passing the file id to FilePond
                                                 load(response.file)
                                                 console.log(response.data.url)
-                                                setImage(baseURL + 'media/' + response.data.url)
+                                                setImage(response.data.url)
                                             }).catch((thrown) => {
                                                 if (axios.isCancel(thrown)) {
                                                     console.log('Request canceled', thrown.message)
@@ -224,19 +247,32 @@ export default function Test(props){
                                     labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
                                 />
                             </div>
-                            <div className="d-flex flex-wrap align-items-center justify-content-center">
-                                {materials && materials.map((material, index) =>
-                                    <div className={`item-shadow p-3 py-4 m-3 cursor-pointer border text-center ${selectedMaterials.includes(material.id) && "selected"}`} key={index} onClick={() => handleMaterialSelect(material.id)}>
-                                        <h5>{material.title}</h5>
-                                        <hr />
-                                        Material Link: {material.material}
-                                        <hr />
-                                        <div>
-                                            Free: {material.free ? "YES" : "NO"}<br />
+                            <div className="p-3">
+                                <h6>Materials: </h6>
+                                <div className="d-flex flex-wrap align-items-center justify-content-center">
+                                    {materials && materials.map((material, index) =>
+                                        <div className={`item-shadow p-3 py-4 m-3 cursor-pointer border text-center ${selectedMaterials.includes(material.id) && "selected"}`} key={index} onClick={() => handleMaterialSelect(material.id)}>
+                                            <h5>{material.title}</h5>
+                                            <hr />
+                                            Material Link: {material.material}
+                                            <hr />
+                                            <div>
+                                                Free: {material.free ? "YES" : "NO"}<br />
 
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
+                                    )}
+                                </div>
+                            </div>
+                            <div className="p-3">
+                                <h6>Batches: </h6>
+                                <div className="d-flex flex-wrap align-items-center justify-content-center">
+                                    {batches && batches.map((batch, index) =>
+                                        <div className={`item-shadow p-3 py-4 m-3 cursor-pointer border text-center ${selectedBatches.includes(batch.id) && "selected"}`} key={index} onClick={() => handleBatchSelect(batch.id)}>
+                                            <h5>{batch.name}</h5>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                             <div className="w-75 mx-auto p-1 row no-gutters">
                                 <div className="col-12 p-2">
@@ -249,9 +285,6 @@ export default function Test(props){
                             </div>
                         </div>
                         <div className="p-2">
-                            <div className="btn btn-info" onClick={handleStudyMatrialSave}>
-                                Update Study Material
-                            </div>
                             <div>
                                 {success && <span className="text-success">{success}</span>}
                                 {error && typeof(error) === "string" && <span className="text-danger">{error}</span>}
@@ -260,6 +293,9 @@ export default function Test(props){
                                         <span key={index} className="text-danger">{key} : {error[key]}</span>
                                     )
                                 }
+                            </div>
+                            <div className="btn btn-info" onClick={handleStudyMatrialSave}>
+                                Update Study Material
                             </div>
                         </div>
                     </div>

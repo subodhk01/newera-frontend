@@ -41,8 +41,10 @@ export default function Test(props){
     const [ duration, setDuration ] = React.useState(180)
     const [ videos, setVideos ] = React.useState()
     const [ sections, setSections ] = React.useState()
+    const [ batches, setBatches ] = React.useState()
     const [ selectedVideos, setSelectedVideos ] = React.useState([])
     const [ selectedSection, setSelectedSection ] = React.useState([])
+    const [ selectedBatches, setSelectedBatches ] = React.useState([])
     const [ render, setRender ] = React.useState(0)
     const [ error, setError ] = React.useState("")
     const [ success, setSuccess ] = React.useState("")
@@ -58,6 +60,14 @@ export default function Test(props){
                     console.log(error)
                     setError(error && error.response && error.response.data || "Unexpected error, please try again")
                 })
+            axiosInstance.get(`/batch/list`)
+                .then((response) => {
+                    console.log("batches list: ", response.data)
+                    setBatches(response.data)
+                }).catch((error) => {
+                    console.log(error)
+                    setError(error && error.response && error.response.data || "Unexpected error, please try again")
+                })
             axiosInstance.get("/videosections/")
                 .then((response) => {
                     console.log("sections list: ", response.data)
@@ -66,12 +76,14 @@ export default function Test(props){
                     axiosInstance.get(`/lectureseries/${id}`)
                         .then((response) => {
                             console.log("lectureseries get: ", response.data)
-                            let lectureseries = response.data, temptests = [], tempexam = 0
+                            let lectureseries = response.data, temptests = [], tempbatches = []
                             setLectureSeriesName(lectureseries.name)
                             setPrice(lectureseries.price)
                             setSelectedSection(lectureseries.sections && lectureseries.sections.length && lectureseries.sections[0].id)
                             lectureseries.videos.map((test) => {temptests.push(test.id)})
+                            lectureseries.registered_batches.map((batch) => {tempbatches.push(batch.id)})
                             setSelectedVideos(temptests)
+                            setSelectedBatches(tempbatches)
                             setLoading(false)
                         }).catch((error) => {
                             console.log(error)
@@ -88,16 +100,17 @@ export default function Test(props){
     const handleLectureSeriesSave = () => {
         setError("")
         setSuccess("")
-        if(!lectureSeriesName || (!free && !price)){
+        if(!lectureSeriesName){
             setError("Please fill all details and mark answers to all the questions")
             return
         }
-        console.log(selectedSection, selectedVideos)
+        console.log(selectedSection, selectedVideos, selectedBatches)
         axiosInstance.patch(`/lectureseries/${id}/`, {
             name: lectureSeriesName,
             price: free ? 0 : price,
             videos: selectedVideos,
             sections: [selectedSection, ],
+            registered_batches: selectedBatches,
             visible: true
         })
         .then((response) => {
@@ -119,6 +132,16 @@ export default function Test(props){
             newTests.push(testid)
         }
         setSelectedVideos(newTests)
+        setRender((render + 1) % 100) // a pseudo update
+    }
+    const handleBatchSelect = (batchid) => {
+        let newBatches = selectedBatches
+        if(newBatches.includes(batchid)){
+            newBatches = arrayRemove(newBatches, batchid)
+        }else{
+            newBatches.push(batchid)
+        }
+        setSelectedBatches(newBatches)
         setRender((render + 1) % 100) // a pseudo update
     }
 
@@ -188,7 +211,7 @@ export default function Test(props){
                                                 // passing the file id to FilePond
                                                 load(response.file)
                                                 console.log(response.data.url)
-                                                setImage(baseURL + 'media/' + response.data.url)
+                                                setImage(response.data.url)
                                             }).catch((thrown) => {
                                                 if (axios.isCancel(thrown)) {
                                                     console.log('Request canceled', thrown.message)
@@ -226,19 +249,31 @@ export default function Test(props){
                                     labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
                                 />
                             </div>
-                            <div className="d-flex flex-wrap align-items-center justify-content-center">
-                                {videos && videos.map((video, index) =>
-                                    <div className={`item-shadow p-3 py-4 m-3 cursor-pointer border text-center ${selectedVideos.includes(video.id) && "selected"}`} key={index} onClick={() => handleVideoSelect(video.id)}>
-                                        <h5>{video.title}</h5>
-                                        <hr />
-                                        <img src={`https://img.youtube.com/vi/${video.url.split('v=')[1]}/hqdefault.jpg`} />
-                                        <hr />
-                                        <div>
-                                            Free: {video.free ? "YES" : "NO"}<br />
+                            <div className="p-3">
+                                <div className="d-flex flex-wrap align-items-center justify-content-center">
+                                    {videos && videos.map((video, index) =>
+                                        <div className={`item-shadow p-3 py-4 m-3 cursor-pointer border text-center ${selectedVideos.includes(video.id) && "selected"}`} key={index} onClick={() => handleVideoSelect(video.id)}>
+                                            <h5>{video.title}</h5>
+                                            <hr />
+                                            <img src={`https://img.youtube.com/vi/${video.url.split('v=')[1]}/hqdefault.jpg`} />
+                                            <hr />
+                                            <div>
+                                                Free: {video.free ? "YES" : "NO"}<br />
 
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
+                                    )}
+                                </div>
+                            </div>
+                            <div className="p-3">
+                                <h6>Batches: </h6>
+                                <div className="d-flex flex-wrap align-items-center justify-content-center">
+                                    {batches && batches.map((batch, index) =>
+                                        <div className={`item-shadow p-3 py-4 m-3 cursor-pointer border text-center ${selectedBatches.includes(batch.id) && "selected"}`} key={index} onClick={() => handleBatchSelect(batch.id)}>
+                                            <h5>{batch.name}</h5>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                             <div className="w-75 mx-auto p-1 row no-gutters">
                                 <div className="col-12 p-2">
@@ -251,9 +286,6 @@ export default function Test(props){
                             </div>
                         </div>
                         <div className="p-2">
-                            <div className="btn btn-info" onClick={handleLectureSeriesSave}>
-                                Update Lecture Series
-                            </div>
                             <div>
                                 {success && <span className="text-success">{success}</span>}
                                 {error && typeof(error) === "string" && <span className="text-danger">{error}</span>}
@@ -263,6 +295,9 @@ export default function Test(props){
                                     )
                                 }
                             </div>
+                            <div className="btn btn-info" onClick={handleLectureSeriesSave}>
+                                Update Lecture Series
+                            </div>                            
                         </div>
                     </div>
                     <style jsx>{`
