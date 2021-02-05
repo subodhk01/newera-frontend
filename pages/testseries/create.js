@@ -39,8 +39,10 @@ export default function Test(props){
     const [ duration, setDuration ] = React.useState(180)
     const [ tests, setTests ] = React.useState()
     const [ exams, setExams ] = React.useState()
+    const [ batches, setBatches ] = React.useState()
     const [ selectedTests, setSelectedTests ] = React.useState([])
     const [ selectedExam, setSelectedExam ] = React.useState([])
+    const [ selectedBatches, setSelectedBatches ] = React.useState([])
     const [ render, setRender ] = React.useState(0)
     const [ error, setError ] = React.useState("")
     const [ success, setSuccess ] = React.useState("")
@@ -55,7 +57,15 @@ export default function Test(props){
                     .then((response) => {
                         console.log("exams list: ", response.data)
                         setExams(response.data)
-                        setLoading(false)
+                        axiosInstance.get("/batch/list")
+                            .then((response) => {
+                                console.log("batch list: ", response.data)
+                                setBatches(response.data)
+                                setLoading(false)
+                            }).catch((error) => {
+                                console.log(error)
+                                setError(error && error.response && error.response.data || "Unexpected error, please try again")
+                            })
                     }).catch((error) => {
                         console.log(error)
                         setError(error && error.response && error.response.data || "Unexpected error, please try again")
@@ -79,6 +89,7 @@ export default function Test(props){
             price: free ? 0 : price,
             tests: selectedTests,
             exams: [selectedExam,],
+            registered_batches: selectedBatches,
             visible: true
         })
         .then((response) => {
@@ -99,6 +110,16 @@ export default function Test(props){
             newTests.push(testid)
         }
         setSelectedTests(newTests)
+        setRender((render + 1) % 100) // a pseudo update
+    }
+    const handleBatchSelect = (batchid) => {
+        let newBatches = selectedBatches
+        if(newBatches.includes(batchid)){
+            newBatches = arrayRemove(newBatches, batchid)
+        }else{
+            newBatches.push(batchid)
+        }
+        setSelectedBatches(newBatches)
         setRender((render + 1) % 100) // a pseudo update
     }
 
@@ -168,7 +189,7 @@ export default function Test(props){
                                                 // passing the file id to FilePond
                                                 load(response.file)
                                                 console.log(response.data.url)
-                                                setImage(baseURL + 'media/' + response.data.url)
+                                                setImage(response.data.url)
                                             }).catch((thrown) => {
                                                 if (axios.isCancel(thrown)) {
                                                     console.log('Request canceled', thrown.message)
@@ -206,17 +227,30 @@ export default function Test(props){
                                     labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
                                 />
                             </div>
-                            <div className="d-flex flex-wrap align-items-center justify-content-center">
-                                {tests && tests.map((test, index) =>
-                                    <div className={`item-shadow p-3 py-4 m-3 cursor-pointer border text-center ${selectedTests.includes(test.id) && "selected"}`} key={index} onClick={() => handleTestSelect(test.id)}>
-                                        <h5>{test.name}</h5>
-                                        <hr />
-                                        <div>
-                                            Free: {test.free ? "YES" : "NO"}<br />
+                            <div className="p-3">
+                                <h6>Tests: </h6>
+                                <div className="d-flex flex-wrap align-items-center justify-content-center">
+                                    {tests && tests.map((test, index) =>
+                                        <div className={`item-shadow p-3 py-4 m-3 cursor-pointer border text-center ${selectedTests.includes(test.id) && "selected"}`} key={index} onClick={() => handleTestSelect(test.id)}>
+                                            <h5>{test.name}</h5>
+                                            <hr />
+                                            <div>
+                                                Free: {test.free ? "YES" : "NO"}<br />
 
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
+                                    )}
+                                </div>
+                            </div>
+                            <div className="p-3">
+                                <h6>Batches: </h6>
+                                <div className="d-flex flex-wrap align-items-center justify-content-center">
+                                    {batches && batches.map((batch, index) =>
+                                        <div className={`item-shadow p-3 py-4 m-3 cursor-pointer border text-center ${selectedBatches.includes(batch.id) && "selected"}`} key={index} onClick={() => handleBatchSelect(batch.id)}>
+                                            <h5>{batch.name}</h5>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                             <div className="w-75 mx-auto p-1 row no-gutters">
                                 <div className="col-12 p-2">
@@ -230,16 +264,16 @@ export default function Test(props){
                         </div>
                         <div className="p-2">
                             <div className="btn btn-info" onClick={handleTestSeriesSave}>
+                                <div>
+                                    {success && <span className="text-success">{success}</span>}
+                                    {error && typeof(error) === "string" && <span className="text-danger">{error}</span>}
+                                    {error && typeof(error) === "object" && 
+                                        Object.keys(error).map((key, index) => 
+                                            <span key={index} className="text-danger">{key} : {error[key]}</span>
+                                        )
+                                    }
+                                </div>
                                 Create Test Series
-                            </div>
-                            <div>
-                                {success && <span className="text-success">{success}</span>}
-                                {error && typeof(error) === "string" && <span className="text-danger">{error}</span>}
-                                {error && typeof(error) === "object" && 
-                                    Object.keys(error).map((key, index) => 
-                                        <span key={index} className="text-danger">{key} : {error[key]}</span>
-                                    )
-                                }
                             </div>
                         </div>
                     </div>

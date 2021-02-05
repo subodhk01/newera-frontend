@@ -41,8 +41,10 @@ export default function Test(props){
     const [ duration, setDuration ] = React.useState(180)
     const [ tests, setTests ] = React.useState()
     const [ exams, setExams ] = React.useState()
+    const [ batches, setBatches ] = React.useState()
     const [ selectedTests, setSelectedTests ] = React.useState([])
     const [ selectedExam, setSelectedExam ] = React.useState([])
+    const [ selectedBatches, setSelectedBatches ] = React.useState([])
     const [ render, setRender ] = React.useState(0)
     const [ error, setError ] = React.useState("")
     const [ success, setSuccess ] = React.useState("")
@@ -58,6 +60,14 @@ export default function Test(props){
                     console.log(error)
                     setError(error && error.response && error.response.data || "Unexpected error, please try again")
                 })
+            axiosInstance.get(`/batch/list`)
+                .then((response) => {
+                    console.log("batches list: ", response.data)
+                    setBatches(response.data)
+                }).catch((error) => {
+                    console.log(error)
+                    setError(error && error.response && error.response.data || "Unexpected error, please try again")
+                })
             axiosInstance.get("/exams/")
                 .then((response) => {
                     console.log("exams list: ", response.data)
@@ -66,21 +76,23 @@ export default function Test(props){
                     axiosInstance.get(`/testseries/${id}`)
                         .then((response) => {
                             console.log("testseries get: ", response.data)
-                            let testseries = response.data, temptests = [], tempexam = 0
+                            let testseries = response.data, temptests = [], tempbatches = []
                             setTestSeriesName(testseries.name)
                             setPrice(testseries.price)
                             setSelectedExam(testseries.exams && testseries.exams.length && testseries.exams[0].id)
                             testseries.tests.map((test) => {temptests.push(test.id)})
+                            testseries.registered_batches.map((batch) => {tempbatches.push(batch.id)})
                             setSelectedTests(temptests)
+                            setSelectedBatches(tempbatches)
                             setLoading(false)
                         }).catch((error) => {
                             console.log(error)
                             setError(error && error.response && error.response.data || "Unexpected error, please try again")
                         })
-                        }).catch((error) => {
-                            console.log(error)
-                            setError(error && error.response && error.response.data || "Unexpected error, please try again")
-                        })
+                }).catch((error) => {
+                    console.log(error)
+                    setError(error && error.response && error.response.data || "Unexpected error, please try again")
+                })
         }
     }, [id])
 
@@ -88,16 +100,17 @@ export default function Test(props){
     const handleTestSeriesSave = () => {
         setError("")
         setSuccess("")
-        if(!testSeriesName || (!free && !price)){
+        if(!testSeriesName){
             setError("Please fill all details and mark answers to all the questions")
             return
         }
-        console.log(selectedExam, selectedTests)
+        console.log(selectedExam, selectedTests, selectedBatches)
         axiosInstance.patch(`/testseries/${id}/`, {
             name: testSeriesName,
             price: free ? 0 : price,
             tests: selectedTests,
             exams: [selectedExam, ],
+            registered_batches: selectedBatches,
             visible: true
         })
         .then((response) => {
@@ -119,6 +132,16 @@ export default function Test(props){
             newTests.push(testid)
         }
         setSelectedTests(newTests)
+        setRender((render + 1) % 100) // a pseudo update
+    }
+    const handleBatchSelect = (batchid) => {
+        let newBatches = selectedBatches
+        if(newBatches.includes(batchid)){
+            newBatches = arrayRemove(newBatches, batchid)
+        }else{
+            newBatches.push(batchid)
+        }
+        setSelectedBatches(newBatches)
         setRender((render + 1) % 100) // a pseudo update
     }
 
@@ -188,7 +211,7 @@ export default function Test(props){
                                                 // passing the file id to FilePond
                                                 load(response.file)
                                                 console.log(response.data.url)
-                                                setImage(baseURL + 'media/' + response.data.url)
+                                                setImage(response.data.url)
                                             }).catch((thrown) => {
                                                 if (axios.isCancel(thrown)) {
                                                     console.log('Request canceled', thrown.message)
@@ -226,17 +249,30 @@ export default function Test(props){
                                     labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
                                 />
                             </div>
-                            <div className="d-flex flex-wrap align-items-center justify-content-center">
-                                {tests && tests.map((test, index) =>
-                                    <div className={`item-shadow p-3 py-4 m-3 cursor-pointer border text-center ${selectedTests.includes(test.id) && "selected"}`} key={index} onClick={() => handleTestSelect(test.id)}>
-                                        <h5>{test.name}</h5>
-                                        <hr />
-                                        <div>
-                                            Free: {test.free ? "YES" : "NO"}<br />
+                            <div className="p-3">
+                                <h6>Tests: </h6>
+                                <div className="d-flex flex-wrap align-items-center justify-content-center">
+                                    {tests && tests.map((test, index) =>
+                                        <div className={`item-shadow p-3 py-4 m-3 cursor-pointer border text-center ${selectedTests.includes(test.id) && "selected"}`} key={index} onClick={() => handleTestSelect(test.id)}>
+                                            <h5>{test.name}</h5>
+                                            <hr />
+                                            <div>
+                                                Free: {test.free ? "YES" : "NO"}<br />
 
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
+                                    )}
+                                </div>
+                            </div>
+                            <div className="p-3">
+                                <h6>Batches: </h6>
+                                <div className="d-flex flex-wrap align-items-center justify-content-center">
+                                    {batches && batches.map((batch, index) =>
+                                        <div className={`item-shadow p-3 py-4 m-3 cursor-pointer border text-center ${selectedBatches.includes(batch.id) && "selected"}`} key={index} onClick={() => handleBatchSelect(batch.id)}>
+                                            <h5>{batch.name}</h5>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                             <div className="w-75 mx-auto p-1 row no-gutters">
                                 <div className="col-12 p-2">
