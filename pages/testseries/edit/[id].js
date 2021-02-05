@@ -285,9 +285,6 @@ export default function Test(props){
                             </div>
                         </div>
                         <div className="p-2">
-                            <div className="btn btn-info" onClick={handleTestSeriesSave}>
-                                Update Test Series
-                            </div>
                             <div>
                                 {success && <span className="text-success">{success}</span>}
                                 {error && typeof(error) === "string" && <span className="text-danger">{error}</span>}
@@ -296,6 +293,9 @@ export default function Test(props){
                                         <span key={index} className="text-danger">{key} : {error[key]}</span>
                                     )
                                 }
+                            </div>
+                            <div className="btn btn-info" onClick={handleTestSeriesSave}>
+                                Update Test Series
                             </div>
                         </div>
                     </div>
