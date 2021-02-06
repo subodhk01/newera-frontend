@@ -255,7 +255,7 @@ export default function Test(props){
                                         <div className={`item-shadow p-3 py-4 m-3 cursor-pointer border text-center ${selectedVideos.includes(video.id) && "selected"}`} key={index} onClick={() => handleVideoSelect(video.id)}>
                                             <h5>{video.title}</h5>
                                             <hr />
-                                            <img src={`https://img.youtube.com/vi/${video.url.split('v=')[1]}/hqdefault.jpg`} />
+                                            <img src={video.thumbnail} />
                                             <hr />
                                             <div>
                                                 Free: {video.free ? "YES" : "NO"}<br />

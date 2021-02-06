@@ -174,7 +174,7 @@ export default function Lectureseries(props){
                                                 <div className="item-shadow p-3 py-4 m-3 cursor-pointer border text-center" key={index}>
                                                     <h5>{video.title}</h5>
                                                     <hr />
-                                                    <img src={`https://img.youtube.com/vi/${video.url.split('v=')[1]}/hqdefault.jpg`} />
+                                                    <img src={video.thumbnail} />
                                                     <div>
                                                         {profile.is_teacher ?
                                                             <>

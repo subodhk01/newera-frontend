@@ -57,6 +57,12 @@ export const SIDEBAR_ITEMS = [
     //     title: "Profile",
     //     path: "/profile"
     // },
+    {
+        image: "",
+        title: "Image Upload",
+        path: "/image_upload",
+        teacher: true
+    },
 ]
 
 export const customStyles = {

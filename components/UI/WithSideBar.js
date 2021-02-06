@@ -14,13 +14,16 @@ import {
     UserOutlined,
     UploadOutlined,
     VideoCameraOutlined,
+    FileImageOutlined
 } from '@ant-design/icons';
 import { Layout, Menu } from 'antd'
 import Link from 'next/link';
+import { useAuth } from '../../utils/auth'
 
 const { Content, Footer, Sider } = Layout;
 
 export default function SideBarLayout(props){
+    const { profile, accessToken } = useAuth()
     const [ INDEX, setINDEX ] = React.useState(-1)
     const ICONS = {
         '/tests': <UploadOutlined />,
@@ -28,8 +31,11 @@ export default function SideBarLayout(props){
         '/report': <BookOutlined />,
         '/videos': <VideoCameraOutlined />,
         '/lectureseries': <VideoCameraOutlined />,
+        '/material': <BookOutlined />,
+        '/studymaterials': <BookOutlined />,
         '/onlineclasses': <CloudOutlined />,
-        '/profile': <UserOutlined />
+        '/profile': <UserOutlined />,
+        '/image_upload': <FileImageOutlined />,
     }
     React.useEffect(() => {
         const current_path = `/${document.location.pathname.split("/")[1]}`
@@ -69,15 +75,20 @@ export default function SideBarLayout(props){
                     }}
                 >
                     <Menu mode="inline" selectedKeys={[INDEX.toString(),]}>
-                        {SIDEBAR_ITEMS.map((child, index) =>
-                            <Menu.Item key={index} icon={ICONS[child.path]} className="py-lg-2 font-10 d-flex align-items-center" style={{height: "auto"}}>
-                                <Link href={child.path}>
-                                    <a>
-                                        {child.title}
-                                    </a>
-                                </Link>
-                            </Menu.Item>
-                        )}
+                        {SIDEBAR_ITEMS.map((child, index) =>{
+                            if(child.teacher && !profile.is_teacher) return null
+                            else{
+                                return (
+                                    <Menu.Item key={index} icon={ICONS[child.path]} className="py-lg-2 font-10 d-flex align-items-center" style={{height: "auto"}}>
+                                        <Link href={child.path}>
+                                            <a>
+                                                {child.title}
+                                            </a>
+                                        </Link>
+                                    </Menu.Item>
+                                )
+                            }
+                        })}
                     </Menu>
                 </Sider>
                 <div className="content-container">

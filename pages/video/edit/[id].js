@@ -27,6 +27,7 @@ export default function VideoCreate(props){
     const [ questionLoading, setQuestionLoading ] = React.useState(false)
     const [ videoTitle, setVideoTitle ] = React.useState("")
     const [ url, setURL ] = React.useState("")
+    const [ thumbnail, setThumbnail ] = React.useState("")
     const [ description, setDescription ] = React.useState("")
     const [ free, setFree ] = React.useState(false)
     const [ startTime, setStartTime ] = React.useState()
@@ -51,6 +52,7 @@ export default function VideoCreate(props){
                 let video = response.data
                 setVideoTitle(video.title)
                 setURL(video.url)
+                setThumbnail(video.thumbnail)
                 setDescription(video.description)
                 setFree(video.free)
                 setStartTime(moment(new Date(video.start_time)))
@@ -71,6 +73,7 @@ export default function VideoCreate(props){
         axiosInstance.patch(`/videos/${id}/`, {
             title: videoTitle,
             url: url,
+            thumbnail: thumbnail,
             start_time: startTime.toDate(),
             description: description,
             //section: section,
@@ -150,6 +153,10 @@ export default function VideoCreate(props){
                                                         format="YYYY-MM-DD HH:mm:ss"
                                                     />
                                                 </div>
+                                            </div>
+                                            <div className="col-12 p-2">
+                                                Thumbnail URL: 
+                                                <input type="text" name="thumbnailURL" className="form-control" value={thumbnail} onChange={(event) => setThumbnail(event.target.value)} />
                                             </div>
                                             <div className="col-12 p-2">
                                                 <label className="p-2 m-1 cursor-pointer">
