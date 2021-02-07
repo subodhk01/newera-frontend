@@ -6,6 +6,7 @@ import { axiosInstance } from '../utils/axios'
 import Modal from 'react-modal'
 import { customStyles2 } from '../utils/constants'
 import { CgCloseO } from 'react-icons/cg'
+import Batch from '../components/Misc/Batch'
 
 export default function Home(props) {
     const [ exams, setExams ] = React.useState()
@@ -158,6 +159,7 @@ export default function Home(props) {
                         
                     </div>
                 </div>
+                <Batch />
             </div>
             <style jsx>{`
                 .bg-grey {
@@ -175,6 +177,9 @@ export default function Home(props) {
                 }
                 .feature-small {
                     max-width: 260px;
+                }
+                .feature-big {
+                    width: 290px;
                 }
                 .feature:hover {
                     background: white;

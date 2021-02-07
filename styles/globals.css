@@ -85,6 +85,7 @@ body {
 .mt-thin { font-family: "madetommy-thin"; }
 .mt-bold { font-family: "madetommy-bold"; }
 .mt-regular { font-family: "madetommy-regular"; }
+strong { font-family: "madetommy-bold"; }
 
 .full {
 	width: 90vw;
