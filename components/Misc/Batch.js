@@ -67,27 +67,60 @@ export default function Batch(props) {
 
     async function makePayment(totalAmount, notes) {
         setError("")
-        var options = {
-            key: "rzp_live_VMy6LTFP3FIQmO",
-            amount: totalAmount * 100,
-            name: "Newera Coaching",
-            currency: "INR",
-            description: "Batch Purchase",
-            //image: "/images/logos/icon.png",
-            handler: (response) => {
-                verifySignature(response, totalAmount);
-            },
-            prefill: {
-                name: profile.name,
-                email: profile.email
-            },
-            notes: notes,
-            theme: {
-                color: "#027ff7"
+        if(totalAmount === 0){
+            console.log("free batch")
+            setPaymentLoading(true)
+            axiosInstance.post('/payments/batch/free/', {
+                batch: activeBatch.id,
+            })
+            .then((res) => {
+                console.log("free batch register res: ", res.data)
+                if(res.data.success){
+                    console.log("batch register success")
+                    setPaymentLoading(false)
+                    setPaymentModal(false)
+                    setSuccessModal(true)
+                    setError("")
+                }
+                else {
+                    setPaymentLoading(false)
+                    setError("Unable to process your request try again")
+                }
+            })
+            .catch((error) => {
+                console.log("error: ", error)
+                console.log("response: ", error.response)
+                setPaymentLoading(false)
+                if(error.response && error.response.status === 400 && error.response.data.batch && error.response.data.batch.length && error.response.data.batch[0] === "You have already made a payment"){
+                    setError("You have already made a payment")
+                    return
+                }
+                setError("Unable to process your request try again")
+            })
+        }else {
+            var options = {
+                key: "rzp_live_VMy6LTFP3FIQmO",
+                amount: totalAmount * 100,
+                name: "Newera Coaching",
+                currency: "INR",
+                description: "Batch Purchase",
+                //image: "/images/logos/icon.png",
+                handler: (response) => {
+                    verifySignature(response, totalAmount);
+                },
+                prefill: {
+                    name: profile.name,
+                    email: profile.email
+                },
+                notes: notes,
+                theme: {
+                    color: "#027ff7"
+                }
             }
+            var rzp1 = new Razorpay(options)
+            rzp1.open()
         }
-        var rzp1 = new Razorpay(options)
-        rzp1.open()
+        
     }
 
     return (            
