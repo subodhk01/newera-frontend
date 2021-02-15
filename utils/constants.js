@@ -42,16 +42,11 @@ export const SIDEBAR_ITEMS = [
         title: "My Lecture Series",
         path: "/lectureseries"
     },
-    // {
-    //     image: "",
-    //     title: "My Study Materials",
-    //     path: "/studymaterials"
-    // },
-    // {
-    //     image: "",
-    //     title: "Online Classes",
-    //     path: "/onlineclasses"
-    // },
+    {
+        image: "",
+        title: "My Study Materials",
+        path: "/studymaterials"
+    },
     // {
     //     image: "",
     //     title: "Profile",
