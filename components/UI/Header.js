@@ -42,26 +42,18 @@ const HEADER_ITEMS = [
             }
         ]
     },
-    // {
-    //     title: "Study Materials",
-    //     dropdown: true,
-    //     items: [
-    //         {
-    //             title: "Loading",
-    //             content: "",
-    //             image: "/static/header/about.png",
-    //             disabled: true
-    //         }
-    //     ]
-    // },
-    // {
-    //     title: "Video Lectures",
-    //     path: "/"
-    // },
-    // {
-    //     title: "Study Material",
-    //     path: "/"
-    // },
+    {
+        title: "Study Materials",
+        dropdown: true,
+        items: [
+            {
+                title: "Loading",
+                content: "",
+                image: "/static/header/about.png",
+                disabled: true
+            }
+        ]
+    },
     // {
     //     title: "Forum",
     //     path: "/"
