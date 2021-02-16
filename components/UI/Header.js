@@ -55,14 +55,6 @@ const HEADER_ITEMS = [
         ]
     },
     // {
-    //     title: "Video Lectures",
-    //     path: "/"
-    // },
-    // {
-    //     title: "Study Material",
-    //     path: "/"
-    // },
-    // {
     //     title: "Forum",
     //     path: "/"
     // },

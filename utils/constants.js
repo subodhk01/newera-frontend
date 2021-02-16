@@ -49,11 +49,6 @@ export const SIDEBAR_ITEMS = [
     },
     // {
     //     image: "",
-    //     title: "Online Classes",
-    //     path: "/onlineclasses"
-    // },
-    // {
-    //     image: "",
     //     title: "Profile",
     //     path: "/profile"
     // },
