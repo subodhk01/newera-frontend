@@ -29,6 +29,7 @@ export default function VideoCreate(props){
     const [ url, setURL ] = React.useState("")
     const [ thumbnail, setThumbnail ] = React.useState("")
     const [ description, setDescription ] = React.useState("")
+    const [ notes, setNotes ] = React.useState("")
     const [ free, setFree ] = React.useState(false)
     const [ startTime, setStartTime ] = React.useState()
     const [ sections, setSections ] = React.useState()
@@ -52,6 +53,7 @@ export default function VideoCreate(props){
                 let video = response.data
                 setVideoTitle(video.title)
                 setURL(video.url)
+                setNotes(video.notes)
                 setThumbnail(video.thumbnail)
                 setDescription(video.description)
                 setFree(video.free)
@@ -76,6 +78,7 @@ export default function VideoCreate(props){
             thumbnail: thumbnail,
             start_time: startTime.toDate(),
             description: description,
+            notes: notes,
             //section: section,
             free: free
             
@@ -157,6 +160,10 @@ export default function VideoCreate(props){
                                             <div className="col-12 p-2">
                                                 Thumbnail URL: 
                                                 <input type="text" name="thumbnailURL" className="form-control" value={thumbnail} onChange={(event) => setThumbnail(event.target.value)} />
+                                            </div>
+                                            <div className="col-12 p-2">
+                                                Notes URL: 
+                                                <input type="text" name="notes" className="form-control" value={notes} onChange={(event) => setNotes(event.target.value)} />
                                             </div>
                                             <div className="col-12 p-2">
                                                 <label className="p-2 m-1 cursor-pointer">
