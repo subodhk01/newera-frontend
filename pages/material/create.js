@@ -119,7 +119,7 @@ export default function MaterialCreate(props){
                                                 <input type="text" name="materialTitle" className="form-control" value={title} onChange={(event) => setTitle(event.target.value)} />
                                             </div>
                                             <div className="col-12 p-3">
-                                                <div className="font-weight-bold mb-2">Material File:</div>
+                                                <div className="font-weight-bold mb-2">Material File <span className="text-muted">( NOTE: The file will upload when you click on Create Material)</span>:</div>
                                                 <FilePond
                                                     files={files}
                                                     allowMultiple={false}
