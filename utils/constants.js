@@ -47,6 +47,11 @@ export const SIDEBAR_ITEMS = [
         title: "My Study Materials",
         path: "/studymaterials"
     },
+    {
+        image: "",
+        title: "My Forum Channels",
+        path: "/channels"
+    },
     // {
     //     image: "",
     //     title: "Profile",
