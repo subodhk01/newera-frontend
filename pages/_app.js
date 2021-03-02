@@ -14,6 +14,7 @@ import cookie from 'react-cookies'
 import { AuthContext } from '../utils/auth'
 import Head from 'next/head'
 import Header from '../components/UI/Header'
+import { axiosInstance } from '../utils/axios'
 
 function MyApp({ Component, pageProps }) {
     const [ header, setHeader ] = React.useState(true)
@@ -41,6 +42,19 @@ function MyApp({ Component, pageProps }) {
         cookie.remove('profile')
         setProfile({})
     }
+
+    React.useState(() => {
+        if(profile && profile.id){
+            axiosInstance.post("/verify/")
+                .then((response) => {
+                    console.log("verify response: ", response.data)
+                })
+                .catch((error) => {
+                    console.log(error)
+                    console.log(error.response)
+                })
+        }
+    }, [])
 	
 	return (
 		<AuthContext.Provider 
@@ -57,9 +71,7 @@ function MyApp({ Component, pageProps }) {
                 <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
             </Head>
             {header &&
-                <div>
-                    <Header full />
-                </div>
+                <Header full />
             }
             <Component {...pageProps} setHeader={setHeader} />
         </AuthContext.Provider>

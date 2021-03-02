@@ -16,7 +16,7 @@ class MyDocument extends Document {
                     <link rel="icon" href="/images/logos/icon.png" type="image/png" />
                     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
                 </Head>
-                <body>
+                <body style={{ minHeight: "100vh" }}>
                     <Main />
                     <NextScript />
                     <script src="/js/video.min.js"></script>

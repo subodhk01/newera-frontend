@@ -7,6 +7,14 @@ body {
     font-family: "madetommy-regular";
 }
 
+#__next {
+	position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
 .font-01 { font-size: 0.1rem; }
 .font-02 { font-size: 0.2rem; }
 .font-03 { font-size: 0.3rem; }
@@ -151,4 +159,11 @@ strong { font-family: "madetommy-bold"; }
 }
 .carousel-cell img {
 	max-height: 60vh;
+}
+
+.chat-input {
+	border: 1px solid silver;
+	padding: 0.4rem 1.5rem;
+	border-radius: 50px;
+	margin: 5px 5px;
 }

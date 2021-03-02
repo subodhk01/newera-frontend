@@ -91,6 +91,10 @@ export default function Batch(props) {
                 console.log("error: ", error)
                 console.log("response: ", error.response)
                 setPaymentLoading(false)
+                if(error.response && error.response.data.detail && error.response.data.detail === "Authentication credentials were not provided."){
+                    setError("You must be logged in to register for any Batch")
+                    return
+                }
                 if(error.response && error.response.status === 400 && error.response.data.batch && error.response.data.batch.length && error.response.data.batch[0] === "You have already made a payment"){
                     setError("You have already made a payment")
                     return
@@ -99,7 +103,7 @@ export default function Batch(props) {
             })
         }else {
             var options = {
-                key: "rzp_live_VMy6LTFP3FIQmO",
+                key: "rzp_test_Kimy8hrVhh4ccT",
                 amount: totalAmount * 100,
                 name: "Newera Coaching",
                 currency: "INR",
@@ -152,9 +156,13 @@ export default function Batch(props) {
                                     {activeBatch.description}
                                 </div>
                                 <div className="d-flex align-items-center justify-content-center pt-3">
-                                    <div className="btn btn-success font-09" onClick={() => setPaymentModal(true)}>
-                                        Register
-                                    </div>
+                                    {profile && profile.id ?
+                                        <div className="btn btn-success font-09" onClick={() => setPaymentModal(true)}>
+                                            Register
+                                        </div> 
+                                        :
+                                        <span className="text-info">You must login to register for this batch</span> 
+                                    }
                                 </div>
                             </div>
                         }
@@ -226,12 +234,16 @@ export default function Batch(props) {
                                     <div className="btn btn-info font-09" onClick={() => {setActiveBatch(batch); setInfoOpen(true)}}>
                                         Info
                                     </div>
-                                    {batch.status === 4 ?
+                                    {batch.students.includes(profile.id) ?
                                        <div className="text-success">Registered</div>
                                        :
-                                       <div className="btn btn-success font-09" onClick={() => {setActiveBatch(batch); setPaymentModal(true)}}>
-                                            Register
-                                        </div> 
+                                        profile && profile.id ?
+                                            <div className="btn btn-success font-09" onClick={() => {setActiveBatch(batch); setPaymentModal(true)}}>
+                                                Register
+                                            </div> 
+                                            :
+                                            <span className="text-info" style={{ maxWidth: "150px" }}>You must login to register for this batch</span> 
+                                        
                                     }
                                     
                                 </div>
