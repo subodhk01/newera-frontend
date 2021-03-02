@@ -11,6 +11,15 @@ export default function TeacherTestTable(props) {
 		{ title: 'Name', dataIndex: 'name', key: 'name' },
 		{ title: 'Action', key: 'operation', render: (channel) => 
 			<>
+				<Link href={`/channels/${channel.id}`}>
+					<a>
+						<div className="btn btn-info ">
+							<div className="d-flex align-items-center justify-content-center">
+								Open
+							</div>
+						</div>
+					</a>
+				</Link>
 				<Link href={`/channels/edit/${channel.id}`}>
 					<a>
 						<div className="btn btn-success ">

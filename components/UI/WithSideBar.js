@@ -98,6 +98,7 @@ export default function SideBarLayout(props){
             <style jsx>{`
                 .side-outer-container {
                     padding-top: 89px;
+                    height: 100%;
                 }
                 .sidebar-container {
                     left: 0;
@@ -119,6 +120,7 @@ export default function SideBarLayout(props){
                 }
                 .content-container {
                     padding-left: 300px;
+                    height: 100%;
                     transition: 0.3s;
                 }
                 @media(max-width: 992px){

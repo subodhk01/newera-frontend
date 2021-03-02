@@ -71,9 +71,7 @@ function MyApp({ Component, pageProps }) {
                 <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
             </Head>
             {header &&
-                <div>
-                    <Header full />
-                </div>
+                <Header full />
             }
             <Component {...pageProps} setHeader={setHeader} />
         </AuthContext.Provider>
