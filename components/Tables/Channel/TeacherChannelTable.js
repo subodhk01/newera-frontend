@@ -11,27 +11,41 @@ export default function TeacherTestTable(props) {
 		{ title: 'Name', dataIndex: 'name', key: 'name' },
 		{ title: 'Action', key: 'operation', render: (channel) => 
 			<>
-				<Link href={`/channels/${channel.id}`}>
-					<a>
-						<div className="btn btn-info ">
-							<div className="d-flex align-items-center justify-content-center">
-								Open
+				{props.teacher ?
+					<Link href={`/teacherchannels/${channel.id}`}>
+						<a>
+							<div className="btn btn-info ">
+								<div className="d-flex align-items-center justify-content-center">
+									Open
+								</div>
 							</div>
+						</a>
+					</Link>
+					:
+					<>
+						<Link href={`/channels/${channel.id}`}>
+							<a>
+								<div className="btn btn-info ">
+									<div className="d-flex align-items-center justify-content-center">
+										Open
+									</div>
+								</div>
+							</a>
+						</Link>
+						<Link href={`/channels/edit/${channel.id}`}>
+							<a>
+								<div className="btn btn-success ">
+									<div className="d-flex align-items-center justify-content-center">
+										<FaPencilAlt color="white" className="mr-2" /> Edit
+									</div>
+								</div>
+							</a>
+						</Link>
+						<div className="btn btn-danger" onClick={() => props.deleteChannel(channel.id)}>
+							<div className="d-flex align-items-center justify-content-center">Delete</div>
 						</div>
-					</a>
-				</Link>
-				<Link href={`/channels/edit/${channel.id}`}>
-					<a>
-						<div className="btn btn-success ">
-							<div className="d-flex align-items-center justify-content-center">
-								<FaPencilAlt color="white" className="mr-2" /> Edit
-							</div>
-						</div>
-					</a>
-				</Link>
-				<div className="btn btn-danger" onClick={() => props.deleteChannel(channel.id)}>
-					<div className="d-flex align-items-center justify-content-center">Delete</div>
-				</div>
+					</>
+				}
 			</>
 		},
 	];
@@ -41,7 +55,7 @@ export default function TeacherTestTable(props) {
 		data.push({
 			key: item.id,
 			id: item.id,
-			name: item.name,
+			name: item.name || (item.student && item.student.user && item.student.user.name),
 		})
 	})
 

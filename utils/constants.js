@@ -52,6 +52,11 @@ export const SIDEBAR_ITEMS = [
         title: "My Forum Channels",
         path: "/channels"
     },
+    {
+        image: "",
+        title: "My Doubt Channels",
+        path: "/teacherchannels"
+    },
     // {
     //     image: "",
     //     title: "Profile",
