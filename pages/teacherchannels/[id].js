@@ -1,7 +1,5 @@
 import React from 'react'
 import SideBarLayout from '../../components/UI/WithSideBar'
-import StudentChannelTable from '../../components/Tables/Channel/StudentChannelTable'
-import TeacherChannelTable from '../../components/Tables/Channel/TeacherChannelTable'
 import { useAuth } from '../../utils/auth'
 import { useRouter } from 'next/router'
 import { axiosInstance } from '../../utils/axios'
@@ -38,7 +36,7 @@ export default function Forum(props){
 
     const getMessages = () => {
         axiosInstance
-            .get(`/channels/${id}/messages/`)
+            .get(`/teacherchannels/${id}/messages/`)
             .then((response) => {
                 console.log("messages: ", response.data)
                 setMessages(response.data)
@@ -53,7 +51,7 @@ export default function Forum(props){
         props.setHeader(true)
         if(id){
             axiosInstance
-                .get(`/channels/${id}/`)
+                .get(`/teacherchannels/${id}/`)
                 .then((response) => {
                     console.log("channel: ", response.data)
                     setChannel(response.data)
@@ -73,7 +71,7 @@ export default function Forum(props){
 
     const handleMessageSend = () => {
         axiosInstance
-            .post(`/channels/${id}/messages/`, {
+            .post(`/teacherchannels/${id}/messages/`, {
                 message: message,
                 // image: image
             })
@@ -94,7 +92,7 @@ export default function Forum(props){
             <SideBarLayout title="Forums">
                 <div className="p-2 p-md-5 h-100 flex flex-column">
                     <div>
-                        <h1 className="m-0">{channel && <div>{channel.name} <RiRefreshFill size="22" color="#61adf1d9" className="cursor-pointer" onClick={getMessages} /></div>}</h1>
+                        <h1 className="m-0">{channel && channel.teacher && channel.teacher.user && <div>{channel.teacher.user.name} <RiRefreshFill size="22" color="#61adf1d9" className="cursor-pointer" onClick={getMessages} /></div>}</h1>
                     </div>
                     <ChatBox
                         loading={loading}
@@ -107,7 +105,46 @@ export default function Forum(props){
                         handleMessageSend={handleMessageSend}
                     />
                 </div>
-                
+                <style jsx>{`
+                    .chat-container {
+                        // position: relative;
+                        position: absolute;
+                        bottom: 0;
+                        left: 0;
+                        right: 0;
+                    }
+                    .msg-container {
+                        
+                    }
+                    .input-container {
+                        
+                    }
+                    .msg-box-container {
+                        margin: 5px 0px;
+                        width: fit-content;
+                    }
+                    .msg-box {
+                        padding: 0.7rem 1rem;
+                        background: rgb(77 204 140 / 50%);
+                        border-radius: 15px;
+                        width: fit-content;
+                    }
+                    .date-container {
+                        margin-left: auto;
+                        width: fit-content;
+                        position: relative;
+                        right: 0px;
+                        top: -5px;
+                        background: white;
+                        font-size: 0.7rem;
+                        border: 1px solid silver;
+                        border-radius: 50px;
+                        padding: 0.1rem 0.6rem;
+                    }
+                    .my-msg {
+                        background: rgb(97 173 241 / 50%);
+                    }
+                `}</style>
             </SideBarLayout>
         </AuthHOC>
     )

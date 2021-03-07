@@ -9,18 +9,26 @@ export default function StudentChannelTable(props) {
 	const columns = [
 		{ title: 'ChannelId', dataIndex: 'id', key: 'id' },
 		{ title: 'Name', dataIndex: 'name', key: 'name' },
-        { title: 'Action', key: 'operation', render: (channel) => 
-			<>
-				<Link href={`/channels/${channel.id}`}>
-					<a>
-						<div className="btn btn-success ">
+		{ title: 'Action', key: 'operation', render: (channel) =>
+				<>
+					{props.teacher ?
+						<div className="btn btn-success " onClick={() => props.onAskClick(channel.id)}>
 							<div className="d-flex align-items-center justify-content-center">
-								Open
+								Ask Doubt
 							</div>
 						</div>
-					</a>
-				</Link>
-			</>
+						:
+						<Link href={`/channels/${channel.id}`}>
+							<a>
+								<div className="btn btn-success ">
+									<div className="d-flex align-items-center justify-content-center">
+										Open
+									</div>
+								</div>
+							</a>
+						</Link>
+					}
+				</>
 		},
 	];
 
@@ -29,7 +37,7 @@ export default function StudentChannelTable(props) {
 		data.push({
 			key: item.id,
 			id: item.id,
-			name: item.name,
+			name: item.name || (item.user && item.user.name),
 		})
 	})
 

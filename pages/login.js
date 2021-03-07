@@ -60,6 +60,7 @@ export default function Login(props) {
                     }).catch((error) => {
                         setLoading(false)
                         console.log(error)
+                        console.log(error.response)
                         if( error.message ) setError(error.message)
                         else setError(error.toString())
                     })
