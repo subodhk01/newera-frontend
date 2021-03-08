@@ -206,6 +206,7 @@ export default function Home(props) {
                 }
                 .modalImage {
                     max-width: 90vw;
+                    max-height: calc(100vh - 180px);
                 }
             `}</style>
         </Layout>
