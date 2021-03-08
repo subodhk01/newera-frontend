@@ -20,21 +20,26 @@ export default function Forum(props){
     const { id } = router.query
 
     const { profile, accessToken } = useAuth()
+    const [ render, setRender ] = React.useState(0)
 
     const bottomRef = React.useRef();
     const scrollToBottom = () => {
-        bottomRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-        });
+        if(bottomRef && bottomRef.current){
+            bottomRef.current.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+            });
+        }
     };
 
     const [ loading, setLoading ] = React.useState(true)
     const [ channel, setChannel ] = React.useState()
     const [ messages, setMessages ] = React.useState([])
 
+    const [ active, setActive ] = React.useState("msg")
     const [ message, setMessage ] = React.useState("")
     const [ image, setImage ] = React.useState("")
+    const [ pdf, setPdf] = React.useState("")
 
     const getMessages = () => {
         axiosInstance
@@ -75,14 +80,17 @@ export default function Forum(props){
         axiosInstance
             .post(`/channels/${id}/messages/`, {
                 message: message,
-                // image: image
+                image: image,
+                pdf: pdf
             })
             .then((response) => {
                 console.log("message sent resp: ", response.data)
                 setMessages(msg => [...msg, {...response.data, timestamp: new Date(), student: {id: profile.id}}])
                 setMessage("")
                 setImage("")
+                setPdf("")
                 scrollToBottom()
+                setRender((render + 1) % 100)
             }).catch((error) => {
                 console.log(error)
                 console.log(error.response)
@@ -100,8 +108,16 @@ export default function Forum(props){
                         loading={loading}
                         profile={profile}
                         bottomRef={bottomRef}
+
+                        active={active}
+                        setActive={setActive}
                         message={message}
                         setMessage={setMessage}
+                        image={image}
+                        setImage={setImage}
+                        pdf={pdf}
+                        setPdf={setPdf}
+
                         messages={messages}
                         setMessages={setMessages}
                         handleMessageSend={handleMessageSend}
