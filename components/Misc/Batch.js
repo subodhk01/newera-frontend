@@ -156,12 +156,15 @@ export default function Batch(props) {
                                     {activeBatch.description}
                                 </div>
                                 <div className="d-flex align-items-center justify-content-center pt-3">
-                                    {profile && profile.id ?
-                                        <div className="btn btn-success font-09" onClick={() => setPaymentModal(true)}>
-                                            Register
-                                        </div> 
+                                    {activeBatch.students.includes(profile.id) ?
+                                        <div className="text-success">Registered</div>
                                         :
-                                        <span className="text-info">You must login to register for this batch</span> 
+                                        profile && profile.id ?
+                                            <div className="btn btn-success font-09" onClick={() => setPaymentModal(true)}>
+                                                Register
+                                            </div> 
+                                            :
+                                            <span className="text-info">You must login to register for this batch</span> 
                                     }
                                 </div>
                             </div>
