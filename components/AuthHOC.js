@@ -26,7 +26,7 @@ export default function AuthHOC(props){
     if(accessToken && profile){
         if((teacher && !profile.is_teacher) || (student && !profile.is_student)){
             return (
-                <div>
+                <div className="text-center" style={{ paddingTop: "150px" }}>
                     You are not authorized to view this page
                 </div>
             )

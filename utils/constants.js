@@ -54,7 +54,7 @@ export const SIDEBAR_ITEMS = [
     },
     {
         image: "",
-        title: "My Doubt Channels",
+        title: "Ask Your Teachers",
         path: "/teacherchannels"
     },
     // {
@@ -62,6 +62,12 @@ export const SIDEBAR_ITEMS = [
     //     title: "Profile",
     //     path: "/profile"
     // },
+    {
+        image: "",
+        title: "Send Notification",
+        path: "/notification",
+        teacher: true
+    },
     {
         image: "",
         title: "Image Upload",
