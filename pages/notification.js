@@ -104,8 +104,8 @@ export default function Notification(props){
                                         {result && <div>
                                             Success: {result.success}<br /> Faliure: {result.failure}<br /><br />
                                             {result.results && result.results.map((item, index) => 
-                                                <div key={index} className={`${item.error && "text-danger"} ${item.success && "text-success"}`}>
-                                                    {index+1}. {item.error}{item.success}
+                                                <div key={index} className={`${item.error && "text-danger"} ${item.message_id && "text-success"}`}>
+                                                    {index+1}. {item.error}{item.message_id}
                                                 </div>
                                             )}
                                         </div>}
