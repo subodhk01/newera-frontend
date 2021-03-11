@@ -10,6 +10,7 @@ import { FaHockeyPuck, FaWindowRestore } from 'react-icons/fa'
 import Link from 'next/link'
 import { Alert, Checkbox } from 'antd'
 import { Select } from 'antd';
+import { ServerStyleSheet } from 'styled-components'
 
 const { Option } = Select;
 
@@ -26,6 +27,7 @@ export default function Notification(props){
     const [ loading, setLoading ] = React.useState(false)
     const [ error, setError ] = React.useState("")
     const [ success, setSuccess ] = React.useState("")
+    const [ result, setResult ] = React.useState({})
 
     React.useEffect(() => {
         axiosInstance.get("/batch/list")
@@ -40,6 +42,7 @@ export default function Notification(props){
     const handleSend = () => {
         setError("")
         setSuccess("")
+        setResult({})
         setLoading(true)
         if(!subject || !message || (!selectedBatch && !all)){
             setError("Please fill all fields")
@@ -59,10 +62,13 @@ export default function Notification(props){
             .then((response) => {
                 if(response.data.error){
                     setError(response.data.error)
+                    setLoading(false)
                     return
                 }
                 console.log("notification send resp: ", response.data)
+                console.log("result: ", response.data.result)
                 setSuccess(response.data.success)
+                setResult(response.data.result || {})
                 setLoading(false)
             }).catch((error) => {
                 console.log(error)
@@ -80,7 +86,12 @@ export default function Notification(props){
                     <div>
                         {error &&
                             <div className="py-4">
-                                <Alert type="error" description={error} />
+                                <Alert type="error" description={`<div>
+                                    ${error}<br />
+                                    ${result && <div>
+                                        Success: {result.success}, Faliure: {result.faliure}<br />
+                                    </div>}
+                                </div>`} />
                             </div>
                         }
                     </div>
@@ -88,7 +99,17 @@ export default function Notification(props){
                         <div>
                             {success &&
                                 <div className="py-4">
-                                    <Alert type="success" description={success} />
+                                    <Alert type="success" description={<div>
+                                        {success}<br />
+                                        {result && <div>
+                                            Success: {result.success}<br /> Faliure: {result.failure}<br /><br />
+                                            {result.results && result.results.map((item, index) => 
+                                                <div key={index} className={`${item.error && "text-danger"} ${item.success && "text-success"}`}>
+                                                    {index+1}. {item.error}{item.success}
+                                                </div>
+                                            )}
+                                        </div>}
+                                    </div>} />
                                 </div>
                             }
                             <div className="form-group">
