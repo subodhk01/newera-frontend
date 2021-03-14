@@ -22,7 +22,7 @@ export default function Notification(props){
     const [ message, setMessage ] = React.useState("")
     const [ all, setAll ] = React.useState(false)
     const [ batches, setBatches ] = React.useState()
-    const [ selectedBatch, setSelectedBatch ] = React.useState()
+    const [ selectedBatchs, setSelectedBatchs ] = React.useState([])
     
     const [ loading, setLoading ] = React.useState(false)
     const [ error, setError ] = React.useState("")
@@ -30,7 +30,7 @@ export default function Notification(props){
     const [ result, setResult ] = React.useState({})
 
     React.useEffect(() => {
-        axiosInstance.get("/batch/list")
+        axiosInstance.get("/batch/list/user")
             .then((response) => {
                 console.log("batches: ", response.data)
                 setBatches(response.data)
@@ -44,15 +44,17 @@ export default function Notification(props){
         setSuccess("")
         setResult({})
         setLoading(true)
-        if(!subject || !message || (!selectedBatch && !all)){
+        if(!subject || !message || (!selectedBatchs.length && !all)){
             setError("Please fill all fields")
             setLoading(false)
             return
         }
         var students = []
-        if(batches.filter(batch => batch.id === selectedBatch).length){
-            students = batches.filter(batch => batch.id === selectedBatch)[0].students
-        }
+        console.log("selected abtches: ", selectedBatchs)
+        var finalBatchList = batches.filter(batch => selectedBatchs.includes(batch.id))
+        finalBatchList.map((batch, index) => {
+            students = [ ...students, ...batch.students ]
+        })
         axiosInstance.post("/sendNotification/", {
             subject: subject,
             all: all,
@@ -69,6 +71,9 @@ export default function Notification(props){
                 console.log("result: ", response.data.result)
                 setSuccess(response.data.success)
                 setResult(response.data.result || {})
+                setMessage("")
+                setSubject("")
+                setSelectedBatchs([])
                 setLoading(false)
             }).catch((error) => {
                 console.log(error)
@@ -86,12 +91,7 @@ export default function Notification(props){
                     <div>
                         {error &&
                             <div className="py-4">
-                                <Alert type="error" description={`<div>
-                                    ${error}<br />
-                                    ${result && <div>
-                                        Success: {result.success}, Faliure: {result.faliure}<br />
-                                    </div>}
-                                </div>`} />
+                                <Alert type="error" description={error} />
                             </div>
                         }
                     </div>
@@ -114,7 +114,7 @@ export default function Notification(props){
                             }
                             <div className="form-group">
                                 <label>Subject:</label>
-                                <input className="form-control" value={subject} onChange={(event) => setSubject(event.target.value)} />
+                                <input className="form-control" value={subject} onChange={(event) => setSubject(event.target.value)} maxLength="100" />
                             </div>
                             <div className="form-group">
                                 <label className="p-2 m-1 cursor-pointer">
@@ -124,7 +124,7 @@ export default function Notification(props){
                             {!all && 
                                 <div className="form-group">
                                     <label>Batch:</label>
-                                    <Select style={{ width: 120 }} onChange={(value) => setSelectedBatch(value)}>
+                                    <Select mode="multiple"  style={{ width: 120 }} value={selectedBatchs} onChange={(value) => setSelectedBatchs(value)}>
                                         {batches && batches.map((batch, index) => 
                                             <Option value={batch.id}>{batch.name}</Option>
                                         )}
@@ -133,7 +133,7 @@ export default function Notification(props){
                             }
                             <div className="form-group">
                                 <label>Message:</label>
-                                <textarea rows="3" className="form-control" value={message} onChange={(event) => setMessage(event.target.value)} />
+                                <textarea rows="3" className="form-control" value={message} onChange={(event) => setMessage(event.target.value)} maxLength="240" />
                             </div>
                             <div>
                                 <button disabled={loading} className="btn btn-success" onClick={handleSend}>Send Notification</button>
