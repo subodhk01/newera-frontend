@@ -24,6 +24,11 @@ export const TEST_SERIES_STATUS = {
 export const SIDEBAR_ITEMS = [
     {
         image: "",
+        title: "Profile",
+        path: "/profile"
+    },
+    {
+        image: "",
         title: "My Tests",
         path: "/tests"
     },
@@ -57,11 +62,6 @@ export const SIDEBAR_ITEMS = [
         title: "Ask Your Teachers",
         path: "/teacherchannels"
     },
-    // {
-    //     image: "",
-    //     title: "Profile",
-    //     path: "/profile"
-    // },
     {
         image: "",
         title: "Send Notification",
