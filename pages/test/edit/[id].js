@@ -41,8 +41,10 @@ export default function Test(props){
         image: "",
         type: 0,
         text: "",
+        solutionText: "",
         topic: "none",
         solution: "",
+        video_solution: "",
         section: 0,
         correctMarks: 4,
         incorrectMarks: 0,
@@ -168,6 +170,18 @@ export default function Test(props){
         setQuestions(newQuestions)
         setRender((render + 1) % 100) // a pseudo update
     }
+    const handleSolutionText = (event) => {
+        let newQuestions = questions
+        newQuestions[currentQuestion].solutionText = event.target.value
+        setQuestions(newQuestions)
+        setRender((render + 1) % 100) // a pseudo update
+    }
+    const handleVideoSolution = (event) => {
+        let newQuestions = questions
+        newQuestions[currentQuestion].video_solution = event.target.value
+        setQuestions(newQuestions)
+        setRender((render + 1) % 100) // a pseudo update
+    }
     const handleOptionText = (option, value) => {
         let newQuestions = questions
         newQuestions[currentQuestion][`option${option}text`] = value
@@ -227,8 +241,10 @@ export default function Test(props){
             image: "",
             type: 0,
             text: "",
+            solutionText: "",
             topic: "none",
             solution: "",
+            video_solution: "",
             section: 0,
             correctMarks: 4,
             incorrectMarks: 0,
@@ -553,6 +569,14 @@ export default function Test(props){
                                             <div className="col-12 p-2">
                                                 Question Text <span className="text-muted">(Optional)</span>: 
                                                 <input type="text" name="questiontext" className="form-control" value={questions[currentQuestion].text} onChange={handleQuestionText} />
+                                            </div>
+                                            <div className="col-12 p-2">
+                                                Solution Text <span className="text-muted">(Optional)</span>: 
+                                                <input type="text" name="questiontext" className="form-control" value={questions[currentQuestion].solutionText} onChange={handleSolutionText} />
+                                            </div>
+                                            <div className="col-12 p-2">
+                                                Video Solution URL: 
+                                                <input type="text" name="videoSolution" className="form-control" value={questions[currentQuestion].video_solution} onChange={handleVideoSolution} />
                                             </div>
                                         </div>
                                         <div className="p-3">
