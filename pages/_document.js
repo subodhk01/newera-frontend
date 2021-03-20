@@ -19,8 +19,6 @@ class MyDocument extends Document {
                 <body style={{ minHeight: "100vh" }}>
                     <Main />
                     <NextScript />
-                    <script src="/js/video.min.js"></script>
-                    <script src="/js/youtube.min.js"></script>
                 </body>
             </Html>
         )

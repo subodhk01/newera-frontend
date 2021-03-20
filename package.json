@@ -31,7 +31,7 @@
     "react-icons": "^3.11.0",
     "react-modal": "^3.11.2",
     "react-no-ssr": "^1.1.0",
-    "react-player": "^2.7.0",
+    "react-player": "^2.9.0",
     "serverless": "^2.16.1",
     "styled-components": "^5.2.0",
     "styled-jsx": "^3.4.1",

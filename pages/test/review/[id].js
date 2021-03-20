@@ -91,7 +91,10 @@ export default function Test(props){
                                     <span>{test.questions[currentQuestion].solutionText}</span>
                                 </div>
                                 <div>
-                                    <img src={test.questions[currentQuestion].solution} style={{maxWidth: "90vw"}} />
+                                    <img src={test.questions[currentQuestion].solution} style={{maxWidth: "60vw", maxHeight: "60vh"}} />
+                                </div>
+                                <div>
+                                    {test.questions[currentQuestion].video_solution && <span>Video Solution: {test.questions[currentQuestion].video_solution}</span> }
                                 </div>
                                 <div className="text-right">
                                     <div className="btn btn-warning" onClick={() => setSolutionModal(false)}>
@@ -144,7 +147,7 @@ export default function Test(props){
                                     </div>
                                     <div>
                                         <div>
-                                            {/* <div dangerouslySetInnerHTML={createMarkup(test.questions[currentQuestion].text)}></div> */}
+                                            <div dangerouslySetInnerHTML={createMarkup(test.questions[currentQuestion].text)}></div>
                                             <img src={test.questions[currentQuestion].image} className="mx-auto" style={{maxWidth: "80%"}} />
                                         </div>
                                         <div>
@@ -164,7 +167,7 @@ export default function Test(props){
                                                 {typeof(test.answers[currentQuestion].answer) === 'object' && typeof(test.answers[currentQuestion].answer[0]) === 'object' && `${arrayToAlphabet(test.answers[currentQuestion].answer[0])}, ${arrayToAlphabet(test.answers[currentQuestion].answer[1])}, ${arrayToAlphabet(test.answers[currentQuestion].answer[2])}, ${arrayToAlphabet(test.answers[currentQuestion].answer[3])}`}
                                         </div>
                                         <div>
-                                            <div className="btn btn-info" onClick={() => setSolutionModal(true)}>See Solution</div>
+                                            { test.questions[currentQuestion].solution && <div className="btn btn-info" onClick={() => setSolutionModal(true)}>See Solution</div> }
                                         </div>
                                         <div>
                                             <Options 
