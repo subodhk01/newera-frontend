@@ -14,7 +14,17 @@ import { ServerStyleSheet } from 'styled-components'
 
 const { Option } = Select;
 
-
+const PAGES = [
+    "Homepage",
+    "AITS page",
+    "Batches page",
+    "Videos page",
+    "Dashboard page",
+    "Study Materials page",
+    "Discussion Forum (channels page)",
+    "Discussion Forum (direct messages page)",
+    "About us"
+]
 
 
 export default function Notification(props){
@@ -23,6 +33,7 @@ export default function Notification(props){
     const [ all, setAll ] = React.useState(false)
     const [ batches, setBatches ] = React.useState()
     const [ selectedBatchs, setSelectedBatchs ] = React.useState([])
+    const [ page, setPage ] = React.useState(0)
     
     const [ loading, setLoading ] = React.useState(false)
     const [ error, setError ] = React.useState("")
@@ -59,7 +70,8 @@ export default function Notification(props){
             subject: subject,
             all: all,
             message: message,
-            students: students
+            students: students,
+            page: page
         })
             .then((response) => {
                 if(response.data.error){
@@ -131,6 +143,14 @@ export default function Notification(props){
                                     </Select>
                                 </div>
                             }
+                            <div className="form-group">
+                                <label>Page to redirect <span className="text-muted">(Optional)</span>:</label>
+                                <Select style={{ width: 120 }} value={page} onChange={(value) => setPage(value)}>
+                                    {PAGES && PAGES.map((page, index) => 
+                                        <Option value={index}>{page}</Option>
+                                    )}
+                                </Select>
+                            </div>
                             <div className="form-group">
                                 <label>Message:</label>
                                 <textarea rows="3" className="form-control" value={message} onChange={(event) => setMessage(event.target.value)} maxLength="240" />
