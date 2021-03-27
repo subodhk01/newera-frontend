@@ -7,6 +7,7 @@ import Modal from 'react-modal'
 import { customStyles2 } from '../utils/constants'
 import { CgCloseO } from 'react-icons/cg'
 import Batch from '../components/Misc/Batch'
+import Footer from '../components/UI/Footer'
 
 export default function Home(props) {
     const [ exams, setExams ] = React.useState()
@@ -161,6 +162,7 @@ export default function Home(props) {
                 </div>
                 <Batch />
             </div>
+            <Footer />
             <style jsx>{`
                 .bg-grey {
                     background: rgba(248,248,248,1);

@@ -53,6 +53,14 @@ function MyApp({ Component, pageProps }) {
                     console.log(error)
                     console.log(error.response)
                 })
+                axiosInstance.get("/notifications/list/")
+                .then((response) => {
+                    console.log("notif: ", response.data)
+                })
+                .catch((error) => {
+                    console.log(error)
+                    console.log(error.response)
+                })
         }
     }, [])
 	
