@@ -230,7 +230,6 @@ export default function Batch(props) {
                 <div className="bg-grey py-4 py-md-5 px-2 text-center">
                 {activeBatch &&
                 <>
-                    <h1>{activeBatch.name}</h1>
                      <div className="">
                         <h1 className="text-muted">{activeBatch.name}</h1>
                         <div className="d-flex align-items-center justify-content-center">
@@ -246,6 +245,60 @@ export default function Batch(props) {
                                     </div> 
                                     :
                                     <span className="text-info" style={{ maxWidth: "150px" }}>You must login to register for this batch</span>  
+                            }
+                        </div>
+                        <div className="py-3 text-left d-table mx-auto">
+                            {activeBatch.testseries && activeBatch.testseries.length ?
+                                <div>
+                                    <h4>Test Series:</h4>
+                                    <ul>
+                                    {activeBatch.testseries.map((series, index) => 
+                                        <Link href={`/testseries/${series.id}`} key={index}>
+                                            <a><li>{series.name}</li></a>
+                                        </Link>
+                                    )}
+                                    </ul>
+                                </div>
+                                : null
+                            }
+                            {activeBatch.lectureseries && activeBatch.lectureseries.length ?
+                                <div>
+                                    <h4>Lecture Series:</h4>
+                                    <ul>
+                                    {activeBatch.lectureseries.map((series, index) => 
+                                        <Link href={`/lectureseries/${series.id}`} key={index}>
+                                            <a><li>{series.name}</li></a>
+                                        </Link>
+                                    )}
+                                    </ul>
+                                </div>
+                                : null
+                            }
+                            {activeBatch.studymaterials && activeBatch.studymaterials.length ? 
+                                <div>
+                                    <h4>Study Materials:</h4>
+                                    <ul>
+                                    {activeBatch.studymaterials.map((series, index) => 
+                                        <Link href={`/studymaterials/${series.id}`} key={index}>
+                                            <a><li>{series.name}</li></a>
+                                        </Link>
+                                    )}
+                                    </ul>
+                                </div>
+                                : null
+                            }
+                            {activeBatch.channels && activeBatch.channels.length ? 
+                                <div>
+                                    <h4>Channels:</h4>
+                                    <ul>
+                                    {activeBatch.channels.map((channel, index) => 
+                                        <Link href={`/channels/${channel.id}`} key={index}>
+                                            <a><li>{channel.name}</li></a>
+                                        </Link>
+                                    )}
+                                    </ul>
+                                </div>
+                                : null
                             }
                         </div>
                         <div className="d-inline-block mx-auto py-4">

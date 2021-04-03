@@ -90,7 +90,8 @@ export default function Test(props){
             tests: selectedTests,
             exams: [selectedExam,],
             registered_batches: selectedBatches,
-            visible: true
+            visible: true,
+            banner: image
         })
         .then((response) => {
             console.log("test series save response: ", response.data)

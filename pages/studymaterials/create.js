@@ -89,7 +89,8 @@ export default function StudyMaterialCreate(props){
             materials: selectedMaterials,
             sections: [selectedSection,],
             registered_batches: selectedBatches,
-            visible: true
+            visible: true,
+            banner: image
         })
         .then((response) => {
             console.log("studymaterial save response: ", response.data)

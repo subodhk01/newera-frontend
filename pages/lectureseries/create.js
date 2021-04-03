@@ -90,7 +90,8 @@ export default function Test(props){
             videos: selectedVideos,
             sections: [selectedSection,],
             registered_batches: selectedBatches,
-            visible: true
+            visible: true,
+            banner: image
         })
         .then((response) => {
             console.log("lecture series save response: ", response.data)

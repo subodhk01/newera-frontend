@@ -12,7 +12,7 @@ import { Alert, Checkbox } from 'antd'
 import { Select } from 'antd';
 import { ServerStyleSheet } from 'styled-components'
 
-const { Option } = Select;
+const { Option, OptGroup } = Select;
 
 const PAGES = [
     "Homepage",
@@ -26,12 +26,19 @@ const PAGES = [
     "About us"
 ]
 
+function onlyUnique(value, index, self) {
+    return self.indexOf(value) === index;
+}
+
 
 export default function Notification(props){
     const [ subject, setSubject ] = React.useState("")
     const [ message, setMessage ] = React.useState("")
     const [ all, setAll ] = React.useState(false)
     const [ batches, setBatches ] = React.useState()
+    const [ testseries, setTestSeries ] = React.useState()
+    const [ lectureseries, setLectureSeries ] = React.useState()
+    const [ studyMaterials, setStudyMaterials ] = React.useState()
     const [ selectedBatchs, setSelectedBatchs ] = React.useState([])
     const [ page, setPage ] = React.useState(0)
     
@@ -49,6 +56,30 @@ export default function Notification(props){
                 console.log(error)
                 setError("Unable to fetch batches")
             })
+        axiosInstance.get("/testseries/user")
+            .then((response) => {
+                console.log("test series: ", response.data)
+                setTestSeries(response.data)
+            }).catch((error) => {
+                console.log(error)
+                setError("Unable to fetch batches")
+            })
+        axiosInstance.get("/lectureseries/user")
+            .then((response) => {
+                console.log("lecture series: ", response.data)
+                setLectureSeries(response.data)
+            }).catch((error) => {
+                console.log(error)
+                setError("Unable to fetch batches")
+            })
+        // axiosInstance.get("/studymatrials/user")
+        //     .then((response) => {
+        //         console.log("materials: ", response.data)
+        //         setStudyMaterials(response.data)
+        //     }).catch((error) => {
+        //         console.log(error)
+        //         setError("Unable to fetch batches")
+        //     })
     }, [])
     const handleSend = () => {
         setError("")
@@ -62,10 +93,27 @@ export default function Notification(props){
         }
         var students = []
         console.log("selected abtches: ", selectedBatchs)
-        var finalBatchList = batches.filter(batch => selectedBatchs.includes(batch.id))
+
+        var finalBatchList = batches.filter(batch => selectedBatchs.includes(batch.name))
+        console.log('batches selected: ', finalBatchList)
         finalBatchList.map((batch, index) => {
             students = [ ...students, ...batch.students ]
         })
+
+        var finalTestSeriesList = testseries.filter(series => selectedBatchs.includes(series.name))
+        console.log('test selected: ', finalTestSeriesList)
+        finalTestSeriesList.map((batch, index) => {
+            students = [ ...students, ...batch.registered_students ]
+        })
+
+        var finalLectureSeriesList = lectureseries.filter(series => selectedBatchs.includes(series.name))
+        console.log('leces selected: ', finalLectureSeriesList)
+        finalLectureSeriesList.map((batch, index) => {
+            students = [ ...students, ...batch.registered_students ]
+        })
+        console.log(students)
+        console.log(students.filter(onlyUnique))
+
         axiosInstance.post("/sendNotification/", {
             subject: subject,
             all: all,
@@ -137,9 +185,21 @@ export default function Notification(props){
                                 <div className="form-group">
                                     <label>Batch:</label>
                                     <Select mode="multiple"  style={{ width: 120 }} value={selectedBatchs} onChange={(value) => setSelectedBatchs(value)}>
-                                        {batches && batches.map((batch, index) => 
-                                            <Option value={batch.id}>{batch.name}</Option>
-                                        )}
+                                        <OptGroup label="Batches">
+                                            {batches && batches.map((batch, index) => 
+                                                <Option value={batch.name}>{batch.name}</Option>
+                                            )}
+                                        </OptGroup>
+                                        <OptGroup label="Test Series">
+                                            {testseries && testseries.map((series, index) => 
+                                                <Option value={series.name}>{series.name}</Option>
+                                            )}
+                                        </OptGroup>
+                                        <OptGroup label="Lecture Series">
+                                            {lectureseries && lectureseries.map((series, index) => 
+                                                <Option value={series.name}>{series.name}</Option>
+                                            )}
+                                        </OptGroup>
                                     </Select>
                                 </div>
                             }

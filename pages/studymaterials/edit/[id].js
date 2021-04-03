@@ -109,7 +109,8 @@ export default function Test(props){
             materials: selectedMaterials,
             sections: [selectedSection, ],
             registered_batches: selectedBatches,
-            visible: true
+            visible: true,
+            banner: image
         })
         .then((response) => {
             console.log("study material update response: ", response.data)

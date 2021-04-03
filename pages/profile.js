@@ -157,13 +157,16 @@ export default function Notification(props){
 
 const UserListSection = () => {
     const [ users, setUsers ] = React.useState()
+    const [ error, setError ] = React.useState(false)
     React.useEffect(() => {
+        setError(false)
         console.log("starting to fetch users")
         axiosInstance.get("/users/list")
             .then((response) => {
                 console.log("user list: ", response.data)
                 setUsers(response.data)
             }).catch((error) => {
+                setError(true)
                 console.log(error)
                 console.log(error.response)
                 console.log("Unable to fetch users")
@@ -171,11 +174,26 @@ const UserListSection = () => {
     }, [])
     return(
         <div>
-            {users ?
-                <CsvDownload data={users} />
+            {!error && (users ?
+                <CsvDownload data={users} style={{ //pass other props, like styles
+                    boxShadow:"inset 0px 1px 0px 0px #e184f3",
+                    background:"linear-gradient(to bottom, #c123de 5%, #a20dbd 100%)",
+                    backgroundColor:"#c123de",
+                    borderRadius:"6px",
+                    border:"1px solid #a511c0",
+                    display:"inline-block",
+                    cursor:"pointer",
+                    color:"#ffffff",
+                    fontSize:"15px",
+                    fontWeight:"bold",
+                    padding:"6px 24px",
+                    textDecoration:"none",
+                    textShadow:"0px 1px 0px #9b14b3"
+                    }}>Download Student Data</CsvDownload>
                 :
                 "Loading users"
-            }
+            )}
+            {error && "Unable to fetch users"}
         </div>
     )
 }

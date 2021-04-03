@@ -110,6 +110,9 @@ export default function TestSeries(props){
                 <div className="p-2 p-md-5">
                     {!loading &&
                         <>
+                            <div className="pt-10 pb-10" style={{ backgroundImage: `url(${series.banner})` }}>
+
+                            </div>
                             <div>
                                 <h1>{series.name}</h1>
                             </div>

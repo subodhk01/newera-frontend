@@ -48,7 +48,8 @@ export default function TestSeries(props){
                                 {series && series.length ? series.map((item, index) => {
                                     if(true){
                                         return (
-                                            <div className="item-shadow p-3 py-4 m-3 cursor-pointer border" key={index}>
+                                            <div className="item-shadow p-2 py-3 m-3 cursor-pointer border" key={index}>
+                                                {item.banner && <img src={item.banner} style={{ maxWidth: "270px", borderRadius: "20px" }} />}
                                                 <h4>{item.name}</h4>
                                                 <div>
                                                     {item.tests.length} Tests
