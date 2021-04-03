@@ -108,7 +108,7 @@ export default function Batch(props) {
             })
         }else {
             var options = {
-                key: "rzp_test_Kimy8hrVhh4ccT",
+                key: "rzp_live_VMy6LTFP3FIQmO",
                 amount: totalAmount * 100,
                 name: "Newera Coaching",
                 currency: "INR",
@@ -249,7 +249,7 @@ export default function Batch(props) {
                             }
                         </div>
                         <div className="d-inline-block mx-auto py-4">
-                            <ReactPlayer url={activeBatch.video_description} />
+                            <ReactPlayer url={activeBatch.video_description} style={{ maxWidth: "90vw" }} />
                         </div>
                     </div>
                     </>

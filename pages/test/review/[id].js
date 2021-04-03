@@ -94,7 +94,7 @@ export default function Test(props){
                                     <img src={test.questions[currentQuestion].solution} style={{maxWidth: "60vw", maxHeight: "60vh"}} />
                                 </div>
                                 <div>
-                                    {test.questions[currentQuestion].video_solution && <span>Video Solution: {test.questions[currentQuestion].video_solution}</span> }
+                                    {test.questions[currentQuestion].video_solution && <span>Video Solution: <Alert description={<p>Video solution of this question is available in our app available on playstore. App link: <a href="https://play.google.com/store/apps/details?id=com.app.new_era">https://play.google.com/store/apps/details?id=com.app.new_era</a></p>} /></span> }
                                 </div>
                                 <div className="text-right">
                                     <div className="btn btn-warning" onClick={() => setSolutionModal(false)}>

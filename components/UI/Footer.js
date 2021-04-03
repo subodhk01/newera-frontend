@@ -8,18 +8,43 @@ export default function Footer() {
             <div className="row no-gutters">
                 <div className="col-12 col-md-4">
                     <h4>About us</h4>
-                    <p>We are the team of IITians & Medicose. We provide online/offline Coaching for IIT JEE(Main+Advanced)/NEET/NTSE/Olympiad/KVPY for class 9th, 10th, 11th, 12th and dropper students. Our learning platform was started in the year 2017. We have mentored more than 300,000 students and many of those students are studying in IITs/NITs/AIIMs/IISC and other similar college. We provide online/offline Classes, Live Classes, Recorded Lectures, Online Test Series, Study Material, Doubt Solving etc. to  the students.</p>
+                    <p className="text-justify">We are the team of IITians & Medicose. We provide online/offline Coaching for IIT JEE(Main+Advanced)/NEET/NTSE/Olympiad/KVPY for class 9th, 10th, 11th, 12th and dropper students. Our learning platform was started in the year 2017. We have mentored more than 300,000 students and many of those students are studying in IITs/NITs/AIIMs/IISC and other similar college. We provide online/offline Classes, Live Classes, Recorded Lectures, Online Test Series, Study Material, Doubt Solving etc. to  the students.</p>
                 </div>
-                <div className="col-12 col-md-4 text-center">
+                <div className="col-12 col-md-2 text-md-center">
                     <h4>Contact Us</h4>
                     <p>+917380736814</p>
                     <p>+919936237763</p>
                     <p>+917662359179</p>
                 </div>
-                <div className="col-12 col-md-4">
+                <div className="col-12 col-md-3">
                     <h4>Email Us</h4>
                     <p>neweraonlinecoaching@gmail.com</p>
-                    <p>mailto:info@neweraonlinecoaching.com</p>
+                    <p>info@neweraonlinecoaching.com</p>
+                </div>
+                <div className="col-12 col-md-3">
+                    <h4>Important Links</h4>
+                    <div className="flex flex-row">
+                    <div><Link href="/terms-and-conditions">
+                        <a className="text-muted">
+                            Terms and Conditions
+                        </a>
+                    </Link></div>
+                    <div><Link href="/pricing">
+                        <a className="text-muted">
+                            Pricing
+                        </a>
+                    </Link></div>
+                    <div><Link href="/privacy-policy">
+                        <a className="text-muted">
+                            Privacy Policy
+                        </a>
+                    </Link></div>
+                    <div><Link href="/refund-policy">
+                        <a className="text-muted">
+                            Refund Policy
+                        </a>
+                    </Link></div>
+                    </div>
                 </div>
             </div>
             <div className="pt-5 d-flex align-items-center justify-content-between">
@@ -29,11 +54,7 @@ export default function Footer() {
                     <a href="https://www.instagram.com/neweracoachingrewa/" target="_blank" className="p-2"><FaInstagram size="25" color="#dd2a7b" /></a>
                 </div>
                 <div>
-                    <Link href="/terms-and-conditions">
-                        <a className="text-muted">
-                            Terms and Conditions
-                        </a>
-                    </Link>
+                    
                 </div>
             </div>
         </div>

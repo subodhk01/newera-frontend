@@ -12,6 +12,7 @@ import { Alert, Checkbox } from 'antd'
 import { Select } from 'antd';
 import { ServerStyleSheet } from 'styled-components'
 import { RiCopperCoinFill }  from 'react-icons/ri'
+import CsvDownload from 'react-json-to-csv'
 
 const { Option } = Select;
 
@@ -137,6 +138,11 @@ export default function Notification(props){
                                     <ReferralSection profile={profile} getProfile={getProfile} />
                                 }
                             </div>
+                            <div className="py-4 px-2">
+                                {profile.is_superuser &&
+                                    <UserListSection />
+                                }
+                            </div>
                         </>
                     :
                         <div className="text-center">
@@ -146,6 +152,31 @@ export default function Notification(props){
                 </div>
             </SideBarLayout>
         </AuthHOC>
+    )
+}
+
+const UserListSection = () => {
+    const [ users, setUsers ] = React.useState()
+    React.useEffect(() => {
+        console.log("starting to fetch users")
+        axiosInstance.get("/users/list")
+            .then((response) => {
+                console.log("user list: ", response.data)
+                setUsers(response.data)
+            }).catch((error) => {
+                console.log(error)
+                console.log(error.response)
+                console.log("Unable to fetch users")
+            })
+    }, [])
+    return(
+        <div>
+            {users ?
+                <CsvDownload data={users} />
+                :
+                "Loading users"
+            }
+        </div>
     )
 }
 
