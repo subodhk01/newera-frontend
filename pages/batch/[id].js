@@ -251,52 +251,76 @@ export default function Batch(props) {
                             {activeBatch.testseries && activeBatch.testseries.length ?
                                 <div>
                                     <h4>Test Series:</h4>
-                                    <ul>
-                                    {activeBatch.testseries.map((series, index) => 
-                                        <Link href={`/testseries/${series.id}`} key={index}>
-                                            <a><li>{series.name}</li></a>
-                                        </Link>
-                                    )}
-                                    </ul>
+                                    <div className="d-flex">
+                                        {activeBatch.testseries.map((item, index) => 
+                                            <div className="item-shadow p-2 py-3 m-3 cursor-pointer border text-center" key={index}>
+                                                {item.banner && <img src={item.banner} style={{ maxWidth: "270px", borderRadius: "20px" }} />}
+                                                <h4>{item.name}</h4>
+                                                <Link href={`/testseries/${item.id}`} key={index}>
+                                                    <div className="btn btn-info">
+                                                        Open
+                                                    </div>
+                                                </Link>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                                 : null
                             }
                             {activeBatch.lectureseries && activeBatch.lectureseries.length ?
                                 <div>
                                     <h4>Lecture Series:</h4>
-                                    <ul>
-                                    {activeBatch.lectureseries.map((series, index) => 
-                                        <Link href={`/lectureseries/${series.id}`} key={index}>
-                                            <a><li>{series.name}</li></a>
-                                        </Link>
-                                    )}
-                                    </ul>
+                                    <div className="d-flex">
+                                        {activeBatch.lectureseries.map((item, index) => 
+                                            <div className="item-shadow p-2 py-3 m-3 cursor-pointer border text-center" key={index}>
+                                                {item.banner && <img src={item.banner} style={{ maxWidth: "270px", borderRadius: "20px" }} />}
+                                                <h4>{item.name}</h4>
+                                                <Link href={`/lectureseries/${item.id}`} key={index}>
+                                                    <div className="btn btn-info">
+                                                        Open
+                                                    </div>
+                                                </Link>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                                 : null
                             }
                             {activeBatch.studymaterials && activeBatch.studymaterials.length ? 
                                 <div>
                                     <h4>Study Materials:</h4>
-                                    <ul>
-                                    {activeBatch.studymaterials.map((series, index) => 
-                                        <Link href={`/studymaterials/${series.id}`} key={index}>
-                                            <a><li>{series.name}</li></a>
-                                        </Link>
-                                    )}
-                                    </ul>
+                                    <div className="d-flex">
+                                        {activeBatch.studymaterials.map((item, index) => 
+                                            <div className="item-shadow p-2 py-3 m-3 cursor-pointer border text-center" key={index}>
+                                                {item.banner && <img src={item.banner} style={{ maxWidth: "270px", borderRadius: "20px" }} />}
+                                                <h4>{item.name}</h4>
+                                                <Link href={`/studymaterials/${item.id}`} key={index}>
+                                                    <div className="btn btn-info">
+                                                        Open
+                                                    </div>
+                                                </Link>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                                 : null
                             }
                             {activeBatch.channels && activeBatch.channels.length ? 
                                 <div>
                                     <h4>Channels:</h4>
-                                    <ul>
-                                    {activeBatch.channels.map((channel, index) => 
-                                        <Link href={`/channels/${channel.id}`} key={index}>
-                                            <a><li>{channel.name}</li></a>
-                                        </Link>
-                                    )}
-                                    </ul>
+                                    <div className="d-flex">
+                                        {activeBatch.channels.map((item, index) => 
+                                            <div className="item-shadow p-2 py-3 m-3 cursor-pointer border text-center" key={index}>
+                                                {item.banner && <img src={item.banner} style={{ maxWidth: "270px", borderRadius: "20px" }} />}
+                                                <h4>{item.name}</h4>
+                                                <Link href={`/channels/${item.id}`} key={index}>
+                                                    <div className="btn btn-info">
+                                                        Open
+                                                    </div>
+                                                </Link>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                                 : null
                             }

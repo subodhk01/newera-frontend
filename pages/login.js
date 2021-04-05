@@ -4,6 +4,7 @@ import Layout from '../components/UI/Layout'
 import { axiosInstance } from '../utils/axios'
 import { useAuth } from '../utils/auth'
 import Link from 'next/link'
+import { Checkbox } from 'antd'
 
 export default function Login(props) {
     const router = useRouter()
@@ -15,6 +16,7 @@ export default function Login(props) {
     const [ phone, setPhone ] = React.useState("")
     const [ password, setPassword ] = React.useState("")
     const [ password2, setPassword2 ] = React.useState("")
+    const [ agree, setAgree ] = React.useState(false)
     const [ loading, setLoading ] = React.useState(false)
     const [ error, setError ] = React.useState("")
     const { setAccessToken, setRefreshToken, setProfile } = useAuth()
@@ -92,6 +94,12 @@ export default function Login(props) {
         }
         if(phone.length != 10){
             setError("Phone number should be 10 digits")
+            setLoading(false)
+            return
+        }
+        console.log("agree", agree)
+        if(!agree) {
+            setError("You have to agree to the Term and condition and Policies before signing up")
             setLoading(false)
             return
         }
@@ -188,6 +196,9 @@ export default function Login(props) {
                                 </div>
                                 <div className="form-group">
                                     <input className="form-control" type="password" value={password2} onChange={(event) => setPassword2(event.target.value)} name="password2" placeholder="Confirm Password" required />
+                                </div>
+                                <div className="form-group">
+                                    <Checkbox value={agree} onChange={(event) => setAgree(event.target.checked)} /> I accept all the <a href="/terms-and-conditions" target="_blank">terms and conditions</a> and <a href="/refund-policy" target="_blank">refund policy</a>
                                 </div>
                                 <div>
                                     {error &&
