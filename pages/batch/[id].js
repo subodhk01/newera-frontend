@@ -23,7 +23,8 @@ export default function Batch(props) {
     const [ error, setError ] = React.useState("")
 
     React.useEffect(() => {
-        axiosInstance.get(`/batch/${id}`)
+        if(id){
+            axiosInstance.get(`/batch/${id}`)
             .then((response) => {
                 console.log("batch: ", response.data)
                 setActiveBatch(response.data)
@@ -32,7 +33,8 @@ export default function Batch(props) {
                 console.log(error)
                 console.log(error.response)
             })
-    }, [])
+        }
+    }, [id])
 
     async function verifySignature(response, amount) {
         setPaymentLoading(true)
@@ -132,6 +134,36 @@ export default function Batch(props) {
         
     }
 
+    const handleCoinPayment = () => {
+        setPaymentLoading(true)
+        setError()
+        axiosInstance.post('/payments/withcoins/', {
+                batch: id,
+            })
+            .then((res) => {
+                console.log("PAYMENT RESPONSE: ", res.data)
+                if(res.data.success){
+                    //setPaymentLoading(false)
+                    console.log("payment success")
+                    setPaymentLoading(false)
+                    setSuccessModal(true)
+                }
+                if(res.data.error){
+                    setPaymentLoading(false)
+                    setError(res.data.error)
+                }
+            })
+            .catch((error) => {
+                console.log("error: ", error)
+                setPaymentLoading(false)
+                if(error.response && error.response.status === 400 && error.response.data.test_series && error.response.data.test_series.length && error.response.data.test_series[0] === "You have already made a payment"){
+                    setError("You have already made a payment")
+                    return
+                }
+                setError("Unable to process your request try again")
+            })
+    }
+
     return (            
             <div className="">
                 <Modal
@@ -170,9 +202,23 @@ export default function Batch(props) {
                                         <div className="text-success">Registered</div>
                                         :
                                         profile && profile.id ?
-                                            <div className="btn btn-success font-09" onClick={() => setPaymentModal(true)}>
-                                                Register
-                                            </div> 
+                                            <>
+                                                <div>
+                                                    {error && <div className="text-danger p-1 pt-4">{error}</div>}
+                                                </div>
+                                                {paymentLoading ?
+                                                    <div>Processing your payment, please wait...</div>
+                                                    :
+                                                    <>
+                                                        <div className="btn btn-info font-11 px-5" onClick={() => handleCoinPayment()}>
+                                                            Register with {activeBatch.coin_price} coins
+                                                        </div>
+                                                        <div className="btn btn-success font-09" onClick={() => setPaymentModal(true)}>
+                                                            Register
+                                                        </div>
+                                                    </>
+                                                }
+                                            </> 
                                             :
                                             <span className="text-info">You must login to register for this batch</span> 
                                     }
@@ -240,13 +286,31 @@ export default function Batch(props) {
                                 <div className="text-success">Registered</div>
                                 :
                                 profile && profile.id ?
-                                    <div className="btn btn-success font-09" onClick={() => {setActiveBatch(activeBatch); setPaymentModal(true)}}>
-                                        Register
-                                    </div> 
+                                    <>
+                                        <div>
+                                            {error && <div className="text-danger p-1 pt-4">{error}</div>}
+                                        </div>
+                                        {paymentLoading ?
+                                            <div>Processing your payment, please wait...</div>
+                                            :
+                                            <>
+                                                <div className="btn btn-info font-11 px-5" onClick={() => handleCoinPayment()}>
+                                                    Register with {activeBatch.coin_price} coins
+                                                </div>
+                                                <div className="btn btn-success font-09" onClick={() => {setActiveBatch(activeBatch); setPaymentModal(true)}}>
+                                                    Register
+                                                </div>
+                                            </>
+                                        }
+                                    </>  
                                     :
                                     <span className="text-info" style={{ maxWidth: "150px" }}>You must login to register for this batch</span>  
                             }
                         </div>
+                        {activeBatch.group_link && <div className="py-3 text-center">
+                            Join the group using the following link<br />
+                            <a href={activeBatch.group_link} target="_blank">{activeBatch.group_link}</a>
+                        </div>}
                         <div className="py-3 text-left d-table mx-auto">
                             {activeBatch.testseries && activeBatch.testseries.length ?
                                 <div>

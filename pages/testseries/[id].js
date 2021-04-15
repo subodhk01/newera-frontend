@@ -104,6 +104,37 @@ export default function TestSeries(props){
         rzp1.open()
     }
 
+    const handleCoinPayment = () => {
+        setPaymentLoading(true)
+        setError()
+        axiosInstance.post('/payments/withcoins/', {
+                test_series: id,
+            })
+            .then((res) => {
+                console.log("PAYMENT RESPONSE: ", res.data)
+                if(res.data.success){
+                    //setPaymentLoading(false)
+                    console.log("payment success")
+                    setPaymentLoading(false)
+                    setPaymentModal(false)
+                    setRegistered(true)
+                }
+                if(res.data.error){
+                    setPaymentLoading(false)
+                    setError(res.data.error)
+                }
+            })
+            .catch((error) => {
+                console.log("error: ", error)
+                setPaymentLoading(false)
+                if(error.response && error.response.status === 400 && error.response.data.test_series && error.response.data.test_series.length && error.response.data.test_series[0] === "You have already made a payment"){
+                    setError("You have already made a payment")
+                    return
+                }
+                setError("Unable to process your request try again")
+            })
+    }
+
     return(
         <AuthHOC>
             <SideBarLayout title="Tests">
@@ -127,9 +158,23 @@ export default function TestSeries(props){
                                         <Alert description="Go to Tests section to see all your tests and attempts" />
                                     </div>
                                     :
-                                    <div className="btn btn-info font-11 px-5" onClick={() => setPaymentModal(true)}>
-                                        Buy Now &#8377;{series.price}
-                                    </div>    
+                                    <>
+                                        <div>
+                                            {error && <div className="text-danger p-1 pt-4">{error}</div>}
+                                        </div>
+                                        {paymentLoading ?
+                                            <div>Processing your payment, please wait...</div>
+                                            :
+                                            <>
+                                                <div className="btn btn-info font-11 px-5" onClick={() => handleCoinPayment()}>
+                                                    Buy Now with {series.coin_price} coins
+                                                </div>
+                                                <div className="btn btn-info font-11 px-5" onClick={() => setPaymentModal(true)}>
+                                                    Buy Now &#8377;{series.price}
+                                                </div>
+                                            </>
+                                        }
+                                    </>  
                                 }
                                 {profile.is_teacher && 
                                     <Link href={`/testseries/edit/${series.id}`}>
