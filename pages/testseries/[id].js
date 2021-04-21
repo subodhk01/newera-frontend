@@ -166,9 +166,9 @@ export default function TestSeries(props){
                                             <div>Processing your payment, please wait...</div>
                                             :
                                             <>
-                                                <div className="btn btn-info font-11 px-5" onClick={() => handleCoinPayment()}>
+                                                {/* <div className="btn btn-info font-11 px-5" onClick={() => handleCoinPayment()}>
                                                     Buy Now with {series.coin_price} coins
-                                                </div>
+                                                </div> */}
                                                 <div className="btn btn-info font-11 px-5" onClick={() => setPaymentModal(true)}>
                                                     Buy Now &#8377;{series.price}
                                                 </div>

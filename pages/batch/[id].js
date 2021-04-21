@@ -210,9 +210,9 @@ export default function Batch(props) {
                                                     <div>Processing your payment, please wait...</div>
                                                     :
                                                     <>
-                                                        <div className="btn btn-info font-11 px-5" onClick={() => handleCoinPayment()}>
+                                                        {/* <div className="btn btn-info font-11 px-5" onClick={() => handleCoinPayment()}>
                                                             Register with {activeBatch.coin_price} coins
-                                                        </div>
+                                                        </div> */}
                                                         <div className="btn btn-success font-09" onClick={() => setPaymentModal(true)}>
                                                             Register
                                                         </div>
@@ -294,9 +294,9 @@ export default function Batch(props) {
                                             <div>Processing your payment, please wait...</div>
                                             :
                                             <>
-                                                <div className="btn btn-info font-11 px-5" onClick={() => handleCoinPayment()}>
+                                                {/* <div className="btn btn-info font-11 px-5" onClick={() => handleCoinPayment()}>
                                                     Register with {activeBatch.coin_price} coins
-                                                </div>
+                                                </div> */}
                                                 <div className="btn btn-success font-09" onClick={() => {setActiveBatch(activeBatch); setPaymentModal(true)}}>
                                                     Register
                                                 </div>
