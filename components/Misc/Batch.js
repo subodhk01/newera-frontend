@@ -30,8 +30,8 @@ export default function Batch(props) {
                                     {batch.free || batch.price === 0 ?
                                             <div className="text-success">Free</div>
                                         :
-                                            <div>
-                                                &#8377;{batch.price}
+                                            <div className="d-flex align-items-center">
+                                                {batch.mrp && <div className="font-08 mt-normal text-muted text-line">&#8377;{batch.mrp}</div>}&nbsp;&#8377;{batch.price}
                                             </div>
                                         }
                                 </div>

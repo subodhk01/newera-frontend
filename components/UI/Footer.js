@@ -15,6 +15,9 @@ export default function Footer() {
                     <p>+917380736814</p>
                     <p>+919936237763</p>
                     <p>+917662359179</p>
+                    <p>
+                        New Era Coaching , Near H P Gas Goddam , Near New Bus Stand , Nehru Nagar , Rewa , Madhya Pradesh , PIN Code - 486002
+                    </p>
                 </div>
                 <div className="col-12 col-md-3">
                     <h4>Email Us</h4>

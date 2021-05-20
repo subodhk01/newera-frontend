@@ -110,7 +110,7 @@ export default function Batch(props) {
             })
         }else {
             var options = {
-                key: "rzp_live_VMy6LTFP3FIQmO",
+                key: "rzp_live_F1Vw65uKGuHD0F",
                 amount: totalAmount * 100,
                 name: "Newera Coaching",
                 currency: "INR",
@@ -183,8 +183,8 @@ export default function Batch(props) {
                                     {activeBatch.free || activeBatch.price === 0 ?
                                             <div className="text-success">Free</div>
                                         :
-                                            <div>
-                                            &#8377;{activeBatch.price}
+                                            <div className="d-flex align-items-center">
+                                                {activeBatch.mrp && <div className="font-08 mt-normal text-muted text-line">&#8377;{activeBatch.mrp}</div>}&nbsp;&#8377;{activeBatch.price}
                                             </div>
                                         }
                                 </div>
@@ -210,9 +210,9 @@ export default function Batch(props) {
                                                     <div>Processing your payment, please wait...</div>
                                                     :
                                                     <>
-                                                        {/* <div className="btn btn-info font-11 px-5" onClick={() => handleCoinPayment()}>
+                                                        <div className="btn btn-info font-11 px-5" onClick={() => handleCoinPayment()}>
                                                             Register with {activeBatch.coin_price} coins
-                                                        </div> */}
+                                                        </div>
                                                         <div className="btn btn-success font-09" onClick={() => setPaymentModal(true)}>
                                                             Register
                                                         </div>
@@ -294,9 +294,9 @@ export default function Batch(props) {
                                             <div>Processing your payment, please wait...</div>
                                             :
                                             <>
-                                                {/* <div className="btn btn-info font-11 px-5" onClick={() => handleCoinPayment()}>
+                                                <div className="btn btn-info font-11 px-5" onClick={() => handleCoinPayment()}>
                                                     Register with {activeBatch.coin_price} coins
-                                                </div> */}
+                                                </div>
                                                 <div className="btn btn-success font-09" onClick={() => {setActiveBatch(activeBatch); setPaymentModal(true)}}>
                                                     Register
                                                 </div>

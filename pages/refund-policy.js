@@ -25,6 +25,9 @@ export default function TandC() {
         <li>Your purchase of any product or service on this website is entirely at your own risk, for
             which we shall not be liable. It shall be your own responsibility to ensure that any products, services
             available through this website meet your specific requirements.</li>
+        <li>
+            All subscription available on website or app are non refundable without any exception
+        </li>
     </ul>
 </div>
         <Footer />

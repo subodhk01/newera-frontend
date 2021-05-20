@@ -55,7 +55,7 @@ export default function studymaterialsfilter(props){
                                                             <div className="text-success">Free</div>
                                                         :
                                                             <div>
-                                                                &#8377;{item.price}
+                                                                {item.mrp && <div className="font-08 mt-normal text-muted text-line">&#8377;{item.mrp}</div>}&nbsp;&#8377;{item.price}
                                                             </div>
                                                         }
                                                 </div>

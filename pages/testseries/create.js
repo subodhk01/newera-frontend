@@ -264,16 +264,16 @@ export default function Test(props){
                             </div>
                         </div>
                         <div className="p-2">
+                            <div>
+                                {success && <span className="text-success">{success}</span>}
+                                {error && typeof(error) === "string" && <span className="text-danger">{error}</span>}
+                                {error && typeof(error) === "object" && 
+                                    Object.keys(error).map((key, index) => 
+                                        <span key={index} className="text-danger">{key} : {error[key]}</span>
+                                    )
+                                }
+                            </div>
                             <div className="btn btn-info" onClick={handleTestSeriesSave}>
-                                <div>
-                                    {success && <span className="text-success">{success}</span>}
-                                    {error && typeof(error) === "string" && <span className="text-danger">{error}</span>}
-                                    {error && typeof(error) === "object" && 
-                                        Object.keys(error).map((key, index) => 
-                                            <span key={index} className="text-danger">{key} : {error[key]}</span>
-                                        )
-                                    }
-                                </div>
                                 Create Test Series
                             </div>
                         </div>

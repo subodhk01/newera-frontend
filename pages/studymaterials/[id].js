@@ -76,7 +76,7 @@ export default function StudyMaterial(props){
     async function makePayment(totalAmount, notes) {
         setError("")
         var options = {
-            key: "rzp_live_VMy6LTFP3FIQmO",
+            key: "rzp_live_F1Vw65uKGuHD0F",
             amount: totalAmount * 100,
             name: "Newera Coaching",
             currency: "INR",
@@ -155,11 +155,11 @@ export default function StudyMaterial(props){
                                             <div>Processing your payment, please wait...</div>
                                             :
                                             <>
-                                                {/* <div className="btn btn-info font-11 px-5" onClick={() => handleCoinPayment()}>
+                                                <div className="btn btn-info font-11 px-5" onClick={() => handleCoinPayment()}>
                                                     Buy Now with {material.coin_price} coins
-                                                </div> */}
+                                                </div>
                                                 <div className="btn btn-info font-11 px-5" onClick={() => setPaymentModal(true)}>
-                                                    Buy Now &#8377;{material.price}
+                                                    Buy Now {series.mrp && <span className="font-08 mt-normal text-muted2 text-line">&#8377;{series.mrp}</span>}&nbsp;&#8377;{material.price}
                                                 </div>
                                             </>
                                         }
